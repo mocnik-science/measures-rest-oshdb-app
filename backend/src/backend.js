@@ -8,9 +8,6 @@ const localPassportStrategy = require('passport-local').Strategy
 const session = require('express-session')
 const {spawn, spawnSync} = require('child_process')
 
-// const PATH_USER = './../../data/users/franz-benjamin/'
-// const PATH_SERVICE = '/home/f/fmocnik/docker/'
-// const PATH_USER = './../../user'
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
 const PATH_USER = './../../measures-rest-oshdb-users'
 const PATH_JAVA = 'java'
