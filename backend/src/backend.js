@@ -27,6 +27,8 @@ const HOST_SERVICE = 'localhost'
 const PORT_SERVICE = 14242
 const NEW_MEASURE = 'new measure'
 
+const DEVELOPMENT = process.env.DEVELOPMENT || true
+
 const app = express()
 app.set('port', process.env.PORT || 3001)
 
@@ -277,5 +279,7 @@ get('/map/:id', (req, res) => {
 app.use('/static/vs', express.static('./../frontend/node_modules/monaco-editor/min/vs'))
 app.use('/static/libs', express.static('./../backend/libs'))
 app.use('/static/manual', express.static('./../backend/manual'))
+
+if (DEVELOPMENT) app.use('/', express.static('./../frontend/build'))
 
 app.listen(app.get('port'))
