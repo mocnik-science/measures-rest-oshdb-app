@@ -36,6 +36,7 @@
     "node-sass": "^4.8.3"
   },
   "scripts": {
+    "postinstall": "npm run build-sass"
     "start": "react-scripts start",
     "build-sass": "gulp sass",
     "build": "npm run build-sass && react-scripts build",
