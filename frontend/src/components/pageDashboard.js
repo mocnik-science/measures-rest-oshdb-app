@@ -3,7 +3,7 @@ import Box from 'grommet/components/Box'
 import Label from 'grommet/components/Label'
 import Meter from 'grommet/components/Meter'
 import Value from 'grommet/components/Value'
-import WorldMap from 'grommet/components/WorldMap'
+// import WorldMap from 'grommet/components/WorldMap'
 
 import {measures} from './../backend'
 
