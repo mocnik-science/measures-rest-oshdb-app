@@ -1,9 +1,9 @@
 apps:
-  - name: "measures-rest-oshdb-app-backend-dev"
-    cwd: "./../backend"
-    script: "npm"
-    args: "start"
-  - name: "measures-rest-oshdb-app-frontend-dev"
-    cwd: "./../frontend"
-    script: "npm"
-    args: "start"
+  - name: measures-rest-oshdb-app-backend-dev
+    cwd: ./backend
+    script: npm
+    args: start
+  - name: measures-rest-oshdb-app-frontend-dev
+    cwd: ./frontend
+    script: npm
+    args: start
