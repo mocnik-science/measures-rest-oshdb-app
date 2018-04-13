@@ -13,8 +13,8 @@ class SidebarNavigation extends React.Component {
   render() {
     return (
       <Sidebar colorIndex='brand'>
-        <Header pad='medium' justify='between'>
-          <Title>Measures REST</Title>
+        <Header pad='medium' justify='between' style={{paddingRight: 0}}>
+          <Title>OSM Measure Repository</Title>
         </Header>
         <Box flex='grow' justify='start'>
           <Menu primary={true}>
