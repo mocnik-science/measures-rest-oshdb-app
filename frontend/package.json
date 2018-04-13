@@ -1,0 +1,44 @@
+{
+  "name": "measures-rest-app-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": {
+    "/backend": {
+      "target": "http://localhost:3001"
+    },
+    "/map": {
+      "target": "http://localhost:3001"
+    },
+    "/static/vs": {
+      "target": "http://localhost:3001"
+    },
+    "/static/libs": {
+      "target": "http://localhost:3001"
+    },
+    "/static/manual": {
+      "target": "http://localhost:3001"
+    }
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.4",
+    "@fortawesome/fontawesome-free-solid": "^5.0.8",
+    "@fortawesome/react-fontawesome": "0.0.17",
+    "grommet": "^1.10.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-monaco-editor": "^0.13.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sass": "^3.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build-sass": "gulp sass",
+    "build": "npm run build-sass && react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

@@ -1,0 +1,16 @@
+.noScroll {
+  overflow: hidden!important;
+}
+.pageMeasureLabel {
+  padding-left: 6px;
+  font-weight: 500!important;
+}
+.header {
+  border-bottom: 1px #000 solid;
+}
+.header .grommetux-input {
+  font-size: 19px!important;
+}
+.header .grommetux-input:focus {
+  border: 2px solid #fff!important;
+}

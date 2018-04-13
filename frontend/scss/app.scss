@@ -1,0 +1,19 @@
+// #c61826
+// #590d08
+// #f4f1ea
+
+$brand-color: darken(#c61826, 3%);
+$brand-neutral-colors: (#590d08);
+$brand-accent-colors: (#590d08);
+$brand-link-color: darken(#c61826, 3%);
+
+$button-text-color: #666;
+
+.exception {
+  color: $brand-color!important;
+}
+.grommetux-meter__values .grommetux-meter__slice {
+  stroke: #c61826!important;
+}
+
+@import 'grommet/scss/grommet-core/index.scss';
