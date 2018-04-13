@@ -6,7 +6,7 @@ import Header from 'grommet/components/Header'
 import Label from 'grommet/components/Label'
 import List from 'grommet/components/List'
 import ListItem from 'grommet/components/ListItem'
-import Search from 'grommet/components/Search'
+import TextInput from 'grommet/components/TextInput'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCheck from '@fortawesome/fontawesome-free-solid/faCheck'
 import faCode from '@fortawesome/fontawesome-free-solid/faCode'
@@ -44,10 +44,9 @@ class PageMeasure extends React.Component {
   render() {
     return (
       <div>
-        <Header className='header' fixed={true} size='small' style={{paddingLeft: 10,
-paddingRight: 22}}>
+        <Header className='header' fixed={true} size='small' style={{paddingRight: 22}}>
           <Box flex={true} justify='end' direction='row'>
-            <Search value={this.state.search} onDOMChange={e => this.setState({search: e.target.value})} inline={true} fill={true} placeHolder='Search' size='medium'/>
+            <TextInput value={this.state.search} onDOMChange={e => this.setState({search: e.target.value})} style={{flexGrow: 1}} placeHolder='Search...' size='medium'/>
             <Button icon={<FontAwesomeIcon icon={faPlusSquare}/>} onClick={() => measureNew(response => this.setState(response))}/>
             <Button icon={<FontAwesomeIcon icon={faStethoscope}/>} onClick={() => serviceCheck(response => this.setState({errors: response}))}/>
           </Box>

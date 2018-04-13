@@ -10,7 +10,8 @@
 }
 .header .grommetux-input {
   font-size: 19px!important;
+  border: none;
 }
 .header .grommetux-input:focus {
-  border: 2px solid #fff!important;
+  border: 1px solid #fff!important;
 }
