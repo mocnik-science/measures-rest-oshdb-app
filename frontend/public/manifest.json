@@ -1,6 +1,6 @@
 {
-  "short_name": "Measures REST",
-  "name": "Measures REST",
+  "short_name": "OSM Measure Repository",
+  "name": "OSM Measure Repository",
   "icons": [
     {
       "src": "favicon.ico",
