@@ -22,7 +22,7 @@ class PageMeasure extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      measures: [],
+      measures: {},
       search: '',
       errors: null,
     }
