@@ -44,7 +44,8 @@ class PageMeasure extends React.Component {
   render() {
     return (
       <div>
-        <Header className='header' fixed={true} size='small'>
+        <Header className='header' fixed={true} size='small' style={{paddingLeft: 10,
+paddingRight: 22}}>
           <Box flex={true} justify='end' direction='row'>
             <Search value={this.state.search} onDOMChange={e => this.setState({search: e.target.value})} inline={true} fill={true} placeHolder='Search' size='medium'/>
             <Button icon={<FontAwesomeIcon icon={faPlusSquare}/>} onClick={() => measureNew(response => this.setState(response))}/>
