@@ -25,7 +25,7 @@ class Authentication extends React.Component {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <LoginForm title='Measures REST' usernameType='text' onSubmit={e => login(e.username, e.password, d => this.setState(d))}/>
+        <LoginForm title='OSM Measure Repository' usernameType='text' onSubmit={e => login(e.username, e.password, d => this.setState(d))}/>
       </div>)
     return (
       <div>
