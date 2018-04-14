@@ -31,7 +31,7 @@ const KEY = join(os.homedir(), '.cert/key.pem')
 const CERT = join(os.homedir(), '.cert/cert.pem')
 const NEW_MEASURE = 'new measure'
 
-const DEVELOPMENT = process.env.DEVELOPMENT || true
+const DEVELOPMENT = (process.env.DEVELOPMENT != undefined) ? (process.env.DEVELOPMENT == 'true') : true
 
 const app = express()
 
@@ -292,5 +292,5 @@ if (DEVELOPMENT) {
   https.createServer({
     key: fs.readFileSync(KEY),
     cert: fs.readFileSync(CERT),
-  }, app).listen(process.env.PORT || 2999)
+  }, app).listen(process.env.PORT || 443)
 }
