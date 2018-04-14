@@ -284,7 +284,7 @@ app.use('/static/vs', express.static('./../frontend/node_modules/monaco-editor/m
 app.use('/static/libs', express.static('./../backend/libs'))
 app.use('/static/manual', express.static('./../backend/manual'))
 
-if (DEVELOPMENT) app.use('/', express.static('./../frontend/build'))
+if (!DEVELOPMENT) app.use('/', express.static('./../frontend/build'))
 
 if (DEVELOPMENT) {
   app.set('port', process.env.PORT || 3001)
