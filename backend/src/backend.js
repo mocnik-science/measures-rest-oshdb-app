@@ -11,7 +11,8 @@ const session = require('express-session')
 const {spawn, spawnSync} = require('child_process')
 
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
-const PATH_USER = './../../measures-rest-oshdb-users'
+const PATH_DATA = './../../measures-rest-oshdb-data'
+const PATH_USER = `${PATH_DATA}/users`
 const PATH_JAVA = 'java'
 const PATH_MEASURES = 'measures'
 const FILE_SETTINGS = 'settings.json'
