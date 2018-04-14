@@ -34,7 +34,6 @@ const NEW_MEASURE = 'new measure'
 const DEVELOPMENT = process.env.DEVELOPMENT || true
 
 const app = express()
-app.set('port', process.env.PORT || 3001)
 
 const bodyParserJson = bodyParser.json()
 app.use((req, res, next) => (req.method == 'POST') ? bodyParserJson(req, res, next): next())
@@ -286,10 +285,12 @@ app.use('/static/manual', express.static('./../backend/manual'))
 
 if (DEVELOPMENT) app.use('/', express.static('./../frontend/build'))
 
-if (DEVELOPMENT) app.listen(app.get('port'))
-else {
+if (DEVELOPMENT) {
+  app.set('port', process.env.PORT || 3001)
+  app.listen(app.get('port'))
+} else {
   https.createServer({
     key: fs.readFileSync(KEY),
     cert: fs.readFileSync(CERT),
-  }, app).listen(433)
+  }, app).listen(process.env.PORT || 2999)
 }
