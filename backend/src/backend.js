@@ -13,6 +13,7 @@ const {spawn, spawnSync} = require('child_process')
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
 const PATH_DATA = './../../measures-rest-oshdb-data'
 const PATH_USER = `${PATH_DATA}/users`
+const PATH_DBS = `${PATH_DATA}/dbs`
 const PATH_JAVA = 'java'
 const PATH_MEASURES = 'measures'
 const FILE_SETTINGS = 'settings.json'
@@ -179,7 +180,7 @@ const writeJava = username => {
   })
   saveJava(username, 'Run.java', useTemplate(javaRunTemplate, {
     measures: jsons.filter(json => json.active).map(json => ({className: className(json.id)})),
-    databaseFile: '/data/dbs/sweden_20180112_z12_keytable.oshdb',
+    databaseFile: `${PATH_DBS}/sweden_20180112_z12_keytable.oshdb`,
   }))
 }
 const getMap = (username, port, id) => {
