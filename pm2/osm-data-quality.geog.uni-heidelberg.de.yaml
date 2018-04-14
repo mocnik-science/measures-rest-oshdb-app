@@ -4,5 +4,5 @@ apps:
     script: npm
     args: start
     env:
-      PORT: 80
+      PORT: 2999
       DEVELOPMENT: false

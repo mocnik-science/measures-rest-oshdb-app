@@ -2,7 +2,9 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const fs = require('fs')
 const handlebars = require('handlebars')
+const https = require('https')
 const {join} = require('path')
+const os = require('os')
 const passport = require('passport')
 const localPassportStrategy = require('passport-local').Strategy
 const session = require('express-session')
@@ -25,6 +27,8 @@ const FILE_JAVA_RUN_TEMPLATE = `${PATH_TEMPLATES}/javaRun.tmpl`
 const FILE_MAP_INDEX_TEMPLATE = `${PATH_TEMPLATES}/map.tmpl`
 const HOST_SERVICE = 'localhost'
 const PORT_SERVICE = 14242
+const KEY = join(os.homedir(), '.cert/key.pem')
+const CERT = join(os.homedir(), '.cert/cert.pem')
 const NEW_MEASURE = 'new measure'
 
 const DEVELOPMENT = process.env.DEVELOPMENT || true
@@ -282,4 +286,10 @@ app.use('/static/manual', express.static('./../backend/manual'))
 
 if (DEVELOPMENT) app.use('/', express.static('./../frontend/build'))
 
-app.listen(app.get('port'))
+if (DEVELOPMENT) app.listen(app.get('port'))
+else {
+  https.createServer({
+    key: fs.readFileSync(KEY),
+    cert: fs.readFileSync(CERT),
+  }, app).listen(433)
+}
