@@ -33,6 +33,8 @@ const CERT = join(os.homedir(), '.cert/cert.pem')
 const NEW_MEASURE = 'new measure'
 
 const DEVELOPMENT = (process.env.DEVELOPMENT != undefined) ? (process.env.DEVELOPMENT == 'true') : true
+const PORT = (process.env.PORT) ? process.env.PORT : (DEVELOPMENT) ? 3001 : 443
+const HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') : !DEVELOPMENT
 
 const app = express()
 
@@ -286,12 +288,12 @@ app.use('/static/manual', express.static('./../backend/manual'))
 
 if (!DEVELOPMENT) app.use('/', express.static('./../frontend/build'))
 
-if (DEVELOPMENT) {
-  app.set('port', process.env.PORT || 3001)
-  app.listen(app.get('port'))
-} else {
+if (HTTPS) {
   https.createServer({
     key: fs.readFileSync(KEY),
     cert: fs.readFileSync(CERT),
-  }, app).listen(process.env.PORT || 443)
+  }, app).listen(PORT)
+} else {
+  app.set('port', PORT)
+  app.listen(app.get('port'))
 }
