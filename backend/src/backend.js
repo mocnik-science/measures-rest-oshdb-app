@@ -12,7 +12,7 @@ const {spawn, spawnSync} = require('child_process')
 
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
 const PATH_DATA = './../../measures-rest-oshdb-data'
-const PATH_USER = `${PATH_DATA}/users`
+const PATH_USERS = `${PATH_DATA}/users`
 const PATH_DBS = `${PATH_DATA}/dbs`
 const PATH_JAVA = 'java'
 const PATH_MEASURES = 'measures'
@@ -58,7 +58,7 @@ passport.use(new localPassportStrategy((username, password, done) => {
     'fb': 'hello',
   }
   if (usernames[username] !== undefined && usernames[username] === password) {
-    if (!fs.existsSync(`${PATH_USER}/${username}`)) fs.mkdirSync(`${PATH_USER}/${username}`)
+    if (!fs.existsSync(`${PATH_USERS}/${username}`)) fs.mkdirSync(`${PATH_USERS}/${username}`)
     return done(null, username)
   }
   return done(null, false, {})
@@ -84,14 +84,14 @@ const className = id => `Measure${id.replace(/^([a-z])|-([a-z])/g, (match, p1, p
 // common
 const idToFilename = (id, ext='json') => `${className(id)}.${ext}`
 const idToPathUserFilename = (username, id, path='', ext='json') => pathUser(username, path, idToFilename(id, ext))
-const pathUser = (username, ...path) => `${PATH_USER}/${username}/${join(...path)}`
+const pathUser = (username, ...path) => `${PATH_USERS}/${username}/${join(...path)}`
 const measureForId = (username, id) => {
   if (!id) return null
   const filename = idToPathUserFilename(username, id, PATH_MEASURES)
   return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
 }
 const saveMeasure = (username, id, json) => fs.writeFileSync(idToPathUserFilename(username, id, PATH_MEASURES), JSON.stringify(json))
-const allMeasures = username => fs.readdirSync(`${PATH_USER}/${username}/${PATH_MEASURES}`)
+const allMeasures = username => fs.readdirSync(`${PATH_USERS}/${username}/${PATH_MEASURES}`)
   .filter(filename => filename.endsWith('.json'))
   .filter(filename => ![FILE_SETTINGS].includes(filename))
   .map(filename => JSON.parse(fs.readFileSync(pathUser(username, PATH_MEASURES, filename))))
@@ -102,10 +102,10 @@ const settings = username => {
   }))
   return JSON.parse(fs.readFileSync(filename))
 }
-const allSettings = () => fs.readdirSync(PATH_USER)
+const allSettings = () => fs.readdirSync(PATH_USERS)
   .filter(pathname => !pathname.startsWith('.'))
-  .filter(pathname => fs.existsSync(`${PATH_USER}/${pathname}/${FILE_SETTINGS}`))
-  .map(pathname => JSON.parse(fs.readFileSync(`${PATH_USER}/${pathname}/${FILE_SETTINGS}`)))
+  .filter(pathname => fs.existsSync(`${PATH_USERS}/${pathname}/${FILE_SETTINGS}`))
+  .map(pathname => JSON.parse(fs.readFileSync(`${PATH_USERS}/${pathname}/${FILE_SETTINGS}`)))
 const saveJava = (username, name, code) => fs.writeFileSync(pathUser(username, PATH_JAVA, name), code)
 const saveJavaMeasure = (username, id, code) => fs.writeFileSync(idToPathUserFilename(username, id, PATH_JAVA, 'java'), code)
 
@@ -137,7 +137,7 @@ const serviceState = username => {
   }
 }
 const serviceCheck = (username, callback) => {
-  const s = spawn(`${CMD_SERVICE_CHECK} ${username} ${PATH_USER}/${username}/${PATH_JAVA}`, {cwd: PATH_SERVICE, shell: true})
+  const s = spawn(`${CMD_SERVICE_CHECK} ${username} ${PATH_USERS}/${username}/${PATH_JAVA}`, {cwd: PATH_SERVICE, shell: true})
   let out = ''
   s.stdout.on('data', outCmd => out += outCmd.toString())
   s.on('close', code => {
@@ -152,7 +152,7 @@ const serviceCheck = (username, callback) => {
     callback(result)
   })
 }
-const serviceStart = (username, port) => spawnSync(`${CMD_SERVICE_START} ${username} ${PATH_USER}/${username}/${PATH_JAVA} ${port}`, {cwd: PATH_SERVICE, shell: true})
+const serviceStart = (username, port) => spawnSync(`${CMD_SERVICE_START} ${username} ${PATH_USERS}/${username}/${PATH_JAVA} ${port}`, {cwd: PATH_SERVICE, shell: true})
 const serviceStop = username => {
   serviceCancel = true
   spawnSync(`${CMD_SERVICE_STOP} ${username}`, {cwd: PATH_SERVICE, shell: true})
