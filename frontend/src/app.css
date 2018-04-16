@@ -1,6 +1,9 @@
 .noScroll {
   overflow: hidden!important;
 }
+.grommetux-login-form .grommetux-heading {
+  font-size: 35px;
+}
 .pageMeasureLabel {
   padding-left: 6px;
   font-weight: 500!important;
