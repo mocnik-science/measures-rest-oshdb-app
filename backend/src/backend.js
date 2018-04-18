@@ -148,6 +148,12 @@ const measureForUser = (user, id) => {
   return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
 }
 const saveMeasure = (user, id, json) => fs.writeFileSync(idToPathUserFilename(user, id, PATH_MEASURES), JSON.stringify(json))
+const moveMeasure = (user, idOld, idNew) => {
+  const filenameNew = idToPathUserFilename(user, idNew, PATH_MEASURES)
+  if (fs.existsSync(filenameNew)) return false
+  fs.renameSync(idToPathUserFilename(user, idOld, PATH_MEASURES), filenameNew)
+  return true
+}
 const allMeasures = user => fs.readdirSync(dirUser(user, PATH_MEASURES))
   .filter(filename => filename.endsWith('.json'))
   .filter(filename => ![FILE_SETTINGS].includes(filename))
@@ -286,8 +292,12 @@ post('/backend/measure/id/:id', (req, res) => {
     if (json.timestamp >= data.timestamp) res.status(200).json({success: true})
     else {
       json.timestamp = data.timestamp
+      if (data.data.name && json.name !== data.data.name) {
+        json.id = name2id(data.data.name)
+        if (!moveMeasure(req.user, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: 'A measure with a very similar (or same) name already exists.'}})
+      }
       const jsonNew = Object.assign(json, data.data)
-      saveMeasure(req.user, req.params.id, jsonNew)
+      saveMeasure(req.user, json.id, jsonNew)
       res.status(200).json({success: true})
     }
   }

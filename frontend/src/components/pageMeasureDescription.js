@@ -9,25 +9,36 @@ import Header from 'grommet/components/Header'
 import Heading from 'grommet/components/Heading'
 import TextInput from 'grommet/components/TextInput'
 
-import {measures} from './../backend'
+import {measure, measureSave} from './../backend'
 
 class PageMeasureDescription extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      id: null,
       name: '',
+      nameError: null,
     }
-    measures(response => this.setState({measures: response.measures}))
+    this.save = this.save.bind(this)
+    measure(this.props.match.params.id)(response => this.setState(response))
+  }
+  save() {
+    measureSave(this.state.id)({
+      name: this.state.name,
+    }, response => {
+      if (response.success) this.props.history.push('/measure')
+      else this.setState(response.messages)
+    })
   }
   render() {
     return (
       <Box align='center' pad='large'>
-        <Form>
+        <Form style={{width: 600}}>
           <Header>
             <Heading>{this.state.name}</Heading>
           </Header>
           <FormFields>
-            <FormField label='name'>
+            <FormField label='name' error={this.state.nameError}>
               <TextInput value={this.state.name} onDOMChange={e => this.setState({name: e.target.value})}/>
             </FormField>
             <FormField label='description'>
@@ -35,7 +46,7 @@ class PageMeasureDescription extends React.Component {
             </FormField>
           </FormFields>
           <Footer pad={{'vertical': 'medium'}}>
-            <Button label='save' type='submit' primary={true}/>
+            <Button label='save' type='submit' primary={true} onClick={() => this.save()} href='#'/>
           </Footer>
         </Form>
       </Box>
