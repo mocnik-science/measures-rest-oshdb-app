@@ -22,7 +22,8 @@ class PageMeasureDescription extends React.Component {
     this.save = this.save.bind(this)
     measure(this.props.match.params.id)(response => this.setState(response))
   }
-  save() {
+  save(e) {
+    e.preventDefault()
     measureSave(this.state.id)({
       name: this.state.name,
     }, response => {
@@ -46,7 +47,7 @@ class PageMeasureDescription extends React.Component {
             </FormField>
           </FormFields>
           <Footer pad={{'vertical': 'medium'}}>
-            <Button label='save' type='submit' primary={true} onClick={() => this.save()} href='#'/>
+            <Button label='save' type='submit' primary={true} onClick={this.save}/>
           </Footer>
         </Form>
       </Box>
