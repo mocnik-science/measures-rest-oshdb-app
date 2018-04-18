@@ -7,8 +7,8 @@ import PageHelp from './components/pageHelp'
 const pages = [
   {path: '/dashboard', label: 'Dashboard', component: PageDashboard, exact: true, menu: true},
   {path: '/measure', label: 'Measures', component: PageMeasure, exact: true, menu: true},
-  {path: '/measure/description/:id', label: null, component: PageMeasureDescription, exact: false, menu: false},
-  {path: '/measure/code/:id', label: null, component: PageMeasureCode, exact: false, menu: false},
+  {path: '/measure/:id/description', label: null, component: PageMeasureDescription, exact: false, menu: false},
+  {path: '/measure/:id/code', label: null, component: PageMeasureCode, exact: false, menu: false},
   {path: '/help', label: 'Help', component: PageHelp, exact: true, menu: true},
 ]
 

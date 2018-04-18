@@ -59,8 +59,8 @@ class PageMeasure extends React.Component {
               </span>
               <span className='secondary'>
                 {this.renderErrors(measure.id)}
-                <Button icon={<FontAwesomeIcon icon={faEdit}/>} path={`/measure/description/${measure.id}`}/>
-                <Button icon={<FontAwesomeIcon icon={faCode}/>} path={`/measure/code/${measure.id}`}/>
+                <Button icon={<FontAwesomeIcon icon={faEdit}/>} path={`/measure/${measure.id}/description`}/>
+                <Button icon={<FontAwesomeIcon icon={faCode}/>} path={`/measure/${measure.id}/code`}/>
                 <Button icon={<FontAwesomeIcon icon={faMap}/>} onClick={e => {
                   e.preventDefault()
                   window.open(`/map/${measure.id}`, '_blank')
