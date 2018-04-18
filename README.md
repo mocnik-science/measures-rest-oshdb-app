@@ -43,6 +43,15 @@ sudo startup ubuntu
 # execute the command given in the result
 ```
 
+## Install nginx
+
+```batch
+sudo apt-get install -y nginx
+sudo service nginx status
+sudo rm /etc/nginx/sites-available/default
+sudo rm /etc/nginx/sites-enabled/default
+```
+
 ## Let's Encrypt
 
 ```bash
@@ -50,13 +59,19 @@ sudo apt-get update
 sudo apt-get install -y software-properties-common
 sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
-sudo apt-get install -y certbot
+sudo apt-get install -y certbot python-certbot-nginx
 
-sudo iptables-unblocktcp 80
 sudo iptables -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-sudo certbot certonly --standalone --preferred-challenges http --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-data-quality.geog.uni-heidelberg.de
+sudo certbot --nginx --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-data-quality.geog.uni-heidelberg.de -d osm-measure.geog.uni-heidelberg.de -d osm-measure-edit.geog.uni-heidelberg.de
+#sudo certbot certonly --standalone --preferred-challenges http --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-data-quality.geog.uni-heidelberg.de -d osm-measure.geog.uni-heidelberg.de -d osm-measure-edit.geog.uni-heidelberg.de
 #  --staging
 sudo shutdown -r now
+```
+
+Then use `crontab -e` to add:
+
+```
+14 3 * * * certbot renew --post-hook "service nginx restart"
 ```
 
 ## Firewall
@@ -67,28 +82,28 @@ sudo iptables-unblocktcp 443
 sudo iptables-unblocktcp 2999
 ```
 
-## Nginx
+## Configure nginx
 
-```batch
-sudo apt-get install -y nginx
-sudo service nginx status
-```
-
-create a file `/etc/nginx/sites-available/https-redirect` (via `sudo vi`) with the following content:
+Create a file `/etc/nginx/sites-available/https-redirect` (via `sudo vi`) with the following content:
 
 ```
 server {
   listen 80;
+  
+  server_name osm-measure.geog.uni-heidelberg.de osm-measure-edit.geog.uni-heidelberg.de;
+  
   return 301 https://$host$request_uri;
 }
 ```
 
-create a file `/etc/nginx/sites-available/reverse-proxy` (via `sudo vi`) with the following content:
+Create a file `/etc/nginx/sites-available/osm-measure-edit` (via `sudo vi`) with the following content:
 
 ```
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
+
+  server_name osm-measure-edit.geog.uni-heidelberg.de;
 
   ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
@@ -99,12 +114,12 @@ server {
 }
 ```
 
-then:
+Then:
 
 ```bash
 sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/https-redirect /etc/nginx/sites-enabled/https-redirect
-sudo ln -s /etc/nginx/sites-available/reverse-proxy /etc/nginx/sites-enabled/reverse-proxy
+sudo ln -s /etc/nginx/sites-available/osm-measure-edit /etc/nginx/sites-enabled/osm-measure-edit
 sudo service nginx restart
 ```
 
@@ -129,4 +144,67 @@ cd measures-rest-oshdb-app-develop && git checkout develop && npm install
 pm2 start pm2/osm-data-quality.geog.uni-heidelberg.de.dev.yaml
 
 pm2 save
+```
+
+## Vocabulary
+
+In addition, the needed vocabulary can be delivered using nginx:
+
+```bash
+mkdir -p www/osm-data-quality.geog.uni-heidelberg.de
+```
+
+Then, the data needs to be copy to this directory.  Thereafter, create a file `/etc/nginx/sites-available/osm-data-quality` (via `sudo vi`) with the following content:
+
+```
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  listen 443 ssl default_server;
+  listen [::]:443 ssl default_server;
+
+  server_name osm-data-quality.geog.uni-heidelberg.de;
+
+  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
+  
+  root /home/f/fmocnik/www/osm-data-quality.geog.uni-heidelberg.de;
+}
+```
+
+Then:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/osm-data-quality /etc/nginx/sites-enabled/osm-data-quality
+sudo service nginx restart
+```
+
+## Publish the measures
+
+```bash
+mkdir -p www/osm-measure.geog.uni-heidelberg.de
+
+```
+
+Create a file `/etc/nginx/sites-available/osm-measure` (via `sudo vi`) with the following content:
+
+```
+server {
+  listen 443 ssl;
+  listen [::]:443 ssl;
+
+  server_name osm-measure.geog.uni-heidelberg.de;
+
+  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
+  
+  root /home/f/fmocnik/www/osm-measure.geog.uni-heidelberg.de;
+}
+```
+
+Then:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/osm-measure /etc/nginx/sites-enabled/osm-measure
+sudo service nginx restart
 ```
