@@ -9,6 +9,29 @@ import MonacoEditor from 'react-monaco-editor'
 
 import {measure, measureSave} from './../backend'
 
+const AUTOCOMPLETE_OBJECT = [
+  // types
+  'OSMType.Node',
+  'OSMType.Way',
+  'OSMType.Relation',
+  // common
+  'Geo.lengthOf',
+]
+const AUTOCOMPLETE_METHOD = [
+  // methods
+  'osmTypes',
+  'where',
+  'map',
+  'filter',
+  'average',
+  'sum',
+  'count',
+  'uniq',
+  'reduce',
+  // other
+  'getGeometry',
+]
+
 class PageMeasureCode extends React.Component {
   constructor(props) {
     super(props)
@@ -21,6 +44,7 @@ class PageMeasureCode extends React.Component {
       lastSavedTry: null,
       buttonLabel: 'saved',
     }
+    this.editorWillMount = this.editorWillMount.bind(this)
     this.editorDidMount = this.editorDidMount.bind(this)
     this.onChange = this.onChange.bind(this)
     this.save = this.save.bind(this)
@@ -31,6 +55,15 @@ class PageMeasureCode extends React.Component {
   }
   componentWillUnmount() {
     clearInterval(this.saveService)
+  }
+  editorWillMount(monaco) {
+    monaco.languages.registerCompletionItemProvider('java', {
+      triggerCharacters: ['.', ' ', '\n', '('],
+      provideCompletionItems: (model, position, token, context) => {
+        const c = model.getValueInRange({startLineNumber: position.lineNumber, startColumn: position.column - 1, endLineNumber: position.lineNumber, endColumn: position.column})
+        return ((c === '.') ? AUTOCOMPLETE_METHOD : AUTOCOMPLETE_OBJECT).map(l => ({label: l}))
+      },
+    })
   }
   editorDidMount(editor, monaco) {
     editor.focus()
@@ -66,9 +99,13 @@ class PageMeasureCode extends React.Component {
           theme='vs-dark'
           value={code}
           options={{
+            fontSize: 16,
+            minimap: {enabled: false},
             selectOnLineNumbers: true,
+            wordWrap: 'on',
           }}
           onChange={this.onChange}
+          editorWillMount={this.editorWillMount}
           editorDidMount={this.editorDidMount}
           requireConfig={{
             url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
