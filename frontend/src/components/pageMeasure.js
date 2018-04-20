@@ -26,15 +26,15 @@ class PageMeasure extends React.Component {
       search: '',
       errors: null,
     }
-    this.saveActive = this.saveActive.bind(this)
+    this.saveEnabled = this.saveEnabled.bind(this)
     this.renderErrors = this.renderErrors.bind(this)
     measures(response => this.setState(response))
   }
-  saveActive(id, value) {
+  saveEnabled(id, value) {
     const measures = this.state.measures
-    measures[id].active = value
+    measures[id].enabled = value
     this.setState({measures: measures})
-    measureSave(id)({active: value}, () => {})
+    measureSave(id)({enabled: value}, () => {})
   }
   renderErrors(id) {
     if (this.state.errors === null || this.state.errors[id] === undefined) return []
@@ -55,7 +55,7 @@ class PageMeasure extends React.Component {
           {Object.values(this.state.measures).map(measure => (this.state.search !== '' && (!~measure.name.toLowerCase().indexOf(this.state.search.toLowerCase()))) ? [] :
             <ListItem key={measure.id} justify='between'>
               <span className='primary'>
-                <CheckBox toggle={true} label={<Label className='pageMeasureLabel'>{measure.name}</Label>} checked={this.state.measures[measure.id].active} onChange={e => this.saveActive(measure.id, e.target.checked)}/>
+                <CheckBox toggle={true} label={<Label className='pageMeasureLabel'>{measure.name}</Label>} checked={this.state.measures[measure.id].enabled} onChange={e => this.saveEnabled(measure.id, e.target.checked)}/>
               </span>
               <span className='secondary'>
                 {this.renderErrors(measure.id)}

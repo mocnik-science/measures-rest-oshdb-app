@@ -15,9 +15,7 @@ const usermanagement = require('./usermanagement')
 
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
 const PATH_DATA = './../../measures-rest-oshdb-data'
-const PATH_DATA2 = './../measures-rest-oshdb-data'
 const PATH_USERS = `${PATH_DATA}/users`
-const PATH_USERS2 = `${PATH_DATA2}/users`
 const PATH_DBS = `${PATH_DATA}/dbs`
 const PATH_JAVA = 'java'
 const PATH_MEASURES = 'measures'
@@ -145,7 +143,7 @@ const idToPathUserFilename = (user, id, path='', ext='json') => {
   return pathUser(user, path, idToFilename(id, ext))
 }
 const pathUser = (user, ...path) => `${PATH_USERS}/${User.getUsername(user)}/${join(...path)}`
-const pathUser2 = (user, ...path) => resolve(`${PATH_USERS2}/${User.getUsername(user)}/${join(...path)}`)
+const pathUserAbsolute = (user, ...path) => resolve(pathUser(user, ...path))
 const dirUser = (user, ...path) => {
   const p = pathUser(user, ...path)
   if (!fs.existsSync(p)) fs.mkdirSync(p)
@@ -209,7 +207,7 @@ const serviceState = user => {
   }
 }
 const serviceCheck = (user, callback) => {
-  const s = spawn(`${CMD_SERVICE_CHECK} ${User.getUsername(user)} ${pathUser2(user, PATH_JAVA)}`, {cwd: PATH_SERVICE, shell: true})
+  const s = spawn(`${CMD_SERVICE_CHECK} ${User.getUsername(user)} ${pathUserAbsolute(user, PATH_JAVA)}`, {cwd: PATH_SERVICE, shell: true})
   let out = ''
   s.stdout.on('data', outCmd => out += outCmd.toString())
   s.on('close', code => {
@@ -218,13 +216,13 @@ const serviceCheck = (user, callback) => {
       return [json.id, a[a.length - 1]]
     })
     const result = {}
-    for (const json of allMeasures(user)) if (json.active) result[json.id] = ''
+    for (const json of allMeasures(user)) if (json.enabled) result[json.id] = ''
     for (const l of out.split('\n')) for (const file of files)
       if (result[file[0]] !== undefined && ~l.indexOf(file[1])) result[file[0]] = ((result[file[0]]) ? result[file[0]] : '') + l + '\n'
     callback(result)
   })
 }
-const serviceStart = (user, port) => spawnSync(`${CMD_SERVICE_START} ${User.getUsername(user)} ${pathUser2(user, PATH_JAVA)} ${port}`, {cwd: PATH_SERVICE, shell: true})
+const serviceStart = (user, port) => spawnSync(`${CMD_SERVICE_START} ${User.getUsername(user)} ${pathUserAbsolute(user, PATH_JAVA)} ${port}`, {cwd: PATH_SERVICE, shell: true})
 const serviceStop = user => {
   serviceCancel = true
   spawnSync(`${CMD_SERVICE_STOP} ${User.getUsername(user)}`, {cwd: PATH_SERVICE, shell: true})
@@ -242,7 +240,7 @@ const useTemplate = (template, data) => {
 }
 const writeJava = user => {
   const jsons = allMeasures(user)
-  jsons.map(json => {
+  jsons.filter(json => json.enabled).map(json => {
     saveJavaMeasure(user, json.id, useTemplate(javaTemplate, {
       id: json.id,
       className: className(json.id),
@@ -251,8 +249,8 @@ const writeJava = user => {
     }))
   })
   saveJava(user, 'Run.java', useTemplate(javaRunTemplate, {
-    measures: jsons.filter(json => json.active).map(json => ({className: className(json.id)})),
-    databaseFile: `/data/sweden_20180112_z12_keytable.oshdb`,
+    measures: jsons.filter(json => json.enabled).map(json => ({className: className(json.id)})),
+    databaseFile: `/data/dbs/sweden_20180112_z12_keytable.oshdb`,
   }))
 }
 const getMap = (user, port, id) => {
@@ -319,7 +317,7 @@ get('/backend/measure/new', (req, res) => {
     id: name2id(name),
     name: name,
     code: '',
-    active: false,
+    enabled: false,
   })
   const measures = {}
   for (const json of allMeasures(req.user)) measures[json.id] = json
