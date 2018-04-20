@@ -89,8 +89,9 @@ Create a file `/etc/nginx/sites-available/https-redirect` (via `sudo vi`) with t
 ```
 server {
   listen 80;
+  listen [::]:80 ssl;
   
-  server_name osm-measure.geog.uni-heidelberg.de osm-measure-edit.geog.uni-heidelberg.de;
+  server_name osm-measure-edit.geog.uni-heidelberg.de;
   
   return 301 https://$host$request_uri;
 }
@@ -102,9 +103,9 @@ Create a file `/etc/nginx/sites-available/osm-measure-edit` (via `sudo vi`) with
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
-
+  
   server_name osm-measure-edit.geog.uni-heidelberg.de;
-
+  
   ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
   
@@ -145,6 +146,8 @@ pm2 start pm2/osm-data-quality.geog.uni-heidelberg.de.dev.yaml
 
 pm2 save
 ```
+
+copy the libs
 
 ## Vocabulary
 
@@ -198,7 +201,13 @@ server {
   ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
   
-  root /home/f/fmocnik/www/osm-measure.geog.uni-heidelberg.de;
+  location ~ "^/user/([0-9]{5})/" {
+    rewrite ^/user/([0-9]+)/(.*) /$2 break;
+    proxy_pass http://127.0.0.1:$1;
+  }
+  location / {
+    root /home/f/fmocnik/www/osm-measure.geog.uni-heidelberg.de;
+  }
 }
 ```
 

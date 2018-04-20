@@ -11,7 +11,7 @@ const ldapStrategy = require('passport-ldapauth')
 const session = require('express-session')
 const {spawn, spawnSync} = require('child_process')
 
-const usermanagement = require('./usermanagement')
+const settingsApp = require('./settings')
 
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
 const PATH_DATA = './../../measures-rest-oshdb-data'
@@ -56,7 +56,7 @@ const get = (route, ...xs) => app.get(route, requireAuth, ...xs)
 const post = (route, ...xs) => app.post(route, requireAuth, ...xs)
 
 passport.use(new localPassportStrategy((username, password, done) => {
-  const usernames = usermanagement.localUsers()
+  const usernames = settingsApp.localUsers()
   if (usernames[username] !== undefined && usernames[username] === password) {
     const u = User.fromLocal(username)
     if (!fs.existsSync(`${PATH_USERS}/${u.username()}`)) fs.mkdirSync(`${PATH_USERS}/${u.username()}`)
@@ -64,7 +64,7 @@ passport.use(new localPassportStrategy((username, password, done) => {
   }
   return done(null, false, {})
 }))
-passport.use(new ldapStrategy(usermanagement.ldapOptions(), (user, done) => {
+passport.use(new ldapStrategy(settingsApp.ldapOptions(), (user, done) => {
   const u = User.fromLdap(user)
   if (!fs.existsSync(`${PATH_USERS}/${u.username()}`)) fs.mkdirSync(`${PATH_USERS}/${u.username()}`)
   done(null, u)
@@ -260,7 +260,7 @@ const getMap = (user, port, id) => {
   return useTemplate(mapIndexTemplate, {
     name: json.name,
     id: json.id,
-    portService: port,
+    url: settingsAll.mapUrl(port),
   })
 }
 

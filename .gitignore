@@ -3,7 +3,7 @@
 **/dist
 **/libs
 **/node_modules
-backend/src/usermanagement.js
+backend/src/settings.js
 package-lock.json
 .DS_Store
 .env.local

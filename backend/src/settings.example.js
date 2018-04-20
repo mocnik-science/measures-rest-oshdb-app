@@ -11,4 +11,5 @@ module.exports = {
       searchFilter: '...(user={{username}})...',
     },
   }),
-}
+  mapUrl: port => `http://\${window.location.hostname}:{{port}}`,
+},
