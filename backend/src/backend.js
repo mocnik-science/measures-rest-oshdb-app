@@ -260,7 +260,7 @@ const getMap = (user, port, id) => {
   return useTemplate(mapIndexTemplate, {
     name: json.name,
     id: json.id,
-    url: settingsAll.mapUrl(port),
+    url: settingsApp.mapUrl(port),
   })
 }
 
