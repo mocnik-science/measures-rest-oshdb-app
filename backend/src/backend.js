@@ -3,7 +3,7 @@ const express = require('express')
 const fs = require('fs')
 const handlebars = require('handlebars')
 const https = require('https')
-const {join} = require('path')
+const {join, resolve} = require('path')
 const os = require('os')
 const passport = require('passport')
 const localPassportStrategy = require('passport-local').Strategy
@@ -15,7 +15,9 @@ const usermanagement = require('./usermanagement')
 
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
 const PATH_DATA = './../../measures-rest-oshdb-data'
+const PATH_DATA2 = './../measures-rest-oshdb-data'
 const PATH_USERS = `${PATH_DATA}/users`
+const PATH_USERS2 = `${PATH_DATA2}/users`
 const PATH_DBS = `${PATH_DATA}/dbs`
 const PATH_JAVA = 'java'
 const PATH_MEASURES = 'measures'
@@ -135,8 +137,15 @@ const className = id => `Measure${id.replace(/^([a-z])|-([a-z])/g, (match, p1, p
 
 // common
 const idToFilename = (id, ext='json') => `${className(id)}.${ext}`
-const idToPathUserFilename = (user, id, path='', ext='json') => pathUser(user, path, idToFilename(id, ext))
+const idToPathUserFilename = (user, id, path='', ext='json') => {
+  if (path !== '') {
+    const p = pathUser(user, path)
+    if (!fs.existsSync(p)) fs.mkdirSync(p)
+  }
+  return pathUser(user, path, idToFilename(id, ext))
+}
 const pathUser = (user, ...path) => `${PATH_USERS}/${User.getUsername(user)}/${join(...path)}`
+const pathUser2 = (user, ...path) => resolve(`${PATH_USERS2}/${User.getUsername(user)}/${join(...path)}`)
 const dirUser = (user, ...path) => {
   const p = pathUser(user, ...path)
   if (!fs.existsSync(p)) fs.mkdirSync(p)
@@ -200,7 +209,7 @@ const serviceState = user => {
   }
 }
 const serviceCheck = (user, callback) => {
-  const s = spawn(`${CMD_SERVICE_CHECK} ${User.getUsername(user)} ${pathUser(user, PATH_JAVA)}`, {cwd: PATH_SERVICE, shell: true})
+  const s = spawn(`${CMD_SERVICE_CHECK} ${User.getUsername(user)} ${pathUser2(user, PATH_JAVA)}`, {cwd: PATH_SERVICE, shell: true})
   let out = ''
   s.stdout.on('data', outCmd => out += outCmd.toString())
   s.on('close', code => {
@@ -215,7 +224,7 @@ const serviceCheck = (user, callback) => {
     callback(result)
   })
 }
-const serviceStart = (user, port) => spawnSync(`${CMD_SERVICE_START} ${User.getUsername(user)} ${dirUser(user, PATH_JAVA)} ${port}`, {cwd: PATH_SERVICE, shell: true})
+const serviceStart = (user, port) => spawnSync(`${CMD_SERVICE_START} ${User.getUsername(user)} ${pathUser2(user, PATH_JAVA)} ${port}`, {cwd: PATH_SERVICE, shell: true})
 const serviceStop = user => {
   serviceCancel = true
   spawnSync(`${CMD_SERVICE_STOP} ${User.getUsername(user)}`, {cwd: PATH_SERVICE, shell: true})
