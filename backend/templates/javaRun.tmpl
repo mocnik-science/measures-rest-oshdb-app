@@ -1,13 +1,13 @@
 package org.giscience.measures.repository;
 
 import org.giscience.measures.rest.server.RestServer;
-import org.heigit.bigspatialdata.oshdb.api.db.OSHDB_H2;
+import org.heigit.bigspatialdata.oshdb.api.db.OSHDBH2;
 
 import javax.ws.rs.core.UriBuilder;
 
 public class Run {
     public static void main(String[] args) throws Exception {
-        OSHDB_H2 oshdb = new OSHDB_H2("{{databaseFile}}").multithreading(true);
+        OSHDBH2 oshdb = new OSHDBH2("{{databaseFile}}").multithreading(true);
         RestServer restServer = new RestServer(UriBuilder.fromPath("/").scheme("http").host("0.0.0.0").port(8080).build());
         {{#each measures}}
           restServer.register(new {{className}}(oshdb));
