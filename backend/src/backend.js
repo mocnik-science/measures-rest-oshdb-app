@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser')
 const express = require('express')
-const fs = require('fs')
+const fs = require('fs-extra')
 const handlebars = require('handlebars')
 const https = require('https')
 const {join, resolve} = require('path')
@@ -176,6 +176,7 @@ const allSettings = () => fs.readdirSync(PATH_USERS)
   .filter(pathname => !pathname.startsWith('.'))
   .filter(pathname => fs.existsSync(`${PATH_USERS}/${pathname}/${FILE_SETTINGS}`))
   .map(pathname => JSON.parse(fs.readFileSync(`${PATH_USERS}/${pathname}/${FILE_SETTINGS}`)))
+const removeJavaDir = user => fs.removeSync(pathUser(user, PATH_JAVA))
 const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, PATH_JAVA, name), code)
 const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilename(user, id, PATH_JAVA, 'java'), code)
 
@@ -240,6 +241,7 @@ const useTemplate = (template, data) => {
 }
 const writeJava = user => {
   const jsons = allMeasures(user)
+  removeJavaDir(user)
   jsons.filter(json => json.enabled).map(json => {
     saveJavaMeasure(user, json.id, useTemplate(javaTemplate, {
       id: json.id,
