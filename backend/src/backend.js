@@ -188,7 +188,7 @@ const SERVICE_IS_STARTING = 'service starting ...'
 const SERVICE_IS_STARTED = 'service started'
 const SERVICE_IS_STOPPED = 'service stopped'
 const portReachable = (host, port) => (spawnSync(`${CMD_SERVICE_REACHABLE} http://${host}:${port}`, {shell: true}).status == 0)
-const serviceState = user => {
+const serviceState = (user, port) => {
   const running = [SERVICE_IS_CHECKING, SERVICE_IS_STARTING, SERVICE_IS_STARTED].includes(serviceHasState) || spawnSync(`${CMD_SERVICE_STATE} ${User.getUsername(user)}`, {cwd: PATH_SERVICE, shell: true}).status == 0
   let logs = null
   if (running) {
@@ -203,7 +203,7 @@ const serviceState = user => {
   }
   return {
     serviceRunning: running,
-    serviceState: (serviceHasState) ? serviceHasState : ((running) ? (portReachable(HOST_SERVICE, PORT_SERVICE) ? SERVICE_IS_STARTED : SERVICE_IS_STARTING) : SERVICE_IS_STOPPED),
+    serviceState: (serviceHasState) ? serviceHasState : ((running) ? (portReachable(HOST_SERVICE, port) ? SERVICE_IS_STARTED : SERVICE_IS_STARTING) : SERVICE_IS_STOPPED),
     serviceLogs: logs,
   }
 }
@@ -328,7 +328,7 @@ get('/backend/measure/new', (req, res) => {
 
 // service
 get('/backend/service/state', (req, res) => {
-  res.status(200).json(serviceState(req.user))
+  res.status(200).json(serviceState(req.user, settings(req.user).port))
 })
 get('/backend/service/check', (req, res) => {
   serviceCheck(req.user, result => res.status(200).json(result))
@@ -343,13 +343,13 @@ get('/backend/service/start', (req, res) => {
     if (!checkSuccess || serviceCancel) res.status(404).send('could not compile')
     else {
       serviceStart(req.user, settings(req.user).port)
-      res.status(200).json(serviceState(req.user))  
+      res.status(200).json(serviceState(req.user, settings(req.user).port))  
     }
   })
 })
 get('/backend/service/stop', (req, res) => {
   serviceStop(req.user)
-  res.status(200).json(serviceState(req.user))
+  res.status(200).json(serviceState(req.user, settings(req.user).port))
 })
 
 // map
