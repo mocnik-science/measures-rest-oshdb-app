@@ -167,12 +167,9 @@ const allMeasures = user => fs.readdirSync(dirUser(user, PATH_MEASURES))
   .map(filename => JSON.parse(fs.readFileSync(pathUser(user, PATH_MEASURES, filename))))
 const settings = user => {
   const filename = pathUser(user, FILE_SETTINGS)
-  if (!fs.existsSync(filename)) {
-    const port = Math.max(PORT_SERVICE, ...allSettings().map(json => json.port))
-    fs.writeFileSync(filename, JSON.stringify({
-      port: (port) ? port + 1 : PORT_SERVICE
-    }))
-  }
+  if (!fs.existsSync(filename)) fs.writeFileSync(filename, JSON.stringify({
+    port: Math.max(PORT_SERVICE, ...allSettings().map(json => json.port)) + 1
+  }))
   return JSON.parse(fs.readFileSync(filename))
 }
 const allSettings = () => fs.readdirSync(PATH_USERS)
