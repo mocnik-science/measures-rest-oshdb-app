@@ -9,7 +9,19 @@ import Title from 'grommet/components/Title'
 import SidebarState from './sidebarState'
 import pages from './../pages'
 
+import {logout} from './../backend'
+
 class SidebarNavigation extends React.Component {
+  constructor(props) {
+    super(props)
+    this.logout = this.logout.bind(this)
+  }
+  logout(e) {
+    e.preventDefault()
+    logout(() => {
+      window.location.href = '/'
+    })
+  }
   render() {
     return (
       <Sidebar colorIndex='brand'>
@@ -19,6 +31,7 @@ class SidebarNavigation extends React.Component {
         <Box flex='grow' justify='start'>
           <Menu primary={true}>
             {pages.map(page => (page.menu) ? <Anchor key={page.path} path={page.path}>{page.label}</Anchor> : [])}
+            <Anchor key="logout" path="/logout" onClick={e => this.logout(e)}>Logout</Anchor>
           </Menu>
         </Box>
         <SidebarState/>
