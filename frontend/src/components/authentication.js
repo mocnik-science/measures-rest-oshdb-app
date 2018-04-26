@@ -8,6 +8,7 @@ class Authentication extends React.Component {
     super(props)
     this.state = {
       username: null,
+      loginError: false,
     }
   }
   componentWillMount() {
@@ -28,7 +29,8 @@ class Authentication extends React.Component {
         <LoginForm
           title='OSM Measure Repository'
           usernameType='text'
-          onSubmit={e => login(e.username, e.password, d => this.setState(d))}
+          errors={(this.state.loginError) ? ['Your login credentials are wrong.  Please try again.'] : []}
+          onSubmit={e => login(e.username, e.password, d => this.setState(Object.assign(d, {loginError: true})))}
         />
       </div>)
     return (
