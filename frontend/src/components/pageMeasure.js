@@ -63,7 +63,7 @@ class PageMeasure extends React.Component {
                 <Button icon={<FontAwesomeIcon icon={faCode}/>} path={`/measure/${measure.id}/code`}/>
                 <Button icon={<FontAwesomeIcon icon={faMap}/>} onClick={e => {
                   e.preventDefault()
-                  window.open(`/map/${measure.id}`, '_blank')
+                  window.open(`/map/${measure.id}`)
                 }}/>
               </span>
             </ListItem>
