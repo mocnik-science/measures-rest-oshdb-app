@@ -9,5 +9,3 @@ ReactDOM.render(
     <App/>
   </BrowserRouter>,
   document.getElementById('content'))
-
-registerServiceWorker()
