@@ -154,7 +154,7 @@ copy the libs
 In addition, the needed vocabulary can be delivered using nginx:
 
 ```bash
-mkdir -p www/osm-data-quality.geog.uni-heidelberg.de
+mkdir -p ~/www/osm-data-quality.geog.uni-heidelberg.de
 ```
 
 Then, the data needs to be copy to this directory.  Thereafter, create a file `/etc/nginx/sites-available/osm-data-quality` (via `sudo vi`) with the following content:
@@ -185,8 +185,10 @@ sudo service nginx restart
 ## Publish the measures
 
 ```bash
-mkdir -p www/osm-measure.geog.uni-heidelberg.de
-
+mkdir -p ~/www/osm-measure.geog.uni-heidelberg.de
+cd ~/www
+find . -type d -exec chmod 0755 {} \;
+find . -type f -exec chmod 0644 {} \;
 ```
 
 Create a file `/etc/nginx/sites-available/osm-measure` (via `sudo vi`) with the following content:
