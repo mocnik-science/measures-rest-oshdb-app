@@ -1,6 +1,11 @@
 # Installation
 
-In the following, you will find a description of how to install the software on an exemplary server.  You might have to adjuste the following commands in case of your own server.
+In the following, you will find a description of how to install the software on an exemplary server.  You might have to adjuste the following commands in case of your own server.  The description includes the following software projects:
+
+* measures-rest-oshdb-app
+* measures-rest-oshdb-docker
+* vocabulary-osm-data-quality
+* vocabulary-data-quality
 
 ## Basic tools
 
