@@ -82,7 +82,7 @@ Then use `crontab -e` to add:
 ## Firewall
 
 ```batch
-sudo iptables-unblocktcp 80
+sudo iptables-unblocktcp 80 global
 sudo iptables-unblocktcp 443
 sudo iptables-unblocktcp 2999
 ```
