@@ -37,6 +37,10 @@ class PageMeasureDescription extends React.Component {
       description: '',
       descriptionError: null,
       appliesToDataset: [],
+      appliesToDatasetList: [
+        {label: 'OpenStreetMap', value: 'osmdq:OpenStreetMap'},
+        {label: 'Sweden', value: 'osmdr:sweden'},
+      ],
       appliesToDatasetError: null,
       assesses: [],
       assessesList: [
@@ -51,9 +55,9 @@ class PageMeasureDescription extends React.Component {
       typeOfResult: [],
       typeOfResultList: [],
       typeOfResultError: null,
-      minimumResult: undefined,
+      minimumResult: '',
       minimumResultError: null,
-      maximumResult: undefined,
+      maximumResult: '',
       maximumResultError: null,
       usesGrounding: [],
       usesGroundingListPerceptionBasedGrounding: [
@@ -120,10 +124,26 @@ class PageMeasureDescription extends React.Component {
   }
   save(e) {
     e.preventDefault()
+    console.log({
+      name: this.state.name,
+      description: this.state.description,
+      appliesToDataset: this.state.appliesToDataset,
+      assesses: this.state.assesses,
+      typeOfResult: this.state.typeOfResult,
+      minimumResult: this.state.minimumResult,
+      maximumResult: this.state.maximumResult,
+      usesGrounding: this.state.usesGrounding,
+      presumes: this.objectPrepareForSave(this.state.presumes),
+      validInContext: this.state.validInContext,
+      assessesElementType: this.state.assessesElementType,
+      assessesTag: this.state.assessesTag,
+      implementedBy: this.state.implementedBy,
+      documentedBy: this.state.documentedBy,
+    })
     measureSave(this.state.id, {
       name: this.state.name,
       description: this.state.description,
-      dataset: this.state.dataset,
+      appliesToDataset: this.state.appliesToDataset,
       assesses: this.state.assesses,
       typeOfResult: this.state.typeOfResult,
       minimumResult: this.state.minimumResult,
@@ -142,7 +162,7 @@ class PageMeasureDescription extends React.Component {
   }
   objectAddEmptyValue(a) {
     if (a === undefined) a = {}
-    const keys = Object.keys(a).map(x => parseInt(x))
+    const keys = Object.keys(a).map(x => parseInt(x, 10))
     if (keys.length === 0) return {0: {}}
     const jMax = Math.max(...keys)
     if (Object.values(a[jMax]).filter(x => x !== undefined).length) a[jMax + 1] = {}
@@ -177,7 +197,7 @@ class PageMeasureDescription extends React.Component {
               <textarea rows="5" type="text" name="description" value={this.state.description} onChange={e => this.setState({description: e.target.value})}/>
             </FormField>
             <FormField label='dataset' error={this.state.appliesToDatasetError}>
-              <Select options={[{label: 'OpenStreetMap', value: 'osmdq:OpenStreetMap'}, {label: 'Sweden', value: 'sweden'}]} value={this.state.appliesToDataset.label} onChange={e => this.setState({appliesToDataset: e.value})}/>
+              <Select options={this.state.appliesToDatasetList} value={this.state.appliesToDataset.label} onChange={e => this.setState({appliesToDataset: e.value})}/>
             </FormField>
             <FormField label='assessed data quality aspects' error={this.state.assessesError}>
               <Select options={this.state.assessesList} multiple={true} value={this.state.assesses} onChange={e => this.setState({assesses: e.value})}/>
@@ -186,10 +206,10 @@ class PageMeasureDescription extends React.Component {
               <Select options={this.state.typeOfResultList} value={this.state.typeOfResult} onChange={e => this.setState({typeOfResult: e.value})}/>
             </FormField>
             <FormField label='minimum result' error={this.state.minimumResultError}>
-              <NumberInput value={this.state.minimumResult} onChange={e => this.setState({minimumResult: e.value})}/>
+              <NumberInput value={this.state.minimumResult} onChange={e => this.setState({minimumResult: e.target.value})}/>
             </FormField>
             <FormField label='maximum result' error={this.state.maximumResultError}>
-              <NumberInput value={this.state.maximumResult} onChange={e => this.setState({maximumResult: e.value})}/>
+              <NumberInput value={this.state.maximumResult} onChange={e => this.setState({maximumResult: e.target.value})}/>
             </FormField>
             <FormField label='grounding' error={this.state.usesGroundingError}>
               <div style={styles.groundingLeft}>perception-based grounding</div>
@@ -204,7 +224,7 @@ class PageMeasureDescription extends React.Component {
             <FormField label='presumes' error={this.state.presumesError}>
               {
                 Object.entries(this.state.presumes).map(([j, p]) => (
-                  <FormField className="flex-row inner-formfield">
+                  <FormField key={`presumes-${j}`} className="flex-row inner-formfield">
                     <Select className="presumesForResult" options={this.state.presumesForResultList} value={p.forResult} onChange={e => this.setPresume(j, 'forResult', e.value)}/>
                     <Select className="presumesOperator" options={this.state.presumesOperatorList} value={p.operator} onChange={e => this.setPresume(j, 'operator', e.value)}/>
                     <TextInput style={{textAlign: 'right'}} className="presumesWithValue" value={p.withValue} onDOMChange={e => this.setPresume(j, 'withValue', e.target.value)} placeHolder="number"/>
