@@ -4,9 +4,14 @@
 .grommetux-login-form .grommetux-heading {
   font-size: 35px;
 }
-.pageMeasureLabel {
+.pageItemLabel {
+  color: #666;
+}
+.pageItemLabel:hover {
+  color: #000;
+}
+.pageItemLabelToggle {
   padding-left: 6px;
-  font-weight: 500!important;
 }
 .header {
   border-bottom: 1px #000 solid;
@@ -17,4 +22,60 @@
 }
 .header .grommetux-input:focus {
   border: 1px solid #fff!important;
+}
+.grommetux-control-icon-caret-down {
+  width: 14px!important;
+  padding-bottom: 4px;
+  stroke: #bbb!important;
+}
+.grommetux-number-input__add span,
+.grommetux-number-input__subtract span {
+  padding: 4px;
+}
+.grommetux-number-input__add svg,
+.grommetux-number-input__subtract svg {
+  stroke: #bbb!important;
+}
+.flex-row span.grommetux-form-field__contents {
+  flex-direction: row;
+  display: flex;
+}
+.flex-row span.grommetux-form-field__contents > first-child {
+  padding-left: 24px!important;
+}
+.flex-row span.grommetux-form-field__contents > input {
+  padding-left: 0!important;
+}
+.flex-row span.grommetux-form-field__contents .grommetux-select input {
+  padding-left: 0px;
+}
+.flex-row span.grommetux-form-field__contents .grommetux-select:first-child input {
+  padding-left: 24px;
+}
+.flex-row span.grommetux-form-field__contents .grommetux-input .grommetux-control-icon-caret-down,
+.flex-row span.grommetux-form-field__contents .grommetux-select .grommetux-control-icon-caret-down {
+  margin-right: 0!important;
+}
+.flex-row span.grommetux-form-field__contents .grommetux-input:last-child .grommetux-control-icon-caret-down,
+.flex-row span.grommetux-form-field__contents .grommetux-select:last-child .grommetux-control-icon-caret-down {
+  margin-right: 24px!important;
+}
+.select-horizontal ol li {
+  display: inline-block;
+}
+.select-horizontal ol li:last-child label,
+.select-horizontal ol li:last-child label span.grommetux-check-box__label {
+  margin-right: 0;
+}
+.presumesForResult {
+  width: 520px;
+  width: 72%;
+}
+.presumesOperator {
+  width: 90px;
+  width: 13%;
+}
+.presumesWithValue {
+  width: 120px!important;
+  width: 15%!important;
 }
