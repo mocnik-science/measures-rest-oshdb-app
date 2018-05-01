@@ -18,9 +18,7 @@ class SidebarNavigation extends React.Component {
   }
   logout(e) {
     e.preventDefault()
-    logout(() => {
-      window.location.href = '/'
-    })
+    logout(() => window.location.href = '/')
   }
   render() {
     return (

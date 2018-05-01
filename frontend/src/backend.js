@@ -49,7 +49,7 @@ const parseText = response => response.text()
 // IMPLEMENTATION
 
 export const login = (username, password, callback) => fetchWithCallback(`/backend/login?username=${username}&password=${password}`)(callback)
-export const logout = callback => fetchWithCallback('/backend/logout')(callback)
+export const logout = fetchWithCallback('/backend/logout')
 export const user = fetchWithCallback('/backend/user')
 
 export const contexts = fetchWithCallback('/backend/contexts')
