@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import LoginForm from 'grommet/components/LoginForm'
 
@@ -7,12 +8,17 @@ class Authentication extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      username: null,
+      user: null,
       loginError: false,
     }
   }
+  getChildContext() {
+    return {
+      user: this.state.user,
+    }
+  }
   componentWillMount() {
-    user(d => this.setState(d))
+    user(response => this.setState({user: response}))
   }
   render() {
     const loginMask = (
@@ -30,15 +36,21 @@ class Authentication extends React.Component {
           title='OSM Measure Repository'
           usernameType='text'
           errors={(this.state.loginError) ? ['Your login credentials are wrong.  Please try again.'] : []}
-          onSubmit={e => login(e.username, e.password, d => this.setState(Object.assign(d, {loginError: true})))}
+          onSubmit={e => login(e.username, e.password, response => this.setState({
+            loginError: (response === undefined || response.username === null),
+            user: response,
+          }))}
         />
       </div>)
     return (
       <div>
-        {this.state.username ? this.props.children : loginMask}
+        {this.state.user && this.state.user.username ? this.props.children : loginMask}
       </div>
     )
   }
+}
+Authentication.childContextTypes = {
+  user: PropTypes.object,
 }
 
 export default Authentication
