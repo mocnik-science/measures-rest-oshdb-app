@@ -267,23 +267,7 @@ const getMap = (user, port, id) => {
   })
 }
 
-// ROUTES
-
-// authenticate
-app.get('/backend/login', (req, res, next) => passport.authenticate(['local', 'ldapauth'], (err, user, info) => {
-  if (err) res.status(200).json({username: null})
-  else req.logIn(user, err => {
-    if (err) res.status(200).json({username: null})
-    else res.status(200).json(User.getUserinfo(user))
-  })
-})(req, res, next))
-app.get('/backend/user', (req, res) => res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null}))
-app.get('/backend/logout', (req, res) => {
-  req.logout()
-  res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null})
-})
-
-// item
+// ITEMS
 const getItems = (path, item) => (req, res) => {
   const items = {}
   for (const json of allItems(path, req.user)) items[json.id] = json
@@ -325,6 +309,22 @@ const getItemNew = (path, item, data) => (req, res) => {
   for (const json of allItems(path, req.user)) items[json.id] = json
   res.status(200).json({[`${item}s`]: items})
 }
+
+// ROUTES
+
+// authenticate
+app.get('/backend/login', (req, res, next) => passport.authenticate(['local', 'ldapauth'], (err, user, info) => {
+  if (err) res.status(200).json({username: null})
+  else req.logIn(user, err => {
+    if (err) res.status(200).json({username: null})
+    else res.status(200).json(User.getUserinfo(user))
+  })
+})(req, res, next))
+app.get('/backend/user', (req, res) => res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null}))
+app.get('/backend/logout', (req, res) => {
+  req.logout()
+  res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null})
+})
 
 // context
 get('/backend/contexts', getItems(PATH_CONTEXTS, 'context'))
