@@ -2,6 +2,8 @@
 
 **Further information will come soon.**
 
+What is a measure?
+
 ### Example 1
 
 ```java
@@ -20,3 +22,7 @@ Double x = count()
 x *= 3;
 return x / 2;
 ```
+
+### Example 3
+
+### Example 4

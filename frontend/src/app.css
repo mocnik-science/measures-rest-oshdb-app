@@ -1,33 +1,7 @@
 .noScroll {
   overflow: hidden!important;
 }
-.subpage {
-  height: 30px!important;
-  padding-top: 2px!important;
-  padding-left: 40px!important;
-}
-.grommetux-login-form .grommetux-heading {
-  font-size: 35px;
-}
-.pageItemLabel {
-  color: #666;
-}
-.pageItemLabel:hover {
-  color: #000;
-}
-.pageItemLabelToggle {
-  padding-left: 6px;
-}
-.header {
-  border-bottom: 1px #000 solid;
-}
-.header .grommetux-input {
-  font-size: 19px!important;
-  border: none;
-}
-.header .grommetux-input:focus {
-  border: 1px solid #fff!important;
-}
+/* forms */
 .grommetux-control-icon-caret-down {
   width: 14px!important;
   padding-bottom: 4px;
@@ -72,6 +46,42 @@
 .select-horizontal ol li:last-child label span.grommetux-check-box__label {
   margin-right: 0;
 }
+/* menu */
+.hasSubpage {
+  height: 36px;
+}
+.subpage {
+  font-size: 86%;
+  height: 26px!important;
+  padding-top: 5px!important;
+  padding-left: 40px!important;
+}
+/* login */
+.grommetux-login-form .grommetux-heading {
+  font-size: 35px;
+}
+/* item */
+.pageItemLabel {
+  color: #666;
+}
+.pageItemLabel:hover {
+  color: #000;
+}
+.pageItemLabelToggle {
+  padding-left: 6px;
+}
+/* header */
+.header {
+  border-bottom: 1px #000 solid;
+}
+.header .grommetux-input {
+  font-size: 19px!important;
+  border: none;
+}
+.header .grommetux-input:focus {
+  border: 1px solid #fff!important;
+}
+/* measure */
 .presumesForResult {
   width: 520px;
   width: 72%;
@@ -83,4 +93,8 @@
 .presumesWithValue {
   width: 120px!important;
   width: 15%!important;
+}
+/* help */
+.help div > * {
+  max-width: 800px;
 }

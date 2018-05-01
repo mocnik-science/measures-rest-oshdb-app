@@ -14,7 +14,7 @@ class PageHelp extends React.Component {
   }
   render() {
     return (
-      <Box pad='large' align='center'>
+      <Box pad='large' align='center' className='help'>
         <Markdown content={this.state.text}/>
       </Box>
     )

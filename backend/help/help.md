@@ -1,8 +1,12 @@
-## Getting started
+## Help
+
+What is the repository?
+
+### Related papers
 
 **Further information will come soon.**
 
-## Author
+### Author
 
 This software is written and maintained by Franz-Benjamin Mocnik, <mocnik@uni-heidelberg.de>, GIScience Research Group, Institute of Geography, Heidelberg University.
 
@@ -10,6 +14,6 @@ The development has been supported by the DFG project *A framework for measuring
 
 (c) by Heidelberg University, 2017–2018.
 
-## License
+### License
 
 The code is licensed under the [MIT license](https://github.com/giscience/measures-rest/blob/master/LICENSE.md).
