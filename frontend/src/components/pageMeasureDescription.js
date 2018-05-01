@@ -108,9 +108,13 @@ class PageMeasureDescription extends React.Component {
     }
     this.save = this.save.bind(this)
     this.objectAddEmptyValue = this.objectAddEmptyValue.bind(this)
-    this.objectPrepareForSave = this.objectPrepareForSave.bind(this)
+    this.objectToSave = this.objectToSave.bind(this)
+    this.floatFromSave = this.floatFromSave.bind(this)
+    this.floatToSave = this.floatToSave.bind(this)
     this.setPresume = this.setPresume.bind(this)
     measure(this.props.match.params.id, response => {
+      response.minimumResult = this.floatFromSave(response.minimumResult)
+      response.maximumResult = this.floatFromSave(response.maximumResult)
       response.presumes = this.objectAddEmptyValue(response.presumes)
       this.setState(response)
     })
@@ -124,32 +128,16 @@ class PageMeasureDescription extends React.Component {
   }
   save(e) {
     e.preventDefault()
-    console.log({
-      name: this.state.name,
-      description: this.state.description,
-      appliesToDataset: this.state.appliesToDataset,
-      assesses: this.state.assesses,
-      typeOfResult: this.state.typeOfResult,
-      minimumResult: this.state.minimumResult,
-      maximumResult: this.state.maximumResult,
-      usesGrounding: this.state.usesGrounding,
-      presumes: this.objectPrepareForSave(this.state.presumes),
-      validInContext: this.state.validInContext,
-      assessesElementType: this.state.assessesElementType,
-      assessesTag: this.state.assessesTag,
-      implementedBy: this.state.implementedBy,
-      documentedBy: this.state.documentedBy,
-    })
     measureSave(this.state.id, {
       name: this.state.name,
       description: this.state.description,
       appliesToDataset: this.state.appliesToDataset,
       assesses: this.state.assesses,
       typeOfResult: this.state.typeOfResult,
-      minimumResult: this.state.minimumResult,
-      maximumResult: this.state.maximumResult,
+      minimumResult: this.floatToSave(this.state.minimumResult),
+      maximumResult: this.floatToSave(this.state.maximumResult),
       usesGrounding: this.state.usesGrounding,
-      presumes: this.objectPrepareForSave(this.state.presumes),
+      presumes: this.objectToSave(this.state.presumes),
       validInContext: this.state.validInContext,
       assessesElementType: this.state.assessesElementType,
       assessesTag: this.state.assessesTag,
@@ -168,7 +156,7 @@ class PageMeasureDescription extends React.Component {
     if (Object.values(a[jMax]).filter(x => x !== undefined).length) a[jMax + 1] = {}
     return a
   }
-  objectPrepareForSave(a) {
+  objectToSave(a) {
     const rs = []
     for (const x of Object.values(a)) {
       const r = {}
@@ -176,6 +164,12 @@ class PageMeasureDescription extends React.Component {
       if (Object.keys(r).length) rs.push(r)
     }
     return rs
+  }
+  floatFromSave(x) {
+    return x.toString()
+  }
+  floatToSave(x) {
+    return parseFloat(x)
   }
   setPresume(j, k, v) {
     const presumes = Object.assign({}, this.state.presumes)
