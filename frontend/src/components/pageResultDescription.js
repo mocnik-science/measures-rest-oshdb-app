@@ -22,22 +22,18 @@ class PageResultDescription extends React.Component {
       description: '',
       descriptionError: null,
       documentedBy: [],
-      documentedByList: [
-        {label: 'Amin Mobasheri', value: 'osmmrh:aminMobasheri'},
-        {label: 'Christina Ludwig', value: 'osmmrh:christinaLudwig'},
-        {label: 'Franz-Benjamin Mocnik', value: 'osmmrh:franzBenjaminMocnik'},
-        {label: 'Leoni Möske', value: 'osmmrh:leoniMoeske'},
-        {label: 'Yajie Liang', value: 'osmmrh:yajieLiang'},
-      ],
+      documentedByList: [],
       documentedByError: null,
     }
     this.save = this.save.bind(this)
-    result(this.props.match.params.id)(response => this.setState(response))
+    result(this.props.match.params.id, response => this.setState(response))
   }
   save(e) {
     e.preventDefault()
-    resultSave(this.state.id)({
+    resultSave(this.state.id, {
       name: this.state.name,
+      description: this.state.description,
+      documentedBy: this.state.documentedBy,
     }, response => {
       if (response.success) this.props.history.push('/result')
       else this.setState(response.messages)

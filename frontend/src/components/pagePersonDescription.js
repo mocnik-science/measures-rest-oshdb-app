@@ -7,7 +7,6 @@ import FormField from 'grommet/components/FormField'
 import FormFields from 'grommet/components/FormFields'
 import Header from 'grommet/components/Header'
 import Heading from 'grommet/components/Heading'
-import Select from './select'
 import TextInput from 'grommet/components/TextInput'
 
 import {person, personSave} from './../backend'
@@ -19,16 +18,17 @@ class PagePersonDescription extends React.Component {
       id: null,
       name: '',
       nameError: null,
-      description: '',
-      descriptionError: null,
+      homepage: '',
+      homepageError: null,
     }
     this.save = this.save.bind(this)
-    person(this.props.match.params.id)(response => this.setState(response))
+    person(this.props.match.params.id, response => this.setState(response))
   }
   save(e) {
     e.preventDefault()
-    personSave(this.state.id)({
+    personSave(this.state.id, {
       name: this.state.name,
+      homepage: this.state.homepage,
     }, response => {
       if (response.success) this.props.history.push('/person')
       else this.setState(response.messages)
@@ -42,11 +42,11 @@ class PagePersonDescription extends React.Component {
             <Heading>{this.state.name}</Heading>
           </Header>
           <FormFields>
-            <FormField label='name' error={this.state.nameError}>
+            <FormField label='forename and surname' error={this.state.nameError}>
               <TextInput value={this.state.name} onDOMChange={e => this.setState({name: e.target.value})}/>
             </FormField>
-            <FormField label='description (human readable)' error={this.state.descriptionError}>
-              <textarea rows="5" type="text" name="description" value={this.state.description} onChange={e => this.setState({description: e.target.value})}/>
+            <FormField label='homepage' error={this.state.homepageError}>
+              <TextInput value={this.state.homepage} onDOMChange={e => this.setState({homepage: e.target.value})}/>
             </FormField>
           </FormFields>
           <Footer pad={{'vertical': 'medium', 'display': 'inline-block'}}>

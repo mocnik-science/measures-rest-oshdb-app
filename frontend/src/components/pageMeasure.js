@@ -16,7 +16,7 @@ import faMap from '@fortawesome/fontawesome-free-solid/faMap'
 import faPlusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
 import faStethoscope from '@fortawesome/fontawesome-free-solid/faStethoscope'
 
-import {measures, serviceCheck, measureSave, measureNew} from './../backend'
+import {measures, measureSave, measureNew, serviceCheck} from './../backend'
 
 class PageMeasure extends React.Component {
   constructor(props) {

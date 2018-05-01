@@ -11,7 +11,8 @@ import NumberInput from 'grommet/components/NumberInput'
 import Select from './select'
 import TextInput from 'grommet/components/TextInput'
 
-import {measure, measureSave} from './../backend'
+import {measure, measureSave, items} from './../backend'
+import {itemsToList} from './../tools'
 
 const styles = {
   groundingLeft: {
@@ -116,14 +117,36 @@ class PageMeasureDescription extends React.Component {
       documentedByError: null,
     }
     this.save = this.save.bind(this)
-    measure(this.props.match.params.id)(response => this.setState(response))
+    measure(this.props.match.params.id, response => this.setState(response))
+    items(response => this.setState({
+      typeOfResultList: itemsToList(response.results),
+      presumesForResultList: itemsToList(response.results),
+      validInContextList: itemsToList(response.contexts),
+      implementedByList: itemsToList(response.persons),
+      documentedByList: itemsToList(response.persons),
+    }))
   }
   save(e) {
     e.preventDefault()
     console.log(this.state)
     /*
-    measureSave(this.state.id)({
+    measureSave(this.state.id, {
       name: this.state.name,
+      description: this.state.description,
+      dataset: this.state.dataset,
+      assesses: this.state.assesses,
+      typeOfResult: this.state.typeOfResult,
+      minimumResult: this.state.minimumResult,
+      maximumResult: this.state.maximumResult,
+      usesGrounding: this.state.usesGrounding,
+      presumesForResult: this.state.presumesForResult,
+      presumesOperator: this.state.presumesOperator,
+      presumesWithValue: this.state.presumesWithValue,
+      validInContext: this.state.validInContext,
+      assessesElementType: this.state.assessesElementType,
+      assessesTag: this.state.assessesTag,
+      implementedBy: this.state.implementedBy,
+      documentedBy: this.state.documentedBy,
     }, response => {
       if (response.success) this.props.history.push('/measure')
       else this.setState(response.messages)

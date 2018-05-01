@@ -303,7 +303,6 @@ const getItemNew = (path, item, data) => (req, res) => {
   saveItem(path, req.user, name2id(name), Object.assign({
     id: name2id(name),
     name: name,
-    enabled: false,
   }, data))
   const items = {}
   for (const json of allItems(path, req.user)) items[json.id] = json
@@ -336,7 +335,7 @@ get('/backend/context/new', getItemNew(PATH_CONTEXTS, 'context', {}))
 get('/backend/measures', getItems(PATH_MEASURES, 'measure'))
 get('/backend/measure/id/:id', getItem(PATH_MEASURES, 'measure'))
 post('/backend/measure/id/:id', postItem(PATH_MEASURES, 'measure'))
-get('/backend/measure/new', getItemNew(PATH_MEASURES, 'measure', {code: ''}))
+get('/backend/measure/new', getItemNew(PATH_MEASURES, 'measure', {code: '', enabled: false}))
 
 // person
 get('/backend/persons', getItems(PATH_PERSONS, 'person'))
@@ -349,6 +348,22 @@ get('/backend/results', getItems(PATH_RESULTS, 'result'))
 get('/backend/result/id/:id', getItem(PATH_RESULTS, 'result'))
 post('/backend/result/id/:id', postItem(PATH_RESULTS, 'result'))
 get('/backend/result/new', getItemNew(PATH_RESULTS, 'result', {}))
+
+// metadataItems
+get('/backend/items', (req, res) => {
+  const data = {}
+  for (const i of [
+    {path: PATH_CONTEXTS, item: 'context'},
+    {path: PATH_MEASURES, item: 'measure'},
+    {path: PATH_PERSONS, item: 'person'},
+    {path: PATH_RESULTS, item: 'result'},
+  ]) {
+    const items = []
+    for (const json of allItems(i.path, req.user)) items.push({id: json.id, name: json.name})
+    data[`${i.item}s`] = items
+  }
+  res.status(200).json(data)
+})
 
 // service
 get('/backend/service/state', (req, res) => {
