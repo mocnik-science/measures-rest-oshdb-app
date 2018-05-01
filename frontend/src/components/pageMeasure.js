@@ -34,7 +34,7 @@ class PageMeasure extends React.Component {
     const measures = this.state.measures
     measures[id].enabled = value
     this.setState({measures: measures})
-    measureSave(id)({enabled: value}, () => {})
+    measureSave(id, {enabled: value}, () => {})
   }
   renderErrors(id) {
     if (this.state.errors === null || this.state.errors[id] === undefined) return []
