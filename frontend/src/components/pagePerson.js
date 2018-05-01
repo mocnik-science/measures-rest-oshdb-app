@@ -8,6 +8,7 @@ import ListItem from 'grommet/components/ListItem'
 import TextInput from 'grommet/components/TextInput'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faEdit from '@fortawesome/fontawesome-free-solid/faEdit'
+import faHome from '@fortawesome/fontawesome-free-solid/faHome'
 import faPlusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
 
 import {persons, personNew} from './../backend'
@@ -38,9 +39,9 @@ class PagePerson extends React.Component {
               </span>
               <span className='secondary'>
                 <Button icon={<FontAwesomeIcon icon={faEdit}/>} path={`/person/${person.id}/description`}/>
-                <Button icon={<FontAwesomeIcon icon={faEdit}/>} onClick={e => {
+                <Button icon={<FontAwesomeIcon icon={faHome}/>} onClick={e => {
                   e.preventDefault()
-                  window.open(`/map/${person.id}`)
+                  window.open(`${person.homepage}`)
                 }}/>
               </span>
             </ListItem>

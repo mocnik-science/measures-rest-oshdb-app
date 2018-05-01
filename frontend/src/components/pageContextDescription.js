@@ -10,7 +10,8 @@ import Heading from 'grommet/components/Heading'
 import Select from './select'
 import TextInput from 'grommet/components/TextInput'
 
-import {context, contextSave} from './../backend'
+import {context, contextSave, items} from './../backend'
+import {itemsToList} from './../tools'
 
 class PageContextDescription extends React.Component {
   constructor(props) {
@@ -27,6 +28,9 @@ class PageContextDescription extends React.Component {
     }
     this.save = this.save.bind(this)
     context(this.props.match.params.id, response => this.setState(response))
+    items(response => this.setState({
+      documentedByList: itemsToList(response.persons),
+    }))
   }
   save(e) {
     e.preventDefault()
