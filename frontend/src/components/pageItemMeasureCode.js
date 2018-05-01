@@ -48,12 +48,12 @@ class PageMeasureCode extends React.Component {
     this.editorDidMount = this.editorDidMount.bind(this)
     this.onChange = this.onChange.bind(this)
     this.save = this.save.bind(this)
-    measure(this.props.match.params.id)(response => this.setState(response))
   }
-  componentWillMount() {
+  componentDidMount() {
+    measure(this.props.match.params.id, response => this.setState(response))
     this.saveService = setInterval(this.save, this.props.autoSaveInterval)
   }
-  componentWillUnmount() {
+  componentDidUnmount() {
     clearInterval(this.saveService)
   }
   editorWillMount(monaco) {
@@ -80,7 +80,7 @@ class PageMeasureCode extends React.Component {
     }
     if (!force && lastSavedTry !== null) return
     this.setState({lastSavedTry: moment(), buttonLabel: 'saving ...'})
-    measureSave(this.state.id)({code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
+    measureSave(this.state.id, {code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
   }
   render() {
     const code = this.state.code

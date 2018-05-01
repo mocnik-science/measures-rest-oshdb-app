@@ -21,6 +21,8 @@ class PageDashboard extends React.Component {
       persons: [],
       results: [],
     }
+  }
+  componentDidMount() {
     items(response => this.setState(response))
   }
   render() {

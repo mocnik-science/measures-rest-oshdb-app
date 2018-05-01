@@ -271,7 +271,7 @@ const getMap = (user, port, id) => {
 const getItems = (path, item) => (req, res) => {
   const items = {}
   for (const json of allItems(path, req.user)) items[json.id] = json
-  res.status(200).json({[`${item}s`]: items})
+  res.status(200).json({items: items})
 }
 const getItem = (path, item) => (req, res) => {
   const json = itemForUser(path, req.user, req.params.id)
@@ -306,7 +306,7 @@ const getItemNew = (path, item, data) => (req, res) => {
   }, data))
   const items = {}
   for (const json of allItems(path, req.user)) items[json.id] = json
-  res.status(200).json({[`${item}s`]: items})
+  res.status(200).json({items: items})
 }
 
 // ROUTES
