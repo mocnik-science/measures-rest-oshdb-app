@@ -15,6 +15,9 @@
 .grommetux-number-input__subtract svg {
   stroke: #bbb!important;
 }
+.inner-formfield {
+  margin-top: 0!important;
+}
 .flex-row span.grommetux-form-field__contents {
   flex-direction: row;
   display: flex;

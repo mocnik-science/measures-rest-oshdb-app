@@ -49,7 +49,7 @@ class PageMeasureDescription extends React.Component {
       ],
       assessesError: null,
       typeOfResult: [],
-      typeOfResultList: [{label: 'Result 1', value: 'result1'}, {label: 'Result 2', value: 'result2'}],
+      typeOfResultList: [],
       typeOfResultError: null,
       minimumResult: undefined,
       minimumResultError: null,
@@ -72,9 +72,8 @@ class PageMeasureDescription extends React.Component {
         {label: 'extrinsic', value: 'dq:dq:extrinsic|dq:groundingInRulesPatternsKnowledge'},
       ],
       usesGroundingError: null,
-      presumesForResult: [],
-      presumesForResultList: [{label:'Test Measure', value: 'osmmrh:testMeasure'}, {label:'Another Measure', value: 'osmmrh:anotherMeasure'}],
-      presumesOperator: [],
+      presumes: {},
+      presumesForResultList: [],
       presumesOperatorList: [
         {label:'<', value: 'dq:less'},
         {label:'≤', value: 'dq:lessOrEqual'},
@@ -82,10 +81,9 @@ class PageMeasureDescription extends React.Component {
         {label:'≥', value: 'dq:greaterOrEqual'},
         {label:'>', value: 'dq:greater'},
       ],
-      presumesWithValue: undefined,
       presumesError: null,
       validInContext: [],
-      validInContextList: [{label:'Some context', value: 'osmmrh:someContext'}, {label:'Another Context', value: 'osmmrh:anotherContext'}],
+      validInContextList: [],
       validInContextError: null,
       assessesElementType: [],
       assessesElementTypeList: [
@@ -98,26 +96,20 @@ class PageMeasureDescription extends React.Component {
       assessesTag: '',
       assessesTagError: null,
       implementedBy: [],
-      implementedByList: [
-        {label: 'Amin Mobasheri', value: 'osmmrh:aminMobasheri'},
-        {label: 'Christina Ludwig', value: 'osmmrh:christinaLudwig'},
-        {label: 'Franz-Benjamin Mocnik', value: 'osmmrh:franzBenjaminMocnik'},
-        {label: 'Leoni Möske', value: 'osmmrh:leoniMoeske'},
-        {label: 'Yajie Liang', value: 'osmmrh:yajieLiang'},
-      ],
+      implementedByList: [],
       implementedByError: null,
       documentedBy: [],
-      documentedByList: [
-        {label: 'Amin Mobasheri', value: 'osmmrh:aminMobasheri'},
-        {label: 'Christina Ludwig', value: 'osmmrh:christinaLudwig'},
-        {label: 'Franz-Benjamin Mocnik', value: 'osmmrh:franzBenjaminMocnik'},
-        {label: 'Leoni Möske', value: 'osmmrh:leoniMoeske'},
-        {label: 'Yajie Liang', value: 'osmmrh:yajieLiang'},
-      ],
+      documentedByList: [],
       documentedByError: null,
     }
     this.save = this.save.bind(this)
-    measure(this.props.match.params.id, response => this.setState(response))
+    this.objectAddEmptyValue = this.objectAddEmptyValue.bind(this)
+    this.objectPrepareForSave = this.objectPrepareForSave.bind(this)
+    this.setPresume = this.setPresume.bind(this)
+    measure(this.props.match.params.id, response => {
+      response.presumes = this.objectAddEmptyValue(response.presumes)
+      this.setState(response)
+    })
     items(response => this.setState({
       typeOfResultList: itemsToList(response.results),
       presumesForResultList: itemsToList(response.results),
@@ -128,8 +120,6 @@ class PageMeasureDescription extends React.Component {
   }
   save(e) {
     e.preventDefault()
-    console.log(this.state)
-    /*
     measureSave(this.state.id, {
       name: this.state.name,
       description: this.state.description,
@@ -139,9 +129,7 @@ class PageMeasureDescription extends React.Component {
       minimumResult: this.state.minimumResult,
       maximumResult: this.state.maximumResult,
       usesGrounding: this.state.usesGrounding,
-      presumesForResult: this.state.presumesForResult,
-      presumesOperator: this.state.presumesOperator,
-      presumesWithValue: this.state.presumesWithValue,
+      presumes: this.objectPrepareForSave(this.state.presumes),
       validInContext: this.state.validInContext,
       assessesElementType: this.state.assessesElementType,
       assessesTag: this.state.assessesTag,
@@ -151,7 +139,28 @@ class PageMeasureDescription extends React.Component {
       if (response.success) this.props.history.push('/measure')
       else this.setState(response.messages)
     })
-    */
+  }
+  objectAddEmptyValue(a) {
+    if (a === undefined) a = {}
+    const keys = Object.keys(a).map(x => parseInt(x))
+    if (keys.length === 0) return {0: {}}
+    const jMax = Math.max(...keys)
+    if (Object.values(a[jMax]).filter(x => x !== undefined).length) a[jMax + 1] = {}
+    return a
+  }
+  objectPrepareForSave(a) {
+    const rs = []
+    for (const x of Object.values(a)) {
+      const r = {}
+      for (const [k, v] of Object.entries(x)) if (v !== undefined) r[k] = v
+      if (Object.keys(r).length) rs.push(r)
+    }
+    return rs
+  }
+  setPresume(j, k, v) {
+    const presumes = Object.assign({}, this.state.presumes)
+    presumes[j][k] = v
+    this.setState({presumes: this.objectAddEmptyValue(presumes)})
   }
   render() {
     return (
@@ -192,10 +201,16 @@ class PageMeasureDescription extends React.Component {
               <div style={styles.groundingLeft}>grounding in rules/patterns/knowledge</div>
               <Select style={styles.groundingRight} className="select-horizontal" options={this.state.usesGroundingListGroundingInRulesPatternsKnowledge} inline={true} multiple={true} value={this.state.usesGrounding} onChange={e => this.setState({usesGrounding: e.value})}/>
             </FormField>
-            <FormField className="flex-row" label='presumes' error={this.state.presumesError}>
-              <Select className="presumesForResult" options={this.state.presumesForResultList} value={this.state.presumesForResult} onChange={e => this.setState({presumesForResult: e.value})}/>
-              <Select className="presumesOperator" options={this.state.presumesOperatorList} value={this.state.presumesOperator} onChange={e => this.setState({presumesOperator: e.value})}/>
-              <TextInput style={{textAlign: 'right'}} className="presumesWithValue" value={this.state.presumesWithValue} onDOMChange={e => this.setState({presumesWithValue: e.target.value})} placeHolder="number"/>
+            <FormField label='presumes' error={this.state.presumesError}>
+              {
+                Object.entries(this.state.presumes).map(([j, p]) => (
+                  <FormField className="flex-row inner-formfield">
+                    <Select className="presumesForResult" options={this.state.presumesForResultList} value={p.forResult} onChange={e => this.setPresume(j, 'forResult', e.value)}/>
+                    <Select className="presumesOperator" options={this.state.presumesOperatorList} value={p.operator} onChange={e => this.setPresume(j, 'operator', e.value)}/>
+                    <TextInput style={{textAlign: 'right'}} className="presumesWithValue" value={p.withValue} onDOMChange={e => this.setPresume(j, 'withValue', e.target.value)} placeHolder="number"/>
+                  </FormField>
+                ))
+              }
             </FormField>
             <FormField label='valid in context' error={this.state.validInContextError}>
               <Select options={this.state.validInContextList} multiple={true} value={this.state.validInContext} onChange={e => this.setState({validInContext: e.value})}/>
