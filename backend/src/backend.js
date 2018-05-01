@@ -59,7 +59,7 @@ const get = (route, ...xs) => app.get(route, requireAuth, ...xs)
 const post = (route, ...xs) => app.post(route, requireAuth, ...xs)
 
 passport.use(new localPassportStrategy((username, password, done) => {
-  const usernames = settingsApp.localUsers()
+  const usernames = settingsApp.localUsers
   if (usernames[username] !== undefined && usernames[username] === password) {
     const u = User.fromLocal(username)
     if (!fs.existsSync(`${PATH_USERS}/${u.username()}`)) fs.mkdirSync(`${PATH_USERS}/${u.username()}`)
@@ -67,7 +67,7 @@ passport.use(new localPassportStrategy((username, password, done) => {
   }
   return done(null, false, {})
 }))
-passport.use(new ldapStrategy(settingsApp.ldapOptions(), (user, done) => {
+if (settingsApp.ldapOptions) passport.use(new ldapStrategy(settingsApp.ldapOptions, (user, done) => {
   const u = User.fromLdap(user)
   if (!fs.existsSync(`${PATH_USERS}/${u.username()}`)) fs.mkdirSync(`${PATH_USERS}/${u.username()}`)
   done(null, u)
@@ -99,17 +99,19 @@ class User {
   
   static fromLocal(x) {
     const u = new this;
-    u._userinfo = {username: x}
+    u._userinfo = {username: x, admin: settingsApp.admins.includes(x)}
     return u
   }
   
   static fromLdap(x) {
     const u = new this;
-    u._userinfo = {}
-    u._userinfo.username = x.cn
-    u._userinfo.fullname = x.displayName
-    u._userinfo.surname = x.sn
-    u._userinfo.forename = x.givenName
+    u._userinfo = {
+      username: x.cn,
+      fullname: x.displayName,
+      surname: x.sn,
+      forename: x.givenName,
+      admin: settingsApp.admins.includes(x.cn),
+    }
     return u
   }
   
@@ -312,7 +314,7 @@ const getItemNew = (path, item, data) => (req, res) => {
 // ROUTES
 
 // authenticate
-app.get('/backend/login', (req, res, next) => passport.authenticate(['local', 'ldapauth'], (err, user, info) => {
+app.get('/backend/login', (req, res, next) => passport.authenticate(['local', (settingsApp.ldapOptions) ? 'ldapauth' : null], (err, user, info) => {
   if (err) res.status(200).json({username: null})
   else req.logIn(user, err => {
     if (err) res.status(200).json({username: null})

@@ -1,8 +1,11 @@
 module.exports = {
-  localUsers: () => ({
+  localUsers: {
     // 'user': 'password',
-  }),
-  ldapOptions: () => ({
+  },
+  admins: [
+    // 'user',
+  ],
+  ldapOptions: {
     server: {
       url: 'ldap://***:389',
       bindDN: '',
@@ -10,6 +13,6 @@ module.exports = {
       searchBase: '',
       searchFilter: '...(user={{username}})...',
     },
-  }),
+  },
   mapUrl: port => `http://\${window.location.hostname}:{{port}}`,
 },
