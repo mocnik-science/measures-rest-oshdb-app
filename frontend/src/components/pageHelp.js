@@ -2,7 +2,7 @@ import React from 'react'
 import Box from 'grommet/components/Box'
 import Markdown from 'grommet/components/Markdown'
 
-import {manual} from './../backend'
+import {help} from './../backend'
 
 class PageHelp extends React.Component {
   constructor(props) {
@@ -10,7 +10,7 @@ class PageHelp extends React.Component {
     this.state = {
       text: '',
     }
-    manual(response => this.setState({text: response}))
+    help(window.location.pathname.split('/').pop(), response => this.setState({text: response}))
   }
   render() {
     return (

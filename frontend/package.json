@@ -15,7 +15,7 @@
     "/static/libs": {
       "target": "http://localhost:3001"
     },
-    "/static/manual": {
+    "/static/help": {
       "target": "http://localhost:3001"
     }
   },

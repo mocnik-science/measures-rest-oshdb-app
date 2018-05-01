@@ -1,6 +1,11 @@
 .noScroll {
   overflow: hidden!important;
 }
+.subpage {
+  height: 30px!important;
+  padding-top: 2px!important;
+  padding-left: 40px!important;
+}
 .grommetux-login-form .grommetux-heading {
   font-size: 35px;
 }

@@ -28,7 +28,7 @@ class SidebarNavigation extends React.Component {
         </Header>
         <Box flex='grow' justify='start'>
           <Menu primary={true}>
-            {pages.map(page => (page.menu) ? <Anchor key={page.path} path={page.path}>{page.label}</Anchor> : [])}
+            {pages.map(page => (page.menu) ? <Anchor key={page.path} path={page.path} className={(page.menu === true) ? '' : 'subpage'}>{page.label}</Anchor> : [])}
             <Anchor key="logout" path="/logout" onClick={e => this.logout(e)}>Logout</Anchor>
           </Menu>
         </Box>

@@ -385,7 +385,7 @@ get('/map/:id', (req, res) => {
 // static
 app.use('/static/vs', express.static('./../frontend/node_modules/monaco-editor/min/vs'))
 app.use('/static/libs', express.static('./../backend/libs'))
-app.use('/static/manual', express.static('./../backend/manual'))
+app.use('/static/help', express.static('./../backend/help'))
 
 if (!DEVELOPMENT) {
   app.use('/', express.static('./../frontend/build'))
