@@ -55,7 +55,7 @@ class PageMeasure extends React.Component {
           {Object.values(this.state.measures).map(measure => (this.state.search !== '' && (!~measure.name.toLowerCase().indexOf(this.state.search.toLowerCase()))) ? [] :
             <ListItem key={measure.id} justify='between'>
               <span className='primary'>
-                <CheckBox toggle={true} label={<Label className='pageMeasureLabel'>{measure.name}</Label>} checked={this.state.measures[measure.id].enabled} onChange={e => this.saveEnabled(measure.id, e.target.checked)}/>
+                <CheckBox toggle={true} label={<Label className='pageItemLabelToggle'>{measure.name}</Label>} checked={this.state.measures[measure.id].enabled} onChange={e => this.saveEnabled(measure.id, e.target.checked)}/>
               </span>
               <span className='secondary'>
                 {this.renderErrors(measure.id)}

@@ -326,11 +326,29 @@ const getItemNew = (path, item, data) => (req, res) => {
   res.status(200).json({[`${item}s`]: items})
 }
 
+// context
+get('/backend/contexts', getItems(PATH_CONTEXTS, 'context'))
+get('/backend/context/id/:id', getItem(PATH_CONTEXTS, 'context'))
+post('/backend/context/id/:id', postItem(PATH_CONTEXTS, 'context'))
+get('/backend/context/new', getItemNew(PATH_CONTEXTS, 'context', {}))
+
 // measure
 get('/backend/measures', getItems(PATH_MEASURES, 'measure'))
 get('/backend/measure/id/:id', getItem(PATH_MEASURES, 'measure'))
 post('/backend/measure/id/:id', postItem(PATH_MEASURES, 'measure'))
 get('/backend/measure/new', getItemNew(PATH_MEASURES, 'measure', {code: ''}))
+
+// person
+get('/backend/persons', getItems(PATH_PERSONS, 'person'))
+get('/backend/person/id/:id', getItem(PATH_PERSONS, 'person'))
+post('/backend/person/id/:id', postItem(PATH_PERSONS, 'person'))
+get('/backend/person/new', getItemNew(PATH_PERSONS, 'person', {}))
+
+// result
+get('/backend/results', getItems(PATH_RESULTS, 'result'))
+get('/backend/result/id/:id', getItem(PATH_RESULTS, 'result'))
+post('/backend/result/id/:id', postItem(PATH_RESULTS, 'result'))
+get('/backend/result/new', getItemNew(PATH_RESULTS, 'result', {}))
 
 // service
 get('/backend/service/state', (req, res) => {

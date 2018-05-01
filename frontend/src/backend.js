@@ -52,10 +52,25 @@ export const login = (username, password, callback) => fetchWithCallback(`/backe
 export const logout = callback => fetchWithCallback('/backend/logout')(callback)
 export const user = fetchWithCallback('/backend/user')
 
+export const contexts = fetchWithCallback('/backend/contexts')
+export const context = id => fetchWithCallback(`/backend/context/id/${id}`)
+export const contextSave = id => putWithCallbackWithId(`/backend/context/id/${id}`, id)
+export const contextNew = fetchWithCallback('/backend/context/new')
+
 export const measures = fetchWithCallback('/backend/measures')
 export const measure = id => fetchWithCallback(`/backend/measure/id/${id}`)
 export const measureSave = id => putWithCallbackWithId(`/backend/measure/id/${id}`, id)
 export const measureNew = fetchWithCallback('/backend/measure/new')
+
+export const persons = fetchWithCallback('/backend/persons')
+export const person = id => fetchWithCallback(`/backend/person/id/${id}`)
+export const personSave = id => putWithCallbackWithId(`/backend/person/id/${id}`, id)
+export const personNew = fetchWithCallback('/backend/person/new')
+
+export const results = fetchWithCallback('/backend/results')
+export const result = id => fetchWithCallback(`/backend/result/id/${id}`)
+export const resultSave = id => putWithCallbackWithId(`/backend/result/id/${id}`, id)
+export const resultNew = fetchWithCallback('/backend/result/new')
 
 export const serviceState = fetchWithCallback('/backend/service/state')
 export const serviceCheck = fetchWithCallback('backend/service/check')
