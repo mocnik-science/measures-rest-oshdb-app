@@ -18,7 +18,10 @@ const PATH_DATA = './../../measures-rest-oshdb-data'
 const PATH_USERS = `${PATH_DATA}/users`
 const PATH_DBS = `${PATH_DATA}/dbs`
 const PATH_JAVA = 'java'
+const PATH_CONTEXTS = 'contexts'
 const PATH_MEASURES = 'measures'
+const PATH_PERSONS = 'persons'
+const PATH_RESULTS = 'results'
 const FILE_SETTINGS = 'settings.json'
 const CMD_SERVICE_REACHABLE = 'curl --max-time .25'
 const CMD_SERVICE_STATE = './state'
@@ -34,7 +37,7 @@ const HOST_SERVICE = 'localhost'
 const PORT_SERVICE = 14242
 const KEY = join(os.homedir(), '.cert/key.pem')
 const CERT = join(os.homedir(), '.cert/cert.pem')
-const NEW_MEASURE = 'new measure'
+const NEW_ITEM = 'new'
 
 const DEVELOPMENT = (process.env.DEVELOPMENT != undefined) ? (process.env.DEVELOPMENT == 'true') : true
 const PORT = (process.env.PORT) ? process.env.PORT : (DEVELOPMENT) ? 3001 : 443
@@ -149,22 +152,22 @@ const dirUser = (user, ...path) => {
   if (!fs.existsSync(p)) fs.mkdirSync(p)
   return p
 }
-const measureForUser = (user, id) => {
+const itemForUser = (path, user, id) => {
   if (!id) return null
-  const filename = idToPathUserFilename(user, id, PATH_MEASURES)
+  const filename = idToPathUserFilename(user, id, path)
   return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
 }
-const saveMeasure = (user, id, json) => fs.writeFileSync(idToPathUserFilename(user, id, PATH_MEASURES), JSON.stringify(json))
-const moveMeasure = (user, idOld, idNew) => {
-  const filenameNew = idToPathUserFilename(user, idNew, PATH_MEASURES)
+const saveItem = (path, user, id, json) => fs.writeFileSync(idToPathUserFilename(user, id, path), JSON.stringify(json))
+const moveItem = (path, user, idOld, idNew) => {
+  const filenameNew = idToPathUserFilename(user, idNew, path)
   if (fs.existsSync(filenameNew)) return false
-  fs.renameSync(idToPathUserFilename(user, idOld, PATH_MEASURES), filenameNew)
+  fs.renameSync(idToPathUserFilename(user, idOld, path), filenameNew)
   return true
 }
-const allMeasures = user => fs.readdirSync(dirUser(user, PATH_MEASURES))
+const allItems = (path, user) => fs.readdirSync(dirUser(user, path))
   .filter(filename => filename.endsWith('.json'))
   .filter(filename => ![FILE_SETTINGS].includes(filename))
-  .map(filename => JSON.parse(fs.readFileSync(pathUser(user, PATH_MEASURES, filename))))
+  .map(filename => JSON.parse(fs.readFileSync(pathUser(user, path, filename))))
 const settings = user => {
   const filename = pathUser(user, FILE_SETTINGS)
   if (!fs.existsSync(filename)) fs.writeFileSync(filename, JSON.stringify({
@@ -212,12 +215,12 @@ const serviceCheck = (user, callback) => {
   let out = ''
   s.stdout.on('data', outCmd => out += outCmd.toString())
   s.on('close', code => {
-    const files = allMeasures(user).map(json => {
+    const files = allItems(PATH_MEASURES, user).map(json => {
       const a = idToPathUserFilename(user, json.id, PATH_JAVA, 'java').split('/')
       return [json.id, a[a.length - 1]]
     })
     const result = {}
-    for (const json of allMeasures(user)) if (json.enabled) result[json.id] = ''
+    for (const json of allItems(PATH_MEASURES, user)) if (json.enabled) result[json.id] = ''
     for (const l of out.split('\n')) for (const file of files)
       if (result[file[0]] !== undefined && ~l.indexOf(file[1])) result[file[0]] = ((result[file[0]]) ? result[file[0]] : '') + l + '\n'
     callback(result)
@@ -240,7 +243,7 @@ const useTemplate = (template, data) => {
   return template(data2)
 }
 const writeJava = user => {
-  const jsons = allMeasures(user)
+  const jsons = allItems(PATH_MEASURES, user)
   removeJavaDir(user)
   jsons.filter(json => json.enabled).map(json => {
     saveJavaMeasure(user, json.id, useTemplate(javaTemplate, {
@@ -256,7 +259,7 @@ const writeJava = user => {
   }))
 }
 const getMap = (user, port, id) => {
-  const json = measureForUser(user, id)
+  const json = itemForUser(PATH_MEASURES, user, id)
   return useTemplate(mapIndexTemplate, {
     name: json.name,
     id: json.id,
@@ -280,22 +283,20 @@ app.get('/backend/logout', (req, res) => {
   res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null})
 })
 
-// measures
-get('/backend/measures', (req, res) => {
-  const measures = {}
-  for (const json of allMeasures(req.user)) measures[json.id] = json
-  res.status(200).json({measures: measures})
-})
-
-// measure
-get('/backend/measure/id/:id', (req, res) => {
-  const json = measureForUser(req.user, req.params.id)
-  if (json == null) res.status(404).send('measure not found')
+// item
+const getItems = (path, item) => (req, res) => {
+  const items = {}
+  for (const json of allItems(path, req.user)) items[json.id] = json
+  res.status(200).json({[`${item}s`]: items})
+}
+const getItem = (path, item) => (req, res) => {
+  const json = itemForUser(path, req.user, req.params.id)
+  if (json == null) res.status(404).send(`${item} not found`)
   else res.status(200).json(json)
-})
-post('/backend/measure/id/:id', (req, res) => {
-  const json = measureForUser(req.user, req.params.id)
-  if (json == null) res.status(404).send('measure not found')
+}
+const postItem = (path, item) => (req, res) => {
+  const json = itemForUser(path, req.user, req.params.id)
+  if (json == null) res.status(404).send(`${item} not found`)
   else {
     const data = req.body
     if (json.timestamp >= data.timestamp) res.status(200).json({success: true})
@@ -303,28 +304,33 @@ post('/backend/measure/id/:id', (req, res) => {
       json.timestamp = data.timestamp
       if (data.data.name && json.name !== data.data.name) {
         json.id = name2id(data.data.name)
-        if (!moveMeasure(req.user, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: 'A measure with a very similar (or same) name already exists.'}})
+        if (!moveItem(path, req.user, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${item} with a very similar (or same) name already exists.`}})
       }
       const jsonNew = Object.assign(json, data.data)
-      saveMeasure(req.user, json.id, jsonNew)
+      saveItem(path, req.user, json.id, jsonNew)
       res.status(200).json({success: true})
     }
   }
-})
-get('/backend/measure/new', (req, res) => {
+}
+const getItemNew = (path, item, data) => (req, res) => {
   let i = 0
   let name = null
-  while (name === null || measureForUser(req.user, name2id(name)) !== null) name = `${NEW_MEASURE} ${++i}`
-  saveMeasure(req.user, name2id(name), {
+  while (name === null || itemForUser(path, req.user, name2id(name)) !== null) name = `${NEW_ITEM} ${item} ${++i}`
+  saveItem(path, req.user, name2id(name), Object.assign({
     id: name2id(name),
     name: name,
-    code: '',
     enabled: false,
-  })
-  const measures = {}
-  for (const json of allMeasures(req.user)) measures[json.id] = json
-  res.status(200).json({measures: measures})
-})
+  }, data))
+  const items = {}
+  for (const json of allItems(path, req.user)) items[json.id] = json
+  res.status(200).json({[`${item}s`]: items})
+}
+
+// measure
+get('/backend/measures', getItems(PATH_MEASURES, 'measure'))
+get('/backend/measure/id/:id', getItem(PATH_MEASURES, 'measure'))
+post('/backend/measure/id/:id', postItem(PATH_MEASURES, 'measure'))
+get('/backend/measure/new', getItemNew(PATH_MEASURES, 'measure', {code: ''}))
 
 // service
 get('/backend/service/state', (req, res) => {
