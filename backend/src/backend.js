@@ -77,8 +77,8 @@ if (settingsApp.ldapOptions) passport.use(new ldapStrategy(settingsApp.ldapOptio
   done(null, u)
 }))
 
-passport.serializeUser((user, done) => done(null, user))
-passport.deserializeUser((id, done) => done(null, id))
+passport.serializeUser((user, done) => done(null, user.userinfo()))
+passport.deserializeUser((userinfo, done) => done(null, User.fromUserinfo(userinfo)))
 
 app.use(session({
   secret: 'un9ßq9^ac%§8x"mixaü',
