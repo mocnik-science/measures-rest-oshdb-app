@@ -1,5 +1,5 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button'
 import Header from 'grommet/components/Header'
