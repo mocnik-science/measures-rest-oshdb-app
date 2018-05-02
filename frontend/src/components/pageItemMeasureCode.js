@@ -4,7 +4,6 @@ import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button'
 import Header from 'grommet/components/Header'
 import Heading from 'grommet/components/Heading'
-import Title from 'grommet/components/Title'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import moment from 'moment'
@@ -89,7 +88,7 @@ class PageMeasureCode extends React.Component {
   render() {
     const code = this.state.code
     return (
-      <Box className='noScroll' full={true} className={(isLevelPublic(this.state.level) && !this.context.user.admin) ? 'disabled' : ''}>
+      <Box className={'noScroll' + (isLevelPublic(this.state.level) && !this.context.user.admin) ? ' disabled' : ''} full={true}>
         <Header>
           <Box pad='medium'>
             <Heading>
