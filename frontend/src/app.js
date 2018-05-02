@@ -14,7 +14,7 @@ class App extends React.Component {
     return (
       <AppGrommet centered={false}>
         <Authentication>
-          <Route path='/' exact><Redirect to='/dashboard'/></Route>
+          {(window.location.pathname === '/') ? <Redirect to='/dashboard'/> : []}
           <Split flex='right'>
             <SidebarNavigation/>
             <Switch>
