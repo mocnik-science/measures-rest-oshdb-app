@@ -37,7 +37,8 @@ class PageItem extends React.Component {
     const label = (item, className) =>
       <Label className='pageItemLabel'>
         {item.name}
-        {isLevelPublic(item.level) ?
+        {
+          isLevelPublic(item.level) ?
           <span style={{
             display: 'inlineBlock',
             position: 'absolute',

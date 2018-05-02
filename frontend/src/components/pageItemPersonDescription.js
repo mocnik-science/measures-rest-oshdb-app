@@ -14,6 +14,7 @@ class PageItemPersonDescription extends React.Component {
       nameError: null,
       homepage: '',
       homepageError: null,
+      level: null,
     }
   }
   render() {
@@ -27,6 +28,7 @@ class PageItemPersonDescription extends React.Component {
         data={{
           name: this.state.name,
           homepage: this.state.homepage,
+          level: this.state.level,
         }}
         fields={[
           <FormField key='name' label='forename and surname' error={this.state.nameError}>

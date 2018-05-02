@@ -99,6 +99,7 @@ class PageMeasureDescription extends React.Component {
       documentedBy: [],
       documentedByList: [],
       documentedByError: null,
+      level: null,
     }
     this.objectAddEmptyValue = this.objectAddEmptyValue.bind(this)
     this.objectToSave = this.objectToSave.bind(this)
@@ -171,6 +172,7 @@ class PageMeasureDescription extends React.Component {
           assessesTag: this.state.assessesTag,
           implementedBy: this.state.implementedBy,
           documentedBy: this.state.documentedBy,
+          level: this.state.level,
         }}
         fields={[
           <FormField key='name' label='name' error={this.state.nameError}>

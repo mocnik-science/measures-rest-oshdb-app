@@ -1,6 +1,10 @@
 .noScroll {
   overflow: hidden!important;
 }
+/* heading */
+h1.grommetux-heading {
+  font-size: 2rem!important;
+}
 /* forms */
 .grommetux-control-icon-caret-down {
   width: 14px!important;

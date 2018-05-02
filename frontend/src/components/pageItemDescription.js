@@ -7,6 +7,10 @@ import Form from 'grommet/components/Form'
 import FormFields from 'grommet/components/FormFields'
 import Header from 'grommet/components/Header'
 import Heading from 'grommet/components/Heading'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
+
+import {isLevelPublic} from './../tools'
 
 class PageItemDescription extends React.Component {
   constructor(props) {
@@ -26,16 +30,37 @@ class PageItemDescription extends React.Component {
   render() {
     return (
       <Box align='center' pad='large'>
-        <Form style={{width: 600}}>
+        <Form style={{
+          width: 600,
+          pointerEvents: (isLevelPublic(this.props.data.level) && !this.context.user.admin) ? 'none' : 'inherit',
+        }}>
           <Header>
-            <Heading>{this.props.name}</Heading>
+            <Heading>
+              {this.props.name}
+              {
+                isLevelPublic(this.props.data.level) ?
+                  <span style={{
+                    display: 'inlineBlock',
+                    position: 'absolute',
+                    marginLeft: 20,
+                    marginTop: -12,
+                    color: '#b81623',
+                  }}>
+                    <FontAwesomeIcon icon={faCertificate} style={{fontSize: 24}}/>
+                  </span> : []
+              }
+              </Heading>
           </Header>
           <FormFields>
             {this.props.fields}
           </FormFields>
-          <Footer pad={{'vertical': 'medium', 'display': 'inline-block'}}>
-            <Button label='save' type='submit' primary={true} onClick={this.save}/>
-          </Footer>
+          {
+            (isLevelPublic(this.props.data.level) && !this.context.user.admin) ?
+            [] : 
+            <Footer pad={{'vertical': 'medium', 'display': 'inline-block'}}>
+              <Button label='save' type='submit' primary={true} onClick={this.save}/>
+            </Footer>
+          }
         </Form>
       </Box>
     )
@@ -58,6 +83,9 @@ PageItemDescription.defaultProps = {
   itemSave: (id, data, callback) => {},
   data: {},
   fields: [],
+}
+PageItemDescription.contextTypes = {
+  user: PropTypes.object.isRequired,
 }
 
 export default PageItemDescription
