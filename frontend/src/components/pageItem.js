@@ -64,7 +64,7 @@ class PageItem extends React.Component {
               <span className='primary'>
                 {(!isLevelPublic(item.level) && this.props.itemsCanBeEnabled) ?
                   <CheckBox toggle={true} label={label(item, 'pageItemLabelToggle')} checked={item.enabled} onChange={e => this.saveEnabled(item.id, e.target.checked)}/> :
-                  label(item, 'pageItemLabel')
+                  <span style={{marginLeft: (this.props.itemsCanBeEnabled) ? 60 : 0}}>{label(item, 'pageItemLabel')}</span>
                 }
               </span>
               <span className='secondary'>
