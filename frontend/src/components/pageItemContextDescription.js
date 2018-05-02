@@ -19,6 +19,7 @@ class PageContextDescription extends React.Component {
       documentedBy: [],
       documentedByList: [],
       documentedByError: null,
+      level: null,
     }
   }
   componentDidMount() {
@@ -38,6 +39,7 @@ class PageContextDescription extends React.Component {
           name: this.state.name,
           description: this.state.description,
           documentedBy: this.state.documentedBy,
+          level: this.state.level,
         }}
         fields={[
           <FormField key='name' label='name' error={this.state.nameError}>

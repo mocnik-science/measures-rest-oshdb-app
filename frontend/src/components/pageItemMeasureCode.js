@@ -1,13 +1,16 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button'
 import Header from 'grommet/components/Header'
-import Title from 'grommet/components/Title'
+import Heading from 'grommet/components/Heading'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import moment from 'moment'
 import MonacoEditor from 'react-monaco-editor'
 
 import {measure, measureSave} from './../backend'
+import {isLevelPublic} from './../tools'
 
 const AUTOCOMPLETE_OBJECT = [
   // types
@@ -50,7 +53,7 @@ class PageMeasureCode extends React.Component {
     this.save = this.save.bind(this)
   }
   componentDidMount() {
-    measure(this.props.match.params.id, response => this.setState(response))
+    measure(this.props.match.params.level, this.props.match.params.id, response => this.setState(response))
     this.saveService = setInterval(this.save, this.props.autoSaveInterval)
   }
   componentDidUnmount() {
@@ -80,19 +83,37 @@ class PageMeasureCode extends React.Component {
     }
     if (!force && lastSavedTry !== null) return
     this.setState({lastSavedTry: moment(), buttonLabel: 'saving ...'})
-    measureSave(this.state.id, {code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
+    measureSave(this.props.match.params.level, this.state.id, {code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
   }
   render() {
     const code = this.state.code
     return (
-      <Box className='noScroll' full={true}>
+      <Box className={'noScroll' + (isLevelPublic(this.state.level) && !this.context.user.admin) ? ' disabled' : ''} full={true}>
         <Header>
           <Box pad='medium'>
-            <Title>Measure: {this.state.name}</Title>
+            <Heading>
+              {this.state.name}
+              {
+                isLevelPublic(this.state.level) ?
+                  <span style={{
+                    display: 'inlineBlock',
+                    position: 'absolute',
+                    marginLeft: 20,
+                    marginTop: -12,
+                    color: '#b81623',
+                  }}>
+                    <FontAwesomeIcon icon={faCertificate} style={{fontSize: 24}}/>
+                  </span> : []
+              }
+            </Heading>
           </Box>
-          <Box flex={true} justify='end' direction='row' responsive={false} pad='medium'>
-            <Button label={this.state.buttonLabel} onClick={() => this.save(true)}/>
-          </Box>
+          {
+            (isLevelPublic(this.state.level) && !this.context.user.admin) ?
+            [] : 
+            <Box flex={true} justify='end' direction='row' responsive={false} pad='medium'>
+              <Button label={this.state.buttonLabel} onClick={() => this.save(true)}/>
+            </Box>
+          }
         </Header>
         <MonacoEditor
           language='java'
@@ -123,6 +144,9 @@ PageMeasureCode.propTypes = {
 PageMeasureCode.defaultProps = {
   autoSaveInterval: 5000,
   autoSaveTimeout: 5000,
+}
+PageMeasureCode.contextTypes = {
+  user: PropTypes.object.isRequired,
 }
 
 export default PageMeasureCode

@@ -16,6 +16,7 @@ const settingsApp = require('./settings')
 const PATH_SERVICE = './../../measures-rest-oshdb-docker'
 const PATH_DATA = './../../measures-rest-oshdb-data'
 const PATH_USERS = `${PATH_DATA}/users`
+const PATH_PUBLIC = `${PATH_DATA}/public`
 const PATH_DBS = `${PATH_DATA}/dbs`
 const PATH_JAVA = 'java'
 const PATH_CONTEXTS = 'contexts'
@@ -42,6 +43,9 @@ const NEW_ITEM = 'new'
 const DEVELOPMENT = (process.env.DEVELOPMENT != undefined) ? (process.env.DEVELOPMENT == 'true') : true
 const PORT = (process.env.PORT) ? process.env.PORT : (DEVELOPMENT) ? 3001 : 443
 const HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') : !DEVELOPMENT
+
+LEVEL_PUBLIC = 'PUBLIC'
+LEVEL_USER = 'USER'
 
 const app = express()
 
@@ -73,8 +77,8 @@ if (settingsApp.ldapOptions) passport.use(new ldapStrategy(settingsApp.ldapOptio
   done(null, u)
 }))
 
-passport.serializeUser((user, done) => done(null, user))
-passport.deserializeUser((id, done) => done(null, id))
+passport.serializeUser((user, done) => done(null, user.userinfo()))
+passport.deserializeUser((userinfo, done) => done(null, User.fromUserinfo(userinfo)))
 
 app.use(session({
   secret: 'un9ßq9^ac%§8x"mixaü',
@@ -130,6 +134,10 @@ class User {
   username() {
     return this.userinfo().username
   }
+  
+  admin() {
+    return this.userinfo().admin
+  }
 }
 
 // HELPING FUNCTIONS
@@ -147,7 +155,7 @@ const idToPathUserFilename = (user, id, path='', ext='json') => {
   }
   return pathUser(user, path, idToFilename(id, ext))
 }
-const pathUser = (user, ...path) => `${PATH_USERS}/${User.getUsername(user)}/${join(...path)}`
+const pathUser = (user, ...path) => (user) ? join(PATH_USERS, User.getUsername(user), ...path) : join(PATH_PUBLIC, ...path)
 const pathUserAbsolute = (user, ...path) => resolve(pathUser(user, ...path))
 const dirUser = (user, ...path) => {
   const p = pathUser(user, ...path)
@@ -184,6 +192,10 @@ const allSettings = () => fs.readdirSync(PATH_USERS)
 const removeJavaDir = user => fs.removeSync(pathUser(user, PATH_JAVA))
 const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, PATH_JAVA, name), code)
 const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilename(user, id, PATH_JAVA, 'java'), code)
+
+// levels
+const isLevelPublic = x => x && x.toUpperCase() === LEVEL_PUBLIC
+const isLevelUser = x => x && x.toUpperCase() === LEVEL_USER
 
 // services
 let serviceHasState = null
@@ -272,17 +284,20 @@ const getMap = (user, port, id) => {
 // ITEMS
 const getItems = (path, item) => (req, res) => {
   const items = {}
-  for (const json of allItems(path, req.user)) items[json.id] = json
+  for (const json of allItems(path, req.user)) items[`user-${json.id}`] = json
+  for (const json of allItems(path, null)) items[`public-${json.id}`] = json
   res.status(200).json({items: items})
 }
 const getItem = (path, item) => (req, res) => {
-  const json = itemForUser(path, req.user, req.params.id)
+  const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, req.params.id)
   if (json == null) res.status(404).send(`${item} not found`)
   else res.status(200).json(json)
 }
 const postItem = (path, item) => (req, res) => {
-  const json = itemForUser(path, req.user, req.params.id)
+  const u = isLevelPublic(req.params.level) ? null : req.user
+  const json = itemForUser(path, u, req.params.id)
   if (json == null) res.status(404).send(`${item} not found`)
+  else if (u === null && !req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
     const data = req.body
     if (json.timestamp >= data.timestamp) res.status(200).json({success: true})
@@ -290,10 +305,10 @@ const postItem = (path, item) => (req, res) => {
       json.timestamp = data.timestamp
       if (data.data.name && json.name !== data.data.name) {
         json.id = name2id(data.data.name)
-        if (!moveItem(path, req.user, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${item} with a very similar (or same) name already exists.`}})
+        if (!moveItem(path, u, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${item} with a very similar (or same) name exists already.`}})
       }
       const jsonNew = Object.assign(json, data.data)
-      saveItem(path, req.user, json.id, jsonNew)
+      saveItem(path, u, json.id, jsonNew)
       res.status(200).json({success: true})
     }
   }
@@ -329,26 +344,26 @@ app.get('/backend/logout', (req, res) => {
 
 // context
 get('/backend/contexts', getItems(PATH_CONTEXTS, 'context'))
-get('/backend/context/id/:id', getItem(PATH_CONTEXTS, 'context'))
-post('/backend/context/id/:id', postItem(PATH_CONTEXTS, 'context'))
+get('/backend/context/id/:level/:id', getItem(PATH_CONTEXTS, 'context'))
+post('/backend/context/id/:level/:id', postItem(PATH_CONTEXTS, 'context'))
 get('/backend/context/new', getItemNew(PATH_CONTEXTS, 'context', {}))
 
 // measure
 get('/backend/measures', getItems(PATH_MEASURES, 'measure'))
-get('/backend/measure/id/:id', getItem(PATH_MEASURES, 'measure'))
-post('/backend/measure/id/:id', postItem(PATH_MEASURES, 'measure'))
+get('/backend/measure/id/:level/:id', getItem(PATH_MEASURES, 'measure'))
+post('/backend/measure/id/:level/:id', postItem(PATH_MEASURES, 'measure'))
 get('/backend/measure/new', getItemNew(PATH_MEASURES, 'measure', {code: '', enabled: false}))
 
 // person
 get('/backend/persons', getItems(PATH_PERSONS, 'person'))
-get('/backend/person/id/:id', getItem(PATH_PERSONS, 'person'))
-post('/backend/person/id/:id', postItem(PATH_PERSONS, 'person'))
+get('/backend/person/id/:level/:id', getItem(PATH_PERSONS, 'person'))
+post('/backend/person/id/:level/:id', postItem(PATH_PERSONS, 'person'))
 get('/backend/person/new', getItemNew(PATH_PERSONS, 'person', {}))
 
 // result
 get('/backend/results', getItems(PATH_RESULTS, 'result'))
-get('/backend/result/id/:id', getItem(PATH_RESULTS, 'result'))
-post('/backend/result/id/:id', postItem(PATH_RESULTS, 'result'))
+get('/backend/result/id/:level/:id', getItem(PATH_RESULTS, 'result'))
+post('/backend/result/id/:level/:id', postItem(PATH_RESULTS, 'result'))
 get('/backend/result/new', getItemNew(PATH_RESULTS, 'result', {}))
 
 // metadataItems
@@ -361,7 +376,8 @@ get('/backend/items', (req, res) => {
     {path: PATH_RESULTS, item: 'result'},
   ]) {
     const items = []
-    for (const json of allItems(i.path, req.user)) items.push({id: json.id, name: json.name})
+    for (const json of allItems(i.path, req.user)) items.push({id: json.id, name: json.name, level: LEVEL_USER})
+    for (const json of allItems(i.path, null)) items.push({id: json.id, name: json.name, level: LEVEL_PUBLIC})
     data[`${i.item}s`] = items
   }
   res.status(200).json(data)
