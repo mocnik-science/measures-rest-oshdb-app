@@ -10,6 +10,8 @@ class PageHelp extends React.Component {
     this.state = {
       text: '',
     }
+  }
+  componentDidMount() {
     help(window.location.pathname.split('/').pop(), response => this.setState({text: response}))
   }
   render() {
