@@ -134,6 +134,10 @@ class User {
   username() {
     return this.userinfo().username
   }
+  
+  admin() {
+    return this.userinfo().admin
+  }
 }
 
 // HELPING FUNCTIONS
@@ -165,7 +169,6 @@ const itemForUser = (path, user, id) => {
 }
 const saveItem = (path, user, id, json) => fs.writeFileSync(idToPathUserFilename(user, id, path), JSON.stringify(json))
 const moveItem = (path, user, idOld, idNew) => {
-  if (user === null) return false
   const filenameNew = idToPathUserFilename(user, idNew, path)
   if (fs.existsSync(filenameNew)) return false
   fs.renameSync(idToPathUserFilename(user, idOld, path), filenameNew)
@@ -294,7 +297,7 @@ const postItem = (path, item) => (req, res) => {
   const u = isLevelPublic(req.params.level) ? null : req.user
   const json = itemForUser(path, u, req.params.id)
   if (json == null) res.status(404).send(`${item} not found`)
-  else if (u === null && req.user.admin !== true) res.status(403).send(`no rights to modify`)
+  else if (u === null && !req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
     const data = req.body
     if (json.timestamp >= data.timestamp) res.status(200).json({success: true})
