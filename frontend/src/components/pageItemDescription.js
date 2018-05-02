@@ -15,13 +15,13 @@ class PageItemDescription extends React.Component {
   }
   save(e) {
     e.preventDefault()
-    this.props.itemSave(this.props.match.params.id, this.props.data, response => {
-      if (response.success) this.props.history.push(`/${this.props.itemName}`)
+    this.props.itemSave(this.props.match.params.level, this.props.match.params.id, this.props.data, response => {
+      if (response && response.success) this.props.history.push(`/${this.props.itemName}`)
       else this.setState(response.messages)
     })
   }
   componentDidMount() {
-    this.props.item(this.props.match.params.id, response => this.props.setState(response))
+    this.props.item(this.props.match.params.level, this.props.match.params.id, response => this.props.setState(response))
   }
   render() {
     return (

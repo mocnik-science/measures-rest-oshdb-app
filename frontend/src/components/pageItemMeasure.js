@@ -31,7 +31,7 @@ class PageItemMeasure extends React.Component {
         items={measures}
         itemNew={measureNew}
         itemSave={measureSave}
-        itemCanBeEnabled={true}
+        itemsCanBeEnabled={true}
         buttonsOwnItem={item => this.renderErrors(item.id)}
         buttonsItem={[{path: 'code', icon: faCode}]}
         website={item => `/map/${item.id}`}
