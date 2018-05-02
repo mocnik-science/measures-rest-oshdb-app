@@ -53,6 +53,29 @@ h1.grommetux-heading {
 .select-horizontal ol li:last-child label span.grommetux-check-box__label {
   margin-right: 0;
 }
+.disabled {
+  pointer-events: none;
+}
+.disabled .grommetux-form-field,
+.disabled .grommetux-input,
+.disabled .grommetux-check-box__label {
+  color: #aaa!important;
+}
+.disabled .grommetux-check-box__control {
+  border-color: #aaa!important;
+}
+.disabled .grommetux-check-box__control-check {
+  stroke: #f4a4aa;
+}
+/* editor */
+.disabled .monaco-editor .monaco-editor-background,
+.disabled .monaco-editor .margin,
+.disabled .inputarea.ime-input {
+  background-color: #393939;
+}
+.disabled .monaco-editor .current-line {
+  border: none!important;
+}
 /* menu */
 .hasSubpage {
   height: 36px;

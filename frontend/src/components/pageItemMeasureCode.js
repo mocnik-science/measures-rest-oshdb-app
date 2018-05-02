@@ -89,7 +89,7 @@ class PageMeasureCode extends React.Component {
   render() {
     const code = this.state.code
     return (
-      <Box className='noScroll' full={true} style={{pointerEvents: (isLevelPublic(this.state.level) && !this.context.user.admin) ? 'none' : 'inherit'}}>
+      <Box className='noScroll' full={true} className={(isLevelPublic(this.state.level) && !this.context.user.admin) ? 'disabled' : ''}>
         <Header>
           <Box pad='medium'>
             <Heading>

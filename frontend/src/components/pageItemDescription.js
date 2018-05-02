@@ -30,10 +30,7 @@ class PageItemDescription extends React.Component {
   render() {
     return (
       <Box align='center' pad='large'>
-        <Form style={{
-          width: 600,
-          pointerEvents: (isLevelPublic(this.props.data.level) && !this.context.user.admin) ? 'none' : 'inherit',
-        }}>
+        <Form style={{width: 600}} className={(isLevelPublic(this.props.data.level) && !this.context.user.admin) ? 'disabled' : ''}>
           <Header>
             <Heading>
               {this.props.name}
