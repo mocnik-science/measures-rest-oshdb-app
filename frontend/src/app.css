@@ -29,8 +29,12 @@ h1.grommetux-heading {
   font-size: 2rem!important;
 }
 /* forms */
-.grommetux-check-box--toggle,
-.grommetux-check-box__control:after {
+input.grommetux-check-box__input ~ .grommetux-check-box--toggle,
+input.grommetux-check-box__input ~ .grommetux-check-box__control:after {
+  border-color: #666!important;
+}
+input.grommetux-check-box__input:checked ~ .grommetux-check-box--toggle,
+input.grommetux-check-box__input:checked ~ .grommetux-check-box__control:after {
   border-color: #b81623!important;
 }
 .grommetux-control-icon-caret-down {
