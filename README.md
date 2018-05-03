@@ -154,6 +154,15 @@ pm2 save
 
 copy the libs
 
+## Data
+
+```bash
+mkdir ~/measures-rest-oshdb-data
+mkdir ~/measures-rest-oshdb-data/dbs
+mkdir ~/measures-rest-oshdb-data/public
+mkdir ~/measures-rest-oshdb-data/users
+```
+
 ## Vocabulary
 
 In addition, the needed vocabulary can be delivered using nginx:
