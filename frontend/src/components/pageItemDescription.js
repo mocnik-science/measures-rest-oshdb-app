@@ -7,6 +7,7 @@ import Form from 'grommet/components/Form'
 import FormFields from 'grommet/components/FormFields'
 import Header from 'grommet/components/Header'
 import Heading from 'grommet/components/Heading'
+import Toast from 'grommet/components/Toast'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 
@@ -15,13 +16,16 @@ import {isLevelPublic} from './../tools'
 class PageItemDescription extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      messages: {},
+    }
     this.save = this.save.bind(this)
   }
   save(e) {
     e.preventDefault()
     this.props.itemSave(this.props.match.params.level, this.props.match.params.id, this.props.data, response => {
       if (response && response.success) this.props.history.push(`/${this.props.itemName}`)
-      else this.setState(response.messages)
+      else this.setState({messages: response.messages})
     })
   }
   componentDidMount() {
@@ -30,6 +34,14 @@ class PageItemDescription extends React.Component {
   render() {
     return (
       <Box align='center' pad='large'>
+        {
+          (Object.keys(this.state.messages).length > 0) ?
+          <Toast
+            onClose={() => this.setState({messages: {}})}
+            status='warning'>
+            {Object.values(this.state.messages)}
+          </Toast> : []
+        }
         <Form style={{width: 600}} className={(isLevelPublic(this.props.data.level) && !this.context.user.admin) ? 'disabled' : ''}>
           <Header>
             <Heading>

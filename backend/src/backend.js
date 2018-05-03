@@ -321,9 +321,7 @@ const getItemNew = (path, item, data) => (req, res) => {
     id: name2id(name),
     name: name,
   }, data))
-  const items = {}
-  for (const json of allItems(path, req.user)) items[json.id] = json
-  res.status(200).json({items: items})
+  getItems(path, item)(req, res)
 }
 
 // ROUTES
