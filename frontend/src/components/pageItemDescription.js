@@ -89,7 +89,7 @@ PageItemDescription.propTypes = {
 PageItemDescription.defaultProps = {
   items: callback => {},
   item: callback => {},
-  itemSave: (id, data, callback) => {},
+  itemSave: (level, id, data, callback) => {},
   data: {},
   fields: [],
 }

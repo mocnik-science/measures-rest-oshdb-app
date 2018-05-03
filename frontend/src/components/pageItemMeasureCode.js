@@ -138,10 +138,12 @@ class PageMeasureCode extends React.Component {
   }
 }
 PageMeasureCode.propTypes = {
+  itemSave: PropTypes.func,
   autoSaveInterval: PropTypes.number,
   autoSaveTimeout:  PropTypes.number,
 }
 PageMeasureCode.defaultProps = {
+  itemSave: (level, id, data, callback) => {},
   autoSaveInterval: 5000,
   autoSaveTimeout: 5000,
 }

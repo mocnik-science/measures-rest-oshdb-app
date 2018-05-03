@@ -8,6 +8,7 @@ import Label from 'grommet/components/Label'
 import List from 'grommet/components/List'
 import ListItem from 'grommet/components/ListItem'
 import TextInput from 'grommet/components/TextInput'
+import Toast from 'grommet/components/Toast'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import faEdit from '@fortawesome/fontawesome-free-solid/faEdit'
@@ -21,14 +22,15 @@ class PageItem extends React.Component {
     this.state = {
       items: {},
       search: '',
+      messages: {},
     }
     this.saveEnabled = this.saveEnabled.bind(this)
   }
-  saveEnabled(id, value) {
+  saveEnabled(level, id, value) {
     const items = this.state.items
     items[`user-${id}`].enabled = value
     this.setState({items: items})
-    this.props.itemSave(id, {enabled: value}, () => {})
+    this.props.itemSave(level, id, {enabled: value}, () => {})
   }
   componentDidMount() {
     this.props.items(response => this.setState(response))
@@ -51,6 +53,14 @@ class PageItem extends React.Component {
       </Label>
     return (
       <div>
+        {
+          (Object.keys(this.state.messages).length > 0) ?
+          <Toast
+            onClose={() => this.setState({messages: {}})}
+            status='warning'>
+            {Object.values(this.state.messages)}
+          </Toast> : []
+        }
         <Header className='header' fixed={true} size='small' style={{paddingRight: 22}}>
           <Box flex={true} justify='end' direction='row'>
             <TextInput value={this.state.search} onDOMChange={e => this.setState({search: e.target.value})} style={{flexGrow: 1}} placeHolder='Search...' size='medium'/>
@@ -63,7 +73,7 @@ class PageItem extends React.Component {
             <ListItem key={item.id} justify='between'>
               <span className='primary'>
                 {(!isLevelPublic(item.level) && this.props.itemsCanBeEnabled) ?
-                  <CheckBox toggle={true} label={label(item, 'pageItemLabelToggle')} checked={item.enabled} onChange={e => this.saveEnabled(item.id, e.target.checked)}/> :
+                  <CheckBox toggle={true} label={label(item, 'pageItemLabelToggle')} checked={item.enabled} onChange={e => this.saveEnabled(item.level, item.id, e.target.checked)}/> :
                   <span style={{marginLeft: (this.props.itemsCanBeEnabled) ? 60 : 0}}>{label(item, 'pageItemLabel')}</span>
                 }
               </span>
@@ -71,7 +81,13 @@ class PageItem extends React.Component {
                 {this.props.buttonsOwnItem(item)}
                 {
                   (!isLevelPublic(item.level) && this.context.user.admin) ?
-                  <Button key='button-public' icon={<FontAwesomeIcon icon={faCertificate}/>} onClick={() => {}}/> : []
+                  <Button key='button-public' icon={<FontAwesomeIcon icon={faCertificate}/>} onClick={e => {
+                    e.preventDefault()
+                    this.props.itemPublic(item.level, item.id, response => {
+                      if (!response || !response.success) this.setState({messages: response.messages})
+                      else this.setState(response)
+                    })
+                  }}/> : []
                 }
                 <Button key='button-description' icon={<FontAwesomeIcon icon={faEdit}/>} path={`/${this.props.itemName}/${item.level}/${item.id}/description`}/>
                 {
@@ -101,6 +117,7 @@ PageItem.propTypes = {
   items: PropTypes.func,
   itemNew: PropTypes.func,
   itemSave: PropTypes.func,
+  itemPublic: PropTypes.func,
   itemsCanBeEnabled: PropTypes.bool,
   buttonsHeader: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   buttonsOwnItem: PropTypes.func,
@@ -111,7 +128,8 @@ PageItem.propTypes = {
 PageItem.defaultProps = {
   items: callback => {},
   itemNew: callback => {},
-  itemSave: (id, data, callback) => {},
+  itemSave: (level, id, data, callback) => {},
+  itemPublic: (level, id, callback) => {},
   itemsCanBeEnabled: false,
   buttonsHeader: [],
   buttonsOwnItem: item => {},

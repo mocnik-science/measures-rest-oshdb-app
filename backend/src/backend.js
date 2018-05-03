@@ -174,6 +174,12 @@ const moveItem = (path, user, idOld, idNew) => {
   fs.renameSync(idToPathUserFilename(user, idOld, path), filenameNew)
   return true
 }
+const moveItemToPublic = (path, user, id) => {
+  const filenameNew = idToPathUserFilename(null, id, path)
+  if (fs.existsSync(filenameNew)) return false
+  fs.renameSync(idToPathUserFilename(user, id, path), filenameNew)
+  return true
+}
 const allItems = (path, user) => fs.readdirSync(dirUser(user, path))
   .filter(filename => filename.endsWith('.json'))
   .filter(filename => ![FILE_SETTINGS].includes(filename))
@@ -282,21 +288,21 @@ const getMap = (user, port, id) => {
 }
 
 // ITEMS
-const getItems = (path, item) => (req, res) => {
+const getItems = (path, itemName) => (req, res) => {
   const items = {}
   for (const json of allItems(path, req.user)) items[`user-${json.id}`] = json
   for (const json of allItems(path, null)) items[`public-${json.id}`] = json
-  res.status(200).json({items: items})
+  res.status(200).json({success: true, items: items})
 }
-const getItem = (path, item) => (req, res) => {
+const getItem = (path, itemName) => (req, res) => {
   const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, req.params.id)
-  if (json == null) res.status(404).send(`${item} not found`)
+  if (json == null) res.status(404).send(`${itemName} not found`)
   else res.status(200).json(json)
 }
-const postItem = (path, item) => (req, res) => {
+const postItem = (path, itemName, data) => (req, res) => {
   const u = isLevelPublic(req.params.level) ? null : req.user
   const json = itemForUser(path, u, req.params.id)
-  if (json == null) res.status(404).send(`${item} not found`)
+  if (json == null) res.status(404).send(`${itemName} not found`)
   else if (u === null && !req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
     const data = req.body
@@ -305,7 +311,7 @@ const postItem = (path, item) => (req, res) => {
       json.timestamp = data.timestamp
       if (data.data.name && json.name !== data.data.name) {
         json.id = name2id(data.data.name)
-        if (!moveItem(path, u, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${item} with a very similar (or same) name exists already.`}})
+        if (!moveItem(path, u, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
       }
       const jsonNew = Object.assign(json, data.data)
       saveItem(path, u, json.id, jsonNew)
@@ -313,15 +319,27 @@ const postItem = (path, item) => (req, res) => {
     }
   }
 }
-const getItemNew = (path, item, data) => (req, res) => {
+const getItemPublic = (path, itemName) => (req, res) => {
+  if (!isLevelUser(req.params.level)) return res.status(200).json({success: false, messages: {itemError: `Only user items can be made public.`}})
+  else if (!req.user.admin()) res.status(403).send(`no rights to modify`)
+  else {
+    if (!moveItemToPublic(path, req.user, req.params.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
+    const json = itemForUser(path, null, req.params.id)
+    const jsonNew = Object.assign(json, {level: LEVEL_PUBLIC})
+    saveItem(path, null, json.id, jsonNew)
+    getItems(path, itemName)(req, res)
+  }
+}
+const getItemNew = (path, itemName, data) => (req, res) => {
   let i = 0
   let name = null
-  while (name === null || itemForUser(path, req.user, name2id(name)) !== null) name = `${NEW_ITEM} ${item} ${++i}`
+  while (name === null || itemForUser(path, req.user, name2id(name)) !== null) name = `${NEW_ITEM} ${itemName} ${++i}`
   saveItem(path, req.user, name2id(name), Object.assign({
     id: name2id(name),
     name: name,
+    level: LEVEL_USER,
   }, data))
-  getItems(path, item)(req, res)
+  getItems(path, itemName)(req, res)
 }
 
 // ROUTES
@@ -344,24 +362,28 @@ app.get('/backend/logout', (req, res) => {
 get('/backend/contexts', getItems(PATH_CONTEXTS, 'context'))
 get('/backend/context/id/:level/:id', getItem(PATH_CONTEXTS, 'context'))
 post('/backend/context/id/:level/:id', postItem(PATH_CONTEXTS, 'context'))
+get('/backend/context/public/:level/:id', getItemPublic(PATH_CONTEXTS, 'context'))
 get('/backend/context/new', getItemNew(PATH_CONTEXTS, 'context', {}))
 
 // measure
 get('/backend/measures', getItems(PATH_MEASURES, 'measure'))
 get('/backend/measure/id/:level/:id', getItem(PATH_MEASURES, 'measure'))
 post('/backend/measure/id/:level/:id', postItem(PATH_MEASURES, 'measure'))
+get('/backend/measure/public/:level/:id', getItemPublic(PATH_MEASURES, 'measure'))
 get('/backend/measure/new', getItemNew(PATH_MEASURES, 'measure', {code: '', enabled: false}))
 
 // person
 get('/backend/persons', getItems(PATH_PERSONS, 'person'))
 get('/backend/person/id/:level/:id', getItem(PATH_PERSONS, 'person'))
 post('/backend/person/id/:level/:id', postItem(PATH_PERSONS, 'person'))
+get('/backend/person/public/:level/:id', getItemPublic(PATH_PERSONS, 'person'))
 get('/backend/person/new', getItemNew(PATH_PERSONS, 'person', {}))
 
 // result
 get('/backend/results', getItems(PATH_RESULTS, 'result'))
 get('/backend/result/id/:level/:id', getItem(PATH_RESULTS, 'result'))
 post('/backend/result/id/:level/:id', postItem(PATH_RESULTS, 'result'))
+get('/backend/result/public/:level/:id', getItemPublic(PATH_RESULTS, 'result'))
 get('/backend/result/new', getItemNew(PATH_RESULTS, 'result', {}))
 
 // metadataItems

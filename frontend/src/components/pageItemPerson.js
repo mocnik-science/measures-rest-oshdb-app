@@ -1,7 +1,7 @@
 import React from 'react'
 import faHome from '@fortawesome/fontawesome-free-solid/faHome'
 
-import {persons, personNew} from './../backend'
+import {persons, personPublic, personNew} from './../backend'
 import PageItem from './pageItem'
 
 class PageItemPerson extends React.Component {
@@ -11,6 +11,7 @@ class PageItemPerson extends React.Component {
         itemName='person'
         items={persons}
         itemNew={personNew}
+        itemPublic={personPublic}
         website={item => item.homepage}
         websiteIcon={faHome}
       />

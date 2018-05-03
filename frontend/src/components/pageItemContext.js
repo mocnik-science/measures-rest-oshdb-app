@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {contexts, contextNew} from './../backend'
+import {contexts, contextPublic, contextNew} from './../backend'
 import PageItem from './pageItem'
 
 class PageItemContext extends React.Component {
@@ -9,6 +9,7 @@ class PageItemContext extends React.Component {
       <PageItem
         itemName='context'
         items={contexts}
+        itemPublic={contextPublic}
         itemNew={contextNew}
       />
     )
