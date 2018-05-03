@@ -12,28 +12,29 @@ import MonacoEditor from 'react-monaco-editor'
 import {measure, measureSave} from './../backend'
 import {isLevelPublic} from './../tools'
 
+const SOAP_METHODS = [
+  'osmTypes(',
+  'where(',
+  'map(',
+  'filter(',
+  'average(',
+  'sum()',
+  'count()',
+  'uniq()',
+  'reduce(',
+]
 const AUTOCOMPLETE_OBJECT = [
   // types
   'OSMType.Node',
   'OSMType.Way',
   'OSMType.Relation',
   // common
-  'Geo.lengthOf',
-]
+  'Geo.lengthOf(',
+].concat(SOAP_METHODS)
 const AUTOCOMPLETE_METHOD = [
-  // methods
-  'osmTypes',
-  'where',
-  'map',
-  'filter',
-  'average',
-  'sum',
-  'count',
-  'uniq',
-  'reduce',
   // other
-  'getGeometry',
-]
+  'getGeometry(',
+].concat(SOAP_METHODS)
 
 class PageMeasureCode extends React.Component {
   constructor(props) {
@@ -56,13 +57,14 @@ class PageMeasureCode extends React.Component {
     measure(this.props.match.params.level, this.props.match.params.id, response => this.setState(response))
     this.saveService = setInterval(this.save, this.props.autoSaveInterval)
   }
-  componentDidUnmount() {
+  componentWillUnmount() {
     clearInterval(this.saveService)
   }
   editorWillMount(monaco) {
     monaco.languages.registerCompletionItemProvider('java', {
       triggerCharacters: ['.', ' ', '\n', '('],
       provideCompletionItems: (model, position, token, context) => {
+        if (position.column < 3) return []
         const c = model.getValueInRange({startLineNumber: position.lineNumber, startColumn: position.column - 1, endLineNumber: position.lineNumber, endColumn: position.column})
         return ((c === '.') ? AUTOCOMPLETE_METHOD : AUTOCOMPLETE_OBJECT).map(l => ({label: l}))
       },
@@ -86,9 +88,8 @@ class PageMeasureCode extends React.Component {
     measureSave(this.props.match.params.level, this.state.id, {code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
   }
   render() {
-    const code = this.state.code
     return (
-      <Box className={'noScroll' + (isLevelPublic(this.state.level) && !this.context.user.admin) ? ' disabled' : ''} full={true}>
+      <Box className={'noScroll' + ((isLevelPublic(this.state.level) && !this.context.user.admin) ? ' disabled' : '')} full={true}>
         <Header>
           <Box pad='medium'>
             <Heading>
@@ -118,7 +119,7 @@ class PageMeasureCode extends React.Component {
         <MonacoEditor
           language='java'
           theme='vs-dark'
-          value={code}
+          value={this.state.code}
           options={{
             fontSize: 16,
             minimap: {enabled: false},
