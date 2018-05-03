@@ -9,6 +9,7 @@ const passport = require('passport')
 const localPassportStrategy = require('passport-local').Strategy
 const ldapStrategy = require('passport-ldapauth')
 const session = require('express-session')
+const soap = require('simplified-oshdb-api-programming/dist/soap-to-java.js')
 const {spawn, spawnSync} = require('child_process')
 
 const settingsApp = require('./settings')
@@ -269,7 +270,7 @@ const writeJava = user => {
     saveJavaMeasure(user, json.id, useTemplate(javaTemplate, {
       id: json.id,
       className: className(json.id),
-      code: json.code.replace(/^\s*import\s.+\n?/gm, ''),
+      code: soap.soapToJava(json.code.replace(/^\s*import\s.+\n?/gm, '')),
       imports: json.code.split('\n').filter(s => s.match(/^\s*import\s.+/)).join('\n'),
     }))
   })

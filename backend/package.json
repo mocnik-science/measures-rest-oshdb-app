@@ -11,7 +11,8 @@
     "handlebars": "^4.0.11",
     "passport": "^0.4.0",
     "passport-ldapauth": "^2.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "simplified-oshdb-api-programming": "git+https://git@github.com/GIScience/simplified-oshdb-api-programming.git"
   },
   "scripts": {
     "start": "node src/backend.js"
