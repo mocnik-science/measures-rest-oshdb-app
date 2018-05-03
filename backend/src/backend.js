@@ -144,8 +144,8 @@ class User {
 // HELPING FUNCTIONS
 
 // ids and names
-const name2id = id => id.replace(/[\s-_]+(\w)/g, (match, p, offset) => `-${p}`).toLowerCase()
-const className = id => `Measure${id.replace(/^([a-z])|-([a-z])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
+const name2id = id => id.replace(/[\s-_]+(\w)/g, (match, p, offset) => `-${p}`).replace(/[^-a-zA-Z0-9]/g, '').toLowerCase()
+const className = id => `Measure${id.replace(/^([a-z0-9])|-([a-z0-9])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
 
 // common
 const idToFilename = (id, ext='json') => `${className(id)}.${ext}`
