@@ -29,6 +29,10 @@ h1.grommetux-heading {
   font-size: 2rem!important;
 }
 /* forms */
+.grommetux-check-box--toggle,
+.grommetux-check-box__control:after {
+  border-color: #b81623!important;
+}
 .grommetux-control-icon-caret-down {
   width: 14px!important;
   padding-bottom: 4px;
