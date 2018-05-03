@@ -1,5 +1,23 @@
+/* general */
 .noScroll {
   overflow: hidden!important;
+}
+/* meters */
+.meter .grommetux-meter__values .grommetux-meter__slice.grommetux-color-index-color-public {
+  stroke: #c61826!important;
+}
+.meter .grommetux-meter__values .grommetux-meter__slice.grommetux-color-index-color-user {
+  stroke: #19c844!important;
+  /* 1970c8 */
+}
+.meter .grommetux-meter__values .grommetux-meter__slice.grommetux-color-index-color-grey {
+  stroke: #e6e6e6!important;
+}
+.meter .grommetux-meter__values .grommetux-meter__slice,
+.meter .grommetux-meter__values .grommetux-meter__hot,
+.meter .grommetux-meter__tracks .grommetux-meter__slice,
+.meter .grommetux-meter__tracks .grommetux-meter__hot {
+  stroke-width: 8px!important;
 }
 /* heading */
 h1.grommetux-heading {
