@@ -2,6 +2,11 @@
 .noScroll {
   overflow: hidden!important;
 }
+/* code */
+pre {
+  border-left: 5px solid #c61826;
+  padding-left: 16px!important;
+}
 /* meters */
 .meter .grommetux-meter__values .grommetux-meter__slice.grommetux-color-index-color-public {
   stroke: #c61826!important;
