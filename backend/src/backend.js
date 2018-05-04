@@ -197,6 +197,8 @@ const allItems = (path, user) => fs.readdirSync(dirUser(user, path))
   .filter(filename => filename.endsWith('.json'))
   .filter(filename => ![FILE_SETTINGS].includes(filename))
   .map(filename => JSON.parse(fs.readFileSync(pathUser(user, path, filename))))
+const allItemsShort = (path, user) => allItems(path, user)
+  .map(json => ({hashid: json.hashid, id: json.id, name: json.name, level: json.level}))
 const settings = user => {
   const filename = pathUser(user, FILE_SETTINGS)
   if (!fs.existsSync(filename)) fs.writeFileSync(filename, JSON.stringify({
@@ -407,12 +409,7 @@ get('/backend/items', (req, res) => {
     {path: PATH_MEASURES, item: MEASURE},
     {path: PATH_PERSONS, item: PERSON},
     {path: PATH_RESULTS, item: RESULT},
-  ]) {
-    const items = []
-    for (const json of allItems(i.path, req.user)) items.push({id: json.id, name: json.name, level: LEVEL_USER})
-    for (const json of allItems(i.path, null)) items.push({id: json.id, name: json.name, level: LEVEL_PUBLIC})
-    data[`${i.item}s`] = items
-  }
+  ]) data[`${i.item}s`] = allItemsShort(i.path, req.user).concat(allItemsShort(i.path, null))
   res.status(200).json(data)
 })
 
