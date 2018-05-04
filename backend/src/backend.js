@@ -70,12 +70,7 @@ get('/backend/result/new', getItemNew(C.PATH_RESULTS, C.RESULT, {}))
 // metadataItems
 get('/backend/items', (req, res) => {
   const data = {}
-  for (const i of [
-    {path: C.PATH_CONTEXTS, item: C.CONTEXT},
-    {path: C.PATH_MEASURES, item: C.MEASURE},
-    {path: C.PATH_PERSONS, item: C.PERSON},
-    {path: C.PATH_RESULTS, item: C.RESULT},
-  ]) data[`${i.item}s`] = allItemsShort(i.path, req.user).concat(allItemsShort(i.path, null))
+  for (const i of C.ITEMS) data[`${i.item}s`] = allItemsShort(i.path, req.user).concat(allItemsShort(i.path, null))
   res.status(200).json(data)
 })
 

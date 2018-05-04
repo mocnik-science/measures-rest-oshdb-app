@@ -41,6 +41,12 @@ C.CONTEXT = 'context'
 C.MEASURE = 'measure'
 C.PERSON = 'person'
 C.RESULT = 'result'
+C.ITEMS = [
+  {item: C.CONTEXT, path: C.PATH_CONTEXTS},
+  {item: C.MEASURE, path: C.PATH_MEASURES},
+  {item: C.PERSON, path: C.PATH_PERSONS},
+  {item: C.RESULT, path: C.PATH_RESULTS},
+]
 
 C.SERVICE_IS_CHECKING = 'checking code ...'
 C.SERVICE_IS_STARTING = 'service starting ...'
