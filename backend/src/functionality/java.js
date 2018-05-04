@@ -8,7 +8,11 @@ const {readTemplate, useTemplate} = require('./templates')
 
 // JAVA //
 
-const removeJavaDir = user => fs.removeSync(pathUser(user, C.PATH_JAVA))
+const recreateJavaDir = user => {
+  const dir = pathUser(user, C.PATH_JAVA)
+  fs.removeSync(dir)
+  fs.mkdirSync(dir)
+}
 const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, C.PATH_JAVA, name), code)
 const saveJavaMeasure = (user, itemName, id, code) => fs.writeFileSync(idToPathUserFilename(user, C.MEASURE, id, C.PATH_JAVA, 'java'), code)
 
@@ -17,8 +21,7 @@ const javaRunTemplate = readTemplate(C.FILE_JAVA_RUN_TEMPLATE)
 
 module.exports.writeJava = user => {
   const jsons = allItems(C.PATH_MEASURES, user)
-  removeJavaDir(user)
-  fs.mkdir(pathUser(user, C.PATH_JAVA))
+  recreateJavaDir(user)
   jsons.filter(json => json.enabled).map(json => {
     saveJavaMeasure(user, C.MEASURE, json.id, useTemplate(javaTemplate, {
       id: json.id,
