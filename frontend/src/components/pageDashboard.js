@@ -25,7 +25,7 @@ class PageDashboard extends React.Component {
         {/*
         <h2>Measures</h2>
         */}
-        <div style={{display: 'flex', flexFlow: 'row'}}>
+        <div style={{display: 'flex', flexFlow: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
           <MeterItems
             items={this.state.measures}
             itemName='measure'
