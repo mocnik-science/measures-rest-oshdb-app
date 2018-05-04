@@ -20,7 +20,7 @@ const replaceAllItemLists = (user, hashid, idNew, levelNew, nameNew) => {
     .filter(filename => filename.endsWith('.json'))
     .filter(filename => ![C.FILE_SETTINGS].includes(filename))
     .map(filename => {
-      const f = pathUser(user, path, filename)
+      const f = pathUser(u, path, filename)
       const json = JSON.parse(fs.readFileSync(f))
       const jsonNew = modifyJson(Object.assign({}, json))
       if (json !== jsonNew) fs.writeFileSync(f, JSON.stringify(jsonNew))
