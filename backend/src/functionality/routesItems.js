@@ -1,6 +1,6 @@
 const C = require('./../constants')
 const {name2id, isLevelPublic, isLevelUser} = require('./common')
-const {itemForUser, saveItem, moveItem, moveItemToPublic, allItems} = require('./items')
+const {itemForUser, resolveDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems} = require('./items')
 
 // ROUTE ITEMS //
 
@@ -38,15 +38,25 @@ module.exports.postItem = (path, itemName, data) => (req, res) => {
   }
 }
 
+// module.exports.getItemDependencies = (path, itemName) => (req, res) => {
+//   const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, itemName, req.params.id)
+//   const dependencies = resolveDependenciesItem(req.user, json.hashid)
+//   res.status(200).json({dependencies: dependencies})
+// }
+
 module.exports.getItemPublic = (path, itemName) => (req, res) => {
   if (!isLevelUser(req.params.level)) return res.status(200).json({success: false, messages: {itemError: `Only user items can be made public.`}})
   else if (!req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
     const json = itemForUser(path, req.user, itemName, req.params.id)
-    const jsonNew = Object.assign(json, {level: C.LEVEL_PUBLIC})
-    if (!moveItemToPublic(path, req.user, itemName, req.params.id, jsonNew)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
-    saveItem(path, null, itemName, json.id, jsonNew)
-    getItems(path, itemName)(req, res)
+    const dependencies = resolveDependenciesItem(req.user, json.hashid).filter(item => !isLevelPublic(item.level))
+    if (dependencies.length > 0) res.status(200).json({success: false, dependencies: dependencies})
+    else {
+      const jsonNew = Object.assign(json, {level: C.LEVEL_PUBLIC})
+      if (!moveItemToPublic(path, req.user, itemName, req.params.id, jsonNew)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
+      saveItem(path, null, itemName, json.id, jsonNew)
+      getItems(path, itemName)(req, res)
+    }
   }
 }
 

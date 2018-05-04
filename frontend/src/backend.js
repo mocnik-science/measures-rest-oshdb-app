@@ -20,7 +20,7 @@ const fetchRawWithCallback = uri => callback => {
     .then(parseText)
     .then(callback)
 }
-const putWithCallbackWithId = (uri, id) => (data, callback) => {
+const postWithCallbackWithId = (uri, id) => (data, callback) => {
   return fetch(uri, {
     accept: 'application/json',
     credentials: 'include',
@@ -54,7 +54,8 @@ export const user = fetchWithCallback('/backend/user')
 
 export const itemAll = (itemName, callback) => fetchWithCallback(`/backend/${itemName}/all`)(callback)
 export const item = (itemName, level, id, callback) => fetchWithCallback(`/backend/${itemName}/id/${level}/${id}`)(callback)
-export const itemSave = (itemName, level, id, data, callback) => putWithCallbackWithId(`/backend/${itemName}/id/${level}/${id}`, id)(data, callback)
+export const itemSave = (itemName, level, id, data, callback) => postWithCallbackWithId(`/backend/${itemName}/id/${level}/${id}`, id)(data, callback)
+// export const itemDependencies = (itemName, level, id, callback) => fetchWithCallback(`/backend/${itemName}/dependencies/${level}/${id}`, id)(callback)
 export const itemPublic = (itemName, level, id, callback) => fetchWithCallback(`/backend/${itemName}/public/${level}/${id}`, id)(callback)
 export const itemNew = (itemName, callback) => fetchWithCallback(`/backend/${itemName}/new`)(callback)
 

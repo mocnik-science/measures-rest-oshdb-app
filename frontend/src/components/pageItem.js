@@ -14,7 +14,7 @@ import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import faEdit from '@fortawesome/fontawesome-free-solid/faEdit'
 import faPlusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
 
-import {itemAll, itemSave, itemDependencies, itemPublic, itemNew} from './../backend'
+import {itemAll, itemSave, itemPublic, itemNew} from './../backend'
 import {isLevelPublic} from './../tools'
 
 class PageItem extends React.Component {
@@ -85,9 +85,19 @@ class PageItem extends React.Component {
                   <Button key='button-public' icon={<FontAwesomeIcon icon={faCertificate}/>} onClick={e => {
                     e.preventDefault()
                     itemPublic(this.props.itemName, item.level, item.id, response => {
-                      if (!response || !response.success) this.setState({messages: response.messages})
+                      if (!response) this.setState({message: 'Unknown error'})
+                      else if (!response.success && response.dependencies) this.setState({messages: `The ${this.props.itemName} cannot be made public.  The following items are non-public but refer to this ${this.props.itemName}: ${response.dependencies.map(d => `${d.name} (${d._itemName})`).join(', ')}.`})
+                      else if (!response.success && response.messages) this.setState({messages: response.messages})
                       else this.setState(response)
                     })
+                    
+                    
+//                     itemDependencies(this.props.itemName, item.level, item.id, response => {
+// console.log(response)
+//                       const dependencies = response.dependencies.filter(item => !isLevelPublic(item.level))
+//                       if (dependencies.length > 0) this.setState({messages: `The ${this.props.itemName} cannot be made public.  The following items are non-public but refer to this ${this.props.itemName}: ${dependencies.map(d => `${d.name} (${d._itemName})`).join(', ')}.`})
+//                       else 
+//                     })
                   }}/> : []
                 }
                 <Button key='button-description' icon={<FontAwesomeIcon icon={faEdit}/>} path={`/${this.props.itemName}/${item.level}/${item.id}/description`}/>

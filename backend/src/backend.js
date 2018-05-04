@@ -10,7 +10,7 @@ const {useAuthentication, User} = require('./functionality/authentication')
 const {allItemsShort} = require('./functionality/items')
 const {writeJava} = require('./functionality/java')
 const {getMap} = require('./functionality/maps')
-const {getItems, getItem, postItem, getItemPublic, getItemNew} = require('./functionality/routesItems')
+const {getItems, getItem, postItem, getItemDependencies, getItemPublic, getItemNew} = require('./functionality/routesItems')
 const {serviceState, serviceCheck, serviceStart, serviceStop} = require('./functionality/services')
 const {settings} = require('./functionality/settings')
 
@@ -39,33 +39,15 @@ app.get('/backend/logout', (req, res) => {
   res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null})
 })
 
-// context
-get('/backend/context/all', getItems(C.PATH_CONTEXTS, C.CONTEXT))
-get('/backend/context/id/:level/:id', getItem(C.PATH_CONTEXTS, C.CONTEXT))
-post('/backend/context/id/:level/:id', postItem(C.PATH_CONTEXTS, C.CONTEXT))
-get('/backend/context/public/:level/:id', getItemPublic(C.PATH_CONTEXTS, C.CONTEXT))
-get('/backend/context/new', getItemNew(C.PATH_CONTEXTS, C.CONTEXT, {}))
-
-// measure
-get('/backend/measure/all', getItems(C.PATH_MEASURES, C.MEASURE))
-get('/backend/measure/id/:level/:id', getItem(C.PATH_MEASURES, C.MEASURE))
-post('/backend/measure/id/:level/:id', postItem(C.PATH_MEASURES, C.MEASURE))
-get('/backend/measure/public/:level/:id', getItemPublic(C.PATH_MEASURES, C.MEASURE))
-get('/backend/measure/new', getItemNew(C.PATH_MEASURES, C.MEASURE, {code: '', enabled: false}))
-
-// person
-get('/backend/person/all', getItems(C.PATH_PERSONS, C.PERSON))
-get('/backend/person/id/:level/:id', getItem(C.PATH_PERSONS, C.PERSON))
-post('/backend/person/id/:level/:id', postItem(C.PATH_PERSONS, C.PERSON))
-get('/backend/person/public/:level/:id', getItemPublic(C.PATH_PERSONS, C.PERSON))
-get('/backend/person/new', getItemNew(C.PATH_PERSONS, C.PERSON, {}))
-
-// result
-get('/backend/result/all', getItems(C.PATH_RESULTS, C.RESULT))
-get('/backend/result/id/:level/:id', getItem(C.PATH_RESULTS, C.RESULT))
-post('/backend/result/id/:level/:id', postItem(C.PATH_RESULTS, C.RESULT))
-get('/backend/result/public/:level/:id', getItemPublic(C.PATH_RESULTS, C.RESULT))
-get('/backend/result/new', getItemNew(C.PATH_RESULTS, C.RESULT, {}))
+// items
+for (const i of C.ITEMS) {
+  get(`/backend/${i.item}/all`, getItems(i.path, i.item))
+  get(`/backend/${i.item}/id/:level/:id`, getItem(i.path, i.item))
+  post(`/backend/${i.item}/id/:level/:id`, postItem(i.path, i.item))
+  // get(`/backend/${i.item}/dependencies/:level/:id`, getItemDependencies(i.path, i.item))
+  get(`/backend/${i.item}/public/:level/:id`, getItemPublic(i.path, i.item))
+  get(`/backend/${i.item}/new`, getItemNew(i.path, i.item, i.dataNew))
+}
 
 // metadataItems
 get('/backend/items', (req, res) => {

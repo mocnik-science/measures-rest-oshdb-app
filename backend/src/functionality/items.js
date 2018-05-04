@@ -6,14 +6,16 @@ const {generateGuid, idToPathUserFilename, pathUser, dirUser} = require('./commo
 // ITEMS //
 
 const replaceAllItemLists = (user, hashid, idNew, levelNew, nameNew) => {
-  const modifyJson = json => {
-    if (typeof(json) === 'object' && 'hashid' in json && json.hashid == hashid && 'id' in json && 'level' in json && 'label' in json && 'value' in json) {
-      json.id = idNew
-      json.level = levelNew
-      json.label = nameNew
-      json.value = idNew
+  const modifyJson = (json, firstLevel=true) => {
+    if (typeof(json) === 'object' && json !== null) {
+      if (!firstLevel && 'hashid' in json && json.hashid == hashid && 'id' in json && 'level' in json && 'label' in json && 'value' in json) {
+        json.id = idNew
+        json.level = levelNew
+        json.label = nameNew
+        json.value = idNew
+      }
+      Object.entries(json).forEach(([k, v]) => modifyJson(v, false))
     }
-    if (typeof(json) === 'object') Object.entries(json).forEach(([k, v]) => modifyJson(v))
     return json
   }
   const walk = (u, path) => fs.readdirSync(dirUser(u, path))
@@ -33,6 +35,35 @@ module.exports.itemForUser = itemForUser = (path, user, itemName, id) => {
   if (!id) return null
   const filename = idToPathUserFilename(user, itemName, id, path)
   return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
+}
+
+module.exports.resolveDependenciesItem = (user, hashid) => {
+  const dependencies = []
+  const dependenciesJson = (itemName, json, item=null) => {
+    if (typeof(json) === 'object' && json !== null) {
+      if (item !== null && 'hashid' in json && json.hashid == hashid && 'id' in json && 'level' in json && 'label' in json && 'value' in json) {
+        dependencies.push({
+          hashid: item.hashid,
+          id: item.id,
+          level: item.level,
+          name: item.name,
+          _itemName: itemName,
+        })
+      }
+      Object.entries(json).forEach(([k, v]) => dependenciesJson(itemName, v, (item !== null) ? item : json))
+    }
+  }
+  const walk = (itemName, u, path) => fs.readdirSync(dirUser(u, path))
+    .filter(filename => filename.endsWith('.json'))
+    .filter(filename => ![C.FILE_SETTINGS].includes(filename))
+    .map(filename => {
+      const f = pathUser(u, path, filename)
+      const json = JSON.parse(fs.readFileSync(f))
+      dependenciesJson(itemName, json)
+    })
+  for (i of C.ITEMS) walk(i.item, user, i.path)
+  for (i of C.ITEMS) walk(i.item, null, i.path)
+  return dependencies
 }
 
 module.exports.saveItem = (path, user, itemName, id, json) => {
