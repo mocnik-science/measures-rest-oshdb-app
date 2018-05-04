@@ -5,6 +5,30 @@ const {generateGuid, idToPathUserFilename, pathUser, dirUser} = require('./commo
 
 // ITEMS //
 
+const replaceAllItemLists = (user, hashid, idNew, levelNew, nameNew) => {
+  const modifyJson = json => {
+    if (typeof(json) === 'object' && 'hashid' in json && json.hashid == hashid && 'id' in json && 'level' in json && 'label' in json && 'value' in json) {
+      json.id = idNew
+      json.level = levelNew
+      json.label = nameNew
+      json.value = idNew
+    }
+    if (typeof(json) === 'object') Object.entries(json).forEach(([k, v]) => modifyJson(v))
+    return json
+  }
+  const walk = (u, path) => fs.readdirSync(dirUser(u, path))
+    .filter(filename => filename.endsWith('.json'))
+    .filter(filename => ![C.FILE_SETTINGS].includes(filename))
+    .map(filename => {
+      const f = pathUser(user, path, filename)
+      const json = JSON.parse(fs.readFileSync(f))
+      const jsonNew = modifyJson(Object.assign({}, json))
+      if (json !== jsonNew) fs.writeFileSync(f, JSON.stringify(jsonNew))
+    })
+  for (i of C.ITEMS) walk(user, i.path)
+  for (i of C.ITEMS) walk(null, i.path)
+}
+
 module.exports.itemForUser = itemForUser = (path, user, itemName, id) => {
   if (!id) return null
   const filename = idToPathUserFilename(user, itemName, id, path)
@@ -16,14 +40,16 @@ module.exports.saveItem = (path, user, itemName, id, json) => {
   fs.writeFileSync(idToPathUserFilename(user, itemName, id, path), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
 }
 
-module.exports.moveItem = (path, user, itemName, idOld, idNew) => {
-  const filenameNew = idToPathUserFilename(user, itemName, idNew, path)
+module.exports.moveItem = (path, user, itemName, idOld, data) => {
+  replaceAllItemLists(user, data.hashid, data.id, data.level, data.name)
+  const filenameNew = idToPathUserFilename(user, itemName, data.id, path)
   if (fs.existsSync(filenameNew)) return false
   fs.renameSync(idToPathUserFilename(user, itemName, idOld, path), filenameNew)
   return true
 }
 
-module.exports.moveItemToPublic = (path, user, itemName, id) => {
+module.exports.moveItemToPublic = (path, user, itemName, id, data) => {
+  replaceAllItemLists(user, data.hashid, data.id, data.level, data.name)
   const filenameNew = idToPathUserFilename(null, itemName, id, path)
   if (fs.existsSync(filenameNew)) return false
   fs.renameSync(idToPathUserFilename(user, itemName, id, path), filenameNew)

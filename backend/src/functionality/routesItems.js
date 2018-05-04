@@ -29,7 +29,7 @@ module.exports.postItem = (path, itemName, data) => (req, res) => {
       json.timestamp = data.timestamp
       if (data.data.name && json.name !== data.data.name) {
         json.id = name2id(data.data.name)
-        if (!moveItem(path, u, itemName, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
+        if (!moveItem(path, u, itemName, req.params.id, Object.assign(json, data.data))) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
       }
       const jsonNew = Object.assign(json, data.data)
       saveItem(path, u, itemName, json.id, jsonNew)
@@ -42,9 +42,9 @@ module.exports.getItemPublic = (path, itemName) => (req, res) => {
   if (!isLevelUser(req.params.level)) return res.status(200).json({success: false, messages: {itemError: `Only user items can be made public.`}})
   else if (!req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
-    if (!moveItemToPublic(path, req.user, itemName, req.params.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
-    const json = itemForUser(path, null, itemName, req.params.id)
+    const json = itemForUser(path, req.user, itemName, req.params.id)
     const jsonNew = Object.assign(json, {level: C.LEVEL_PUBLIC})
+    if (!moveItemToPublic(path, req.user, itemName, req.params.id, jsonNew)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
     saveItem(path, null, itemName, json.id, jsonNew)
     getItems(path, itemName)(req, res)
   }
