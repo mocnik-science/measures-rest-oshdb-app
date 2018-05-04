@@ -98,7 +98,7 @@ class PageItem extends React.Component {
                     <Button
                       key='button-website'
                       icon={<FontAwesomeIcon icon={this.props.websiteIcon}/>}
-                      onClick={e => {
+                      onClick={(!this.props.website(item)) ? null : e => {
                         e.preventDefault()
                         window.open(this.props.website(item))
                       }}
