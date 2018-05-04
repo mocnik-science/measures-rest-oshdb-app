@@ -1,363 +1,29 @@
 const bodyParser = require('body-parser')
 const express = require('express')
 const fs = require('fs-extra')
-const handlebars = require('handlebars')
 const https = require('https')
-const {join, resolve} = require('path')
-const os = require('os')
 const passport = require('passport')
-const localPassportStrategy = require('passport-local').Strategy
-const ldapStrategy = require('passport-ldapauth')
-const session = require('express-session')
-const soap = require('simplified-oshdb-api-programming/dist/soap-to-java.js')
-const {spawn, spawnSync} = require('child_process')
-const uuidv4 = require('uuid/v4')
 
+const C = require('./constants')
 const settingsApp = require('./settings')
+const {useAuthentication, User} = require('./functionality/authentication')
+const {allItemsShort} = require('./functionality/items')
+const {writeJava} = require('./functionality/java')
+const {getMap} = require('./functionality/maps')
+const {getItems, getItem, postItem, getItemPublic, getItemNew} = require('./functionality/routesItems')
+const {serviceState, serviceCheck, serviceStart, serviceStop} = require('./functionality/services')
+const {settings} = require('./functionality/settings')
 
-const PATH_SERVICE = './../../measures-rest-oshdb-docker'
-const PATH_DATA = './../../measures-rest-oshdb-data'
-const PATH_USERS = `${PATH_DATA}/users`
-const PATH_PUBLIC = `${PATH_DATA}/public`
-const PATH_DBS = `${PATH_DATA}/dbs`
-const PATH_JAVA = 'java'
-const PATH_CONTEXTS = 'contexts'
-const PATH_MEASURES = 'measures'
-const PATH_PERSONS = 'persons'
-const PATH_RESULTS = 'results'
-const FILE_SETTINGS = 'settings.json'
-const CMD_SERVICE_REACHABLE = 'curl --max-time .25'
-const CMD_SERVICE_STATE = './state'
-const CMD_SERVICE_CHECK = './check'
-const CMD_SERVICE_LOGS = './logs'
-const CMD_SERVICE_START = './start'
-const CMD_SERVICE_STOP = './stop'
-const PATH_TEMPLATES = './templates'
-const FILE_JAVA_TEMPLATE = `${PATH_TEMPLATES}/java.tmpl`
-const FILE_JAVA_RUN_TEMPLATE = `${PATH_TEMPLATES}/javaRun.tmpl`
-const FILE_MAP_INDEX_TEMPLATE = `${PATH_TEMPLATES}/map.tmpl`
-const HOST_SERVICE = 'localhost'
-const PORT_SERVICE = 14242
-const KEY = join(os.homedir(), '.cert/key.pem')
-const CERT = join(os.homedir(), '.cert/cert.pem')
-const NEW_ITEM = 'new'
-
-const DEVELOPMENT = (process.env.DEVELOPMENT != undefined) ? (process.env.DEVELOPMENT == 'true') : true
-const PORT = (process.env.PORT) ? process.env.PORT : (DEVELOPMENT) ? 3001 : 443
-const HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') : !DEVELOPMENT
-
-LEVEL_PUBLIC = 'PUBLIC'
-LEVEL_USER = 'USER'
-
-CONTEXT = 'context'
-MEASURE = 'measure'
-PERSON = 'person'
-RESULT = 'result'
+// INIT APP //
 
 const app = express()
 
 const bodyParserJson = bodyParser.json()
 app.use((req, res, next) => (req.method == 'POST') ? bodyParserJson(req, res, next): next())
 
-// AUTHENTICATION
+const [get, post] = useAuthentication(app)
 
-const requireAuth = (req, res, next) => {
-  if (req.user) return next()
-  return res.status(403).send('forbidden')
-}
-
-const get = (route, ...xs) => app.get(route, requireAuth, ...xs)
-const post = (route, ...xs) => app.post(route, requireAuth, ...xs)
-
-passport.use(new localPassportStrategy((username, password, done) => {
-  const usernames = settingsApp.localUsers
-  if (usernames[username] !== undefined && usernames[username] === password) {
-    const u = User.fromLocal(username)
-    if (!fs.existsSync(`${PATH_USERS}/${u.username()}`)) fs.mkdirSync(`${PATH_USERS}/${u.username()}`)
-    return done(null, u)
-  }
-  return done(null, false, {})
-}))
-if (settingsApp.ldapOptions) passport.use(new ldapStrategy(settingsApp.ldapOptions, (user, done) => {
-  const u = User.fromLdap(user)
-  if (!fs.existsSync(`${PATH_USERS}/${u.username()}`)) fs.mkdirSync(`${PATH_USERS}/${u.username()}`)
-  done(null, u)
-}))
-
-passport.serializeUser((user, done) => done(null, user.userinfo()))
-passport.deserializeUser((userinfo, done) => done(null, User.fromUserinfo(userinfo)))
-
-app.use(session({
-  secret: 'un9ßq9^ac%§8x"mixaü',
-  resave: false,
-  saveUninitialized: false,
-}))
-app.use(passport.initialize())
-app.use(passport.session())
-
-// USER
-
-class User {
-  constructor() {
-    this._userinfo = null
-  }
-  
-  static fromUserinfo(userinfo) {
-    const u = new this
-    u._userinfo = userinfo
-    return u
-  }
-  
-  static fromLocal(x) {
-    const u = new this;
-    u._userinfo = {username: x, admin: settingsApp.admins.includes(x)}
-    return u
-  }
-  
-  static fromLdap(x) {
-    const u = new this;
-    u._userinfo = {
-      username: x.cn,
-      fullname: x.displayName,
-      surname: x.sn,
-      forename: x.givenName,
-      admin: settingsApp.admins.includes(x.cn),
-    }
-    return u
-  }
-  
-  static getUserinfo(u) {
-    return (u && '_userinfo' in u) ? User.fromUserinfo(u._userinfo).userinfo() : {username: null}
-  }
-  
-  static getUsername(u) {
-    return (u && '_userinfo' in u) ? User.fromUserinfo(u._userinfo).username() : {username: null}
-  }
-
-  userinfo() {
-    return this._userinfo
-  }
-
-  username() {
-    return this.userinfo().username
-  }
-  
-  admin() {
-    return this.userinfo().admin
-  }
-}
-
-// HELPING FUNCTIONS
-
-// hash
-const generateGuid = () => uuidv4()
-
-// ids and names
-const name2id = id => id.replace(/[\s-_]+(\w)/g, (match, p, offset) => `-${p}`).replace(/[^-a-zA-Z0-9]/g, '').toLowerCase()
-const className = (itemName, id) => `${itemName}${id.replace(/^([a-z0-9])|-([a-z0-9])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
-
-// common
-const idToFilename = (itemName, id, ext='json') => `${className(itemName, id)}.${ext}`
-const idToPathUserFilename = (user, itemName, id, path='', ext='json') => {
-  if (path !== '') {
-    const p = pathUser(user, path)
-    if (!fs.existsSync(p)) fs.mkdirSync(p)
-  }
-  return pathUser(user, path, idToFilename(itemName, id, ext))
-}
-const pathUser = (user, ...path) => (user) ? join(PATH_USERS, User.getUsername(user), ...path) : join(PATH_PUBLIC, ...path)
-const pathUserAbsolute = (user, ...path) => resolve(pathUser(user, ...path))
-const dirUser = (user, ...path) => {
-  const p = pathUser(user, ...path)
-  if (!fs.existsSync(p)) fs.mkdirSync(p)
-  return p
-}
-const itemForUser = (path, user, itemName, id) => {
-  if (!id) return null
-  const filename = idToPathUserFilename(user, itemName, id, path)
-  return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
-}
-const saveItem = (path, user, itemName, id, json) => {
-  const jsonOld = itemForUser(path, user, itemName, id)
-  fs.writeFileSync(idToPathUserFilename(user, itemName, id, path), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
-}
-const moveItem = (path, user, itemName, idOld, idNew) => {
-  const filenameNew = idToPathUserFilename(user, itemName, idNew, path)
-  if (fs.existsSync(filenameNew)) return false
-  fs.renameSync(idToPathUserFilename(user, itemName, idOld, path), filenameNew)
-  return true
-}
-const moveItemToPublic = (path, user, itemName, id) => {
-  const filenameNew = idToPathUserFilename(null, itemName, id, path)
-  if (fs.existsSync(filenameNew)) return false
-  fs.renameSync(idToPathUserFilename(user, itemName, id, path), filenameNew)
-  return true
-}
-const allItems = (path, user) => fs.readdirSync(dirUser(user, path))
-  .filter(filename => filename.endsWith('.json'))
-  .filter(filename => ![FILE_SETTINGS].includes(filename))
-  .map(filename => JSON.parse(fs.readFileSync(pathUser(user, path, filename))))
-const allItemsShort = (path, user) => allItems(path, user)
-  .map(json => ({hashid: json.hashid, id: json.id, name: json.name, level: json.level}))
-const settings = user => {
-  const filename = pathUser(user, FILE_SETTINGS)
-  if (!fs.existsSync(filename)) fs.writeFileSync(filename, JSON.stringify({
-    port: Math.max(PORT_SERVICE, ...allSettings().map(json => json.port)) + 1
-  }))
-  return JSON.parse(fs.readFileSync(filename))
-}
-const allSettings = () => fs.readdirSync(PATH_USERS)
-  .filter(pathname => !pathname.startsWith('.'))
-  .filter(pathname => fs.existsSync(`${PATH_USERS}/${pathname}/${FILE_SETTINGS}`))
-  .map(pathname => JSON.parse(fs.readFileSync(`${PATH_USERS}/${pathname}/${FILE_SETTINGS}`)))
-const removeJavaDir = user => fs.removeSync(pathUser(user, PATH_JAVA))
-const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, PATH_JAVA, name), code)
-const saveJavaMeasure = (user, itemName, id, code) => fs.writeFileSync(idToPathUserFilename(user, MEASURE, id, PATH_JAVA, 'java'), code)
-
-// levels
-const isLevelPublic = x => x && x.toUpperCase() === LEVEL_PUBLIC
-const isLevelUser = x => x && x.toUpperCase() === LEVEL_USER
-
-// services
-let serviceHasState = null
-let serviceCancel = false
-const SERVICE_IS_CHECKING = 'checking code ...'
-const SERVICE_IS_STARTING = 'service starting ...'
-const SERVICE_IS_STARTED = 'service started'
-const SERVICE_IS_STOPPED = 'service stopped'
-const portReachable = (host, port) => (spawnSync(`${CMD_SERVICE_REACHABLE} http://${host}:${port}`, {shell: true}).status == 0)
-const serviceState = (user, port) => {
-  const running = [SERVICE_IS_CHECKING, SERVICE_IS_STARTING, SERVICE_IS_STARTED].includes(serviceHasState) || spawnSync(`${CMD_SERVICE_STATE} ${User.getUsername(user)}`, {cwd: PATH_SERVICE, shell: true}).status == 0
-  let logs = null
-  if (running) {
-    const ls = spawnSync(`${CMD_SERVICE_LOGS} ${User.getUsername(user)}`, {cwd: PATH_SERVICE, shell: true}).stderr.toString()
-    const lsArray = ls.split('\n').reverse()
-    const logsArray = []
-    for (let lArray of lsArray) {
-      if (lArray.startsWith('[INFO] ') || lArray.endsWith(' java.util.logging.LogManager$RootLogger log') || lArray.startsWith('SEVERE: Failed to resolve default logging config file: config/java.util.logging.properties') || lArray.startsWith('http://')) break
-      logsArray.push(lArray)
-    }
-    logs = logsArray.reverse().join('\n')
-  }
-  return {
-    serviceRunning: running,
-    serviceState: (serviceHasState) ? serviceHasState : ((running) ? (portReachable(HOST_SERVICE, port) ? SERVICE_IS_STARTED : SERVICE_IS_STARTING) : SERVICE_IS_STOPPED),
-    serviceLogs: logs,
-  }
-}
-const serviceCheck = (user, callback) => {
-  const s = spawn(`${CMD_SERVICE_CHECK} ${User.getUsername(user)} ${pathUserAbsolute(user, PATH_JAVA)}`, {cwd: PATH_SERVICE, shell: true})
-  let out = ''
-  s.stdout.on('data', outCmd => out += outCmd.toString())
-  s.on('close', code => {
-    const files = allItems(PATH_MEASURES, user).map(json => {
-      const a = idToPathUserFilename(user, MEASURE, json.id, PATH_JAVA, 'java').split('/')
-      return [json.id, a[a.length - 1]]
-    })
-    const result = {}
-    for (const json of allItems(PATH_MEASURES, user)) if (json.enabled) result[json.id] = ''
-    for (const l of out.split('\n')) for (const file of files)
-      if (result[file[0]] !== undefined && ~l.indexOf(file[1])) result[file[0]] = ((result[file[0]]) ? result[file[0]] : '') + l + '\n'
-    callback(result)
-  })
-}
-const serviceStart = (user, port) => spawnSync(`${CMD_SERVICE_START} ${User.getUsername(user)} ${pathUserAbsolute(user, PATH_JAVA)} ${port}`, {cwd: PATH_SERVICE, shell: true})
-const serviceStop = user => {
-  serviceCancel = true
-  spawnSync(`${CMD_SERVICE_STOP} ${User.getUsername(user)}`, {cwd: PATH_SERVICE, shell: true})
-}
-
-// templates
-const readTemplate = t => handlebars.compile(fs.readFileSync(t, 'utf-8'))
-const javaTemplate = readTemplate(FILE_JAVA_TEMPLATE)
-const javaRunTemplate = readTemplate(FILE_JAVA_RUN_TEMPLATE)
-const mapIndexTemplate = readTemplate(FILE_MAP_INDEX_TEMPLATE)
-const useTemplate = (template, data) => {
-  const data2 = {}
-  for (let d of Object.keys(data)) data2[d] = (typeof data[d] == 'string') ? new handlebars.SafeString(data[d]) : data[d]
-  return template(data2)
-}
-const writeJava = user => {
-  const jsons = allItems(PATH_MEASURES, user)
-  removeJavaDir(user)
-  jsons.filter(json => json.enabled).map(json => {
-    saveJavaMeasure(user, json.id, useTemplate(javaTemplate, {
-      id: json.id,
-      className: className(json.id),
-      code: soap.soapToJava(json.code.replace(/^\s*import\s.+\n?/gm, '')),
-      imports: json.code.split('\n').filter(s => s.match(/^\s*import\s.+/)).join('\n'),
-    }))
-  })
-  saveJava(user, 'Run.java', useTemplate(javaRunTemplate, {
-    measures: jsons.filter(json => json.enabled).map(json => ({className: className(json.id)})),
-    databaseFile: `/data/dbs/sweden_20180112_z12_keytable.oshdb`,
-  }))
-}
-const getMap = (user, port, id) => {
-  const json = itemForUser(PATH_MEASURES, MEASURE, user, id)
-  return useTemplate(mapIndexTemplate, {
-    name: json.name,
-    id: json.id,
-    url: settingsApp.mapUrl(port),
-  })
-}
-
-// ITEMS
-const getItems = (path, itemName) => (req, res) => {
-  const items = {}
-  for (const json of allItems(path, req.user)) items[`user-${json.id}`] = json
-  for (const json of allItems(path, null)) items[`public-${json.id}`] = json
-  res.status(200).json({success: true, items: items})
-}
-const getItem = (path, itemName) => (req, res) => {
-  const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, itemName, req.params.id)
-  if (json == null) res.status(404).send(`${itemName} not found`)
-  else res.status(200).json(json)
-}
-const postItem = (path, itemName, data) => (req, res) => {
-  const u = isLevelPublic(req.params.level) ? null : req.user
-  const json = itemForUser(path, u, itemName, req.params.id)
-  if (json == null) res.status(404).send(`${itemName} not found`)
-  else if (u === null && !req.user.admin()) res.status(403).send(`no rights to modify`)
-  else {
-    const data = req.body
-    if (json.timestamp >= data.timestamp) res.status(200).json({success: true})
-    else {
-      json.timestamp = data.timestamp
-      if (data.data.name && json.name !== data.data.name) {
-        json.id = name2id(data.data.name)
-        if (!moveItem(path, u, itemName, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
-      }
-      const jsonNew = Object.assign(json, data.data)
-      saveItem(path, u, itemName, json.id, jsonNew)
-      res.status(200).json({success: true})
-    }
-  }
-}
-const getItemPublic = (path, itemName) => (req, res) => {
-  if (!isLevelUser(req.params.level)) return res.status(200).json({success: false, messages: {itemError: `Only user items can be made public.`}})
-  else if (!req.user.admin()) res.status(403).send(`no rights to modify`)
-  else {
-    if (!moveItemToPublic(path, req.user, itemName, req.params.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
-    const json = itemForUser(path, null, itemName, req.params.id)
-    const jsonNew = Object.assign(json, {level: LEVEL_PUBLIC})
-    saveItem(path, null, itemName, json.id, jsonNew)
-    getItems(path, itemName)(req, res)
-  }
-}
-const getItemNew = (path, itemName, data) => (req, res) => {
-  let i = 0
-  let name = null
-  while (name === null || itemForUser(path, req.user, itemName, name2id(name)) !== null) name = `${NEW_ITEM} ${itemName} ${++i}`
-  saveItem(path, req.user, itemName, name2id(name), Object.assign({
-    id: name2id(name),
-    name: name,
-    level: LEVEL_USER,
-  }, data))
-  getItems(path, itemName)(req, res)
-}
-
-// ROUTES
+// ROUTES //
 
 // authenticate
 app.get('/backend/login', (req, res, next) => passport.authenticate(['local', (settingsApp.ldapOptions) ? 'ldapauth' : null], (err, user, info) => {
@@ -374,41 +40,41 @@ app.get('/backend/logout', (req, res) => {
 })
 
 // context
-get('/backend/contexts', getItems(PATH_CONTEXTS, CONTEXT))
-get('/backend/context/id/:level/:id', getItem(PATH_CONTEXTS, CONTEXT))
-post('/backend/context/id/:level/:id', postItem(PATH_CONTEXTS, CONTEXT))
-get('/backend/context/public/:level/:id', getItemPublic(PATH_CONTEXTS, CONTEXT))
-get('/backend/context/new', getItemNew(PATH_CONTEXTS, CONTEXT, {}))
+get('/backend/contexts', getItems(C.PATH_CONTEXTS, C.CONTEXT))
+get('/backend/context/id/:level/:id', getItem(C.PATH_CONTEXTS, C.CONTEXT))
+post('/backend/context/id/:level/:id', postItem(C.PATH_CONTEXTS, C.CONTEXT))
+get('/backend/context/public/:level/:id', getItemPublic(C.PATH_CONTEXTS, C.CONTEXT))
+get('/backend/context/new', getItemNew(C.PATH_CONTEXTS, C.CONTEXT, {}))
 
 // measure
-get('/backend/measures', getItems(PATH_MEASURES, MEASURE))
-get('/backend/measure/id/:level/:id', getItem(PATH_MEASURES, MEASURE))
-post('/backend/measure/id/:level/:id', postItem(PATH_MEASURES, MEASURE))
-get('/backend/measure/public/:level/:id', getItemPublic(PATH_MEASURES, MEASURE))
-get('/backend/measure/new', getItemNew(PATH_MEASURES, MEASURE, {code: '', enabled: false}))
+get('/backend/measures', getItems(C.PATH_MEASURES, C.MEASURE))
+get('/backend/measure/id/:level/:id', getItem(C.PATH_MEASURES, C.MEASURE))
+post('/backend/measure/id/:level/:id', postItem(C.PATH_MEASURES, C.MEASURE))
+get('/backend/measure/public/:level/:id', getItemPublic(C.PATH_MEASURES, C.MEASURE))
+get('/backend/measure/new', getItemNew(C.PATH_MEASURES, C.MEASURE, {code: '', enabled: false}))
 
 // person
-get('/backend/persons', getItems(PATH_PERSONS, PERSON))
-get('/backend/person/id/:level/:id', getItem(PATH_PERSONS, PERSON))
-post('/backend/person/id/:level/:id', postItem(PATH_PERSONS, PERSON))
-get('/backend/person/public/:level/:id', getItemPublic(PATH_PERSONS, PERSON))
-get('/backend/person/new', getItemNew(PATH_PERSONS, PERSON, {}))
+get('/backend/persons', getItems(C.PATH_PERSONS, C.PERSON))
+get('/backend/person/id/:level/:id', getItem(C.PATH_PERSONS, C.PERSON))
+post('/backend/person/id/:level/:id', postItem(C.PATH_PERSONS, C.PERSON))
+get('/backend/person/public/:level/:id', getItemPublic(C.PATH_PERSONS, C.PERSON))
+get('/backend/person/new', getItemNew(C.PATH_PERSONS, C.PERSON, {}))
 
 // result
-get('/backend/results', getItems(PATH_RESULTS, RESULT))
-get('/backend/result/id/:level/:id', getItem(PATH_RESULTS, RESULT))
-post('/backend/result/id/:level/:id', postItem(PATH_RESULTS, RESULT))
-get('/backend/result/public/:level/:id', getItemPublic(PATH_RESULTS, RESULT))
-get('/backend/result/new', getItemNew(PATH_RESULTS, RESULT, {}))
+get('/backend/results', getItems(C.PATH_RESULTS, C.RESULT))
+get('/backend/result/id/:level/:id', getItem(C.PATH_RESULTS, C.RESULT))
+post('/backend/result/id/:level/:id', postItem(C.PATH_RESULTS, C.RESULT))
+get('/backend/result/public/:level/:id', getItemPublic(C.PATH_RESULTS, C.RESULT))
+get('/backend/result/new', getItemNew(C.PATH_RESULTS, C.RESULT, {}))
 
 // metadataItems
 get('/backend/items', (req, res) => {
   const data = {}
   for (const i of [
-    {path: PATH_CONTEXTS, item: CONTEXT},
-    {path: PATH_MEASURES, item: MEASURE},
-    {path: PATH_PERSONS, item: PERSON},
-    {path: PATH_RESULTS, item: RESULT},
+    {path: C.PATH_CONTEXTS, item: C.CONTEXT},
+    {path: C.PATH_MEASURES, item: C.MEASURE},
+    {path: C.PATH_PERSONS, item: C.PERSON},
+    {path: C.PATH_RESULTS, item: C.RESULT},
   ]) data[`${i.item}s`] = allItemsShort(i.path, req.user).concat(allItemsShort(i.path, null))
   res.status(200).json(data)
 })
@@ -422,7 +88,7 @@ get('/backend/service/check', (req, res) => {
 })
 get('/backend/service/start', (req, res) => {
   serviceCancel = false
-  serviceHasState = SERVICE_IS_CHECKING
+  serviceHasState = C.SERVICE_IS_CHECKING
   writeJava(req.user)
   serviceCheck(req.user, result => {
     const checkSuccess = Object.values(result).filter(x => x !== '').length == 0
@@ -450,17 +116,17 @@ app.use('/static/vs', express.static('./../frontend/node_modules/monaco-editor/m
 app.use('/static/libs', express.static('./../backend/libs'))
 app.use('/static/help', express.static('./../backend/help'))
 
-if (!DEVELOPMENT) {
+if (!C.DEVELOPMENT) {
   app.use('/', express.static('./../frontend/build'))
   app.use('*', express.static('./../frontend/build/index.html'))
 }
 
-if (HTTPS) {
+if (C.HTTPS) {
   https.createServer({
-    key: fs.readFileSync(KEY),
-    cert: fs.readFileSync(CERT),
-  }, app).listen(PORT)
+    key: fs.readFileSync(C.KEY),
+    cert: fs.readFileSync(C.CERT),
+  }, app).listen(C.PORT)
 } else {
-  app.set('port', PORT)
+  app.set('port', C.PORT)
   app.listen(app.get('port'))
 }
