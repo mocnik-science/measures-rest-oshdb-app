@@ -28,6 +28,7 @@ const pages = [
   {path: '/help/context', label: 'Contexts', component: PageHelp, exact: true, menu: '/help'},
   {path: '/help/result', label: 'Results', component: PageHelp, exact: true, menu: '/help'},
   {path: '/help/publicRepository', label: 'Public Repository', component: PageHelp, exact: true, menu: '/help'},
+  {path: '/help/advanced', label: 'Advanced', component: PageHelp, exact: true, menu: '/help'},
 ]
 
 export default pages
