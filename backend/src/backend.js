@@ -11,6 +11,7 @@ const ldapStrategy = require('passport-ldapauth')
 const session = require('express-session')
 const soap = require('simplified-oshdb-api-programming/dist/soap-to-java.js')
 const {spawn, spawnSync} = require('child_process')
+const uuidv4 = require('uuid/v4')
 
 const settingsApp = require('./settings')
 
@@ -143,6 +144,9 @@ class User {
 
 // HELPING FUNCTIONS
 
+// hash
+const generateGuid = () => uuidv4()
+
 // ids and names
 const name2id = id => id.replace(/[\s-_]+(\w)/g, (match, p, offset) => `-${p}`).replace(/[^-a-zA-Z0-9]/g, '').toLowerCase()
 const className = id => `Measure${id.replace(/^([a-z0-9])|-([a-z0-9])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
@@ -168,7 +172,10 @@ const itemForUser = (path, user, id) => {
   const filename = idToPathUserFilename(user, id, path)
   return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
 }
-const saveItem = (path, user, id, json) => fs.writeFileSync(idToPathUserFilename(user, id, path), JSON.stringify(json))
+const saveItem = (path, user, id, json) => {
+  const jsonOld = itemForUser(path, user, id)
+  fs.writeFileSync(idToPathUserFilename(user, id, path), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
+}
 const moveItem = (path, user, idOld, idNew) => {
   const filenameNew = idToPathUserFilename(user, idNew, path)
   if (fs.existsSync(filenameNew)) return false
