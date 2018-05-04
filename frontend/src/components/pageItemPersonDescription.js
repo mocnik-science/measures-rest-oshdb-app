@@ -2,7 +2,6 @@ import React from 'react'
 import FormField from 'grommet/components/FormField'
 import TextInput from 'grommet/components/TextInput'
 
-import {person, personSave} from './../backend'
 import PageItemDescription from './pageItemDescription'
 
 class PageItemPersonDescription extends React.Component {
@@ -22,8 +21,6 @@ class PageItemPersonDescription extends React.Component {
       <PageItemDescription
         setState={response => this.setState(response)}
         itemName='person'
-        item={person}
-        itemSave={personSave}
         name={this.state.name}
         data={{
           name: this.state.name,

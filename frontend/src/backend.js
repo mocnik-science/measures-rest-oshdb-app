@@ -52,29 +52,11 @@ export const login = (username, password, callback) => fetchWithCallback(`/backe
 export const logout = fetchWithCallback('/backend/logout')
 export const user = fetchWithCallback('/backend/user')
 
-export const contexts = fetchWithCallback('/backend/contexts')
-export const context = (level, id, callback) => fetchWithCallback(`/backend/context/id/${level}/${id}`)(callback)
-export const contextSave = (level, id, data, callback) => putWithCallbackWithId(`/backend/context/id/${level}/${id}`, id)(data, callback)
-export const contextPublic = (level, id, callback) => fetchWithCallback(`/backend/context/public/${level}/${id}`, id)(callback)
-export const contextNew = fetchWithCallback('/backend/context/new')
-
-export const measures = fetchWithCallback('/backend/measures')
-export const measure = (level, id, callback) => fetchWithCallback(`/backend/measure/id/${level}/${id}`)(callback)
-export const measureSave = (level, id, data, callback) => putWithCallbackWithId(`/backend/measure/id/${level}/${id}`, id)(data, callback)
-export const measurePublic = (level, id, callback) => fetchWithCallback(`/backend/measure/public/${level}/${id}`, id)(callback)
-export const measureNew = fetchWithCallback('/backend/measure/new')
-
-export const persons = fetchWithCallback('/backend/persons')
-export const person = (level, id, callback) => fetchWithCallback(`/backend/person/id/${level}/${id}`)(callback)
-export const personSave = (level, id, data, callback) => putWithCallbackWithId(`/backend/person/id/${level}/${id}`, id)(data, callback)
-export const personPublic = (level, id, callback) => fetchWithCallback(`/backend/person/public/${level}/${id}`, id)(callback)
-export const personNew = fetchWithCallback('/backend/person/new')
-
-export const results = fetchWithCallback('/backend/results')
-export const result = (level, id, callback) => fetchWithCallback(`/backend/result/id/${level}/${id}`)(callback)
-export const resultSave = (level, id, data, callback) => putWithCallbackWithId(`/backend/result/id/${level}/${id}`, id)(data, callback)
-export const resultPublic = (level, id, callback) => fetchWithCallback(`/backend/result/public/${level}/${id}`, id)(callback)
-export const resultNew = fetchWithCallback('/backend/result/new')
+export const itemAll = (itemName, callback) => fetchWithCallback(`/backend/${itemName}/all`)(callback)
+export const item = (itemName, level, id, callback) => fetchWithCallback(`/backend/${itemName}/id/${level}/${id}`)(callback)
+export const itemSave = (itemName, level, id, data, callback) => putWithCallbackWithId(`/backend/${itemName}/id/${level}/${id}`, id)(data, callback)
+export const itemPublic = (itemName, level, id, callback) => fetchWithCallback(`/backend/${itemName}/public/${level}/${id}`, id)(callback)
+export const itemNew = (itemName, callback) => fetchWithCallback(`/backend/${itemName}/new`)(callback)
 
 export const items = fetchWithCallback('/backend/items')
 

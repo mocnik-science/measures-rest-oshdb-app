@@ -11,6 +11,7 @@ import Toast from 'grommet/components/Toast'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 
+import {item, itemSave} from './../backend'
 import {isLevelPublic} from './../tools'
 
 class PageItemDescription extends React.Component {
@@ -23,13 +24,13 @@ class PageItemDescription extends React.Component {
   }
   save(e) {
     e.preventDefault()
-    this.props.itemSave(this.props.match.params.level, this.props.match.params.id, this.props.data, response => {
+    itemSave(this.props.itemName, this.props.match.params.level, this.props.match.params.id, this.props.data, response => {
       if (response && response.success) this.props.history.push(`/${this.props.itemName}`)
       else this.setState({messages: response.messages})
     })
   }
   componentDidMount() {
-    this.props.item(this.props.match.params.level, this.props.match.params.id, response => this.props.setState(response))
+    item(this.props.itemName, this.props.match.params.level, this.props.match.params.id, response => this.props.setState(response))
   }
   render() {
     return (
@@ -80,16 +81,11 @@ PageItemDescription.propTypes = {
   history: PropTypes.object.isRequired,
   setState: PropTypes.func.isRequired,
   itemName: PropTypes.string.isRequired,
-  item: PropTypes.func,
-  itemSave: PropTypes.func,
   name: PropTypes.string.isRequired,
   data: PropTypes.object,
   fields: PropTypes.array,
 }
 PageItemDescription.defaultProps = {
-  items: callback => {},
-  item: callback => {},
-  itemSave: (level, id, data, callback) => {},
   data: {},
   fields: [],
 }

@@ -4,7 +4,7 @@ import NumberInput from 'grommet/components/NumberInput'
 import Select from './select'
 import TextInput from 'grommet/components/TextInput'
 
-import {measure, measureSave, items} from './../backend'
+import {items} from './../backend'
 import {itemsToList} from './../tools'
 import PageItemDescription from './pageItemDescription'
 
@@ -154,8 +154,6 @@ class PageMeasureDescription extends React.Component {
           this.setState(response)
         }}
         itemName='measure'
-        item={measure}
-        itemSave={measureSave}
         name={this.state.name}
         data={{
           name: this.state.name,

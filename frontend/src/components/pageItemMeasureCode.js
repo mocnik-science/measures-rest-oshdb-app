@@ -9,7 +9,7 @@ import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import moment from 'moment'
 import MonacoEditor from 'react-monaco-editor'
 
-import {measure, measureSave} from './../backend'
+import {item, itemSave} from './../backend'
 import {isLevelPublic} from './../tools'
 
 const SOAP_METHODS = [
@@ -54,7 +54,7 @@ class PageMeasureCode extends React.Component {
     this.save = this.save.bind(this)
   }
   componentDidMount() {
-    measure(this.props.match.params.level, this.props.match.params.id, response => this.setState(response))
+    item('measure', this.props.match.params.level, this.props.match.params.id, response => this.setState(response))
     this.saveService = setInterval(this.save, this.props.autoSaveInterval)
   }
   componentWillUnmount() {
@@ -85,7 +85,7 @@ class PageMeasureCode extends React.Component {
     }
     if (!force && lastSavedTry !== null) return
     this.setState({lastSavedTry: moment(), buttonLabel: 'saving ...'})
-    measureSave(this.props.match.params.level, this.state.id, {code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
+    itemSave('measure', this.props.match.params.level, this.state.id, {code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
   }
   render() {
     return (

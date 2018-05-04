@@ -14,6 +14,7 @@ import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import faEdit from '@fortawesome/fontawesome-free-solid/faEdit'
 import faPlusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
 
+import {itemAll, itemSave, itemDependencies, itemPublic, itemNew} from './../backend'
 import {isLevelPublic} from './../tools'
 
 class PageItem extends React.Component {
@@ -30,10 +31,10 @@ class PageItem extends React.Component {
     const items = this.state.items
     items[`user-${id}`].enabled = value
     this.setState({items: items})
-    this.props.itemSave(level, id, {enabled: value}, () => {})
+    itemSave(this.props.itemName, level, id, {enabled: value}, () => {})
   }
   componentDidMount() {
-    this.props.items(response => this.setState(response))
+    itemAll(this.props.itemName, response => this.setState(response))
   }
   render() {
     const label = (item, className) =>
@@ -64,7 +65,7 @@ class PageItem extends React.Component {
         <Header className='header' fixed={true} size='small' style={{paddingRight: 22}}>
           <Box flex={true} justify='end' direction='row'>
             <TextInput value={this.state.search} onDOMChange={e => this.setState({search: e.target.value})} style={{flexGrow: 1}} placeHolder='Search...' size='medium'/>
-            <Button icon={<FontAwesomeIcon icon={faPlusSquare}/>} onClick={() => this.props.itemNew(response => this.setState(response))}/>
+            <Button icon={<FontAwesomeIcon icon={faPlusSquare}/>} onClick={() => itemNew(this.props.itemName, response => this.setState(response))}/>
             {this.props.buttonsHeader}
           </Box>
         </Header>
@@ -83,7 +84,7 @@ class PageItem extends React.Component {
                   (!isLevelPublic(item.level) && this.context.user.admin) ?
                   <Button key='button-public' icon={<FontAwesomeIcon icon={faCertificate}/>} onClick={e => {
                     e.preventDefault()
-                    this.props.itemPublic(item.level, item.id, response => {
+                    itemPublic(this.props.itemName, item.level, item.id, response => {
                       if (!response || !response.success) this.setState({messages: response.messages})
                       else this.setState(response)
                     })
@@ -114,10 +115,6 @@ class PageItem extends React.Component {
 }
 PageItem.propTypes = {
   itemName: PropTypes.string.isRequired,
-  items: PropTypes.func,
-  itemNew: PropTypes.func,
-  itemSave: PropTypes.func,
-  itemPublic: PropTypes.func,
   itemsCanBeEnabled: PropTypes.bool,
   buttonsHeader: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   buttonsOwnItem: PropTypes.func,
@@ -126,10 +123,6 @@ PageItem.propTypes = {
   websiteIcon: PropTypes.object,
 }
 PageItem.defaultProps = {
-  items: callback => {},
-  itemNew: callback => {},
-  itemSave: (level, id, data, callback) => {},
-  itemPublic: (level, id, callback) => {},
   itemsCanBeEnabled: false,
   buttonsHeader: [],
   buttonsOwnItem: item => {},

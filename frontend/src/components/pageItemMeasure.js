@@ -7,7 +7,7 @@ import faExclamationTriangle from '@fortawesome/fontawesome-free-solid/faExclama
 import faMap from '@fortawesome/fontawesome-free-solid/faMap'
 import faStethoscope from '@fortawesome/fontawesome-free-solid/faStethoscope'
 
-import {measures, measureSave, measurePublic, measureNew, serviceCheck} from './../backend'
+import {serviceCheck} from './../backend'
 import PageItem from './pageItem'
 
 class PageItemMeasure extends React.Component {
@@ -28,10 +28,6 @@ class PageItemMeasure extends React.Component {
       <PageItem
         buttonsHeader={<Button icon={<FontAwesomeIcon icon={faStethoscope}/>} onClick={() => serviceCheck(response => this.setState({errors: response}))}/>}
         itemName='measure'
-        items={measures}
-        itemNew={measureNew}
-        itemSave={measureSave}
-        itemPublic={measurePublic}
         itemsCanBeEnabled={true}
         buttonsOwnItem={item => this.renderErrors(item.id)}
         buttonsItem={[{path: 'code', icon: faCode}]}

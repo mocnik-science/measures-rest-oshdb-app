@@ -3,7 +3,7 @@ import FormField from 'grommet/components/FormField'
 import Select from './select'
 import TextInput from 'grommet/components/TextInput'
 
-import {context, contextSave, items} from './../backend'
+import {items} from './../backend'
 import {itemsToList} from './../tools'
 import PageItemDescription from './pageItemDescription'
 
@@ -32,8 +32,6 @@ class PageContextDescription extends React.Component {
       <PageItemDescription
         setState={response => this.setState(response)}
         itemName='context'
-        item={context}
-        itemSave={contextSave}
         name={this.state.name}
         data={{
           name: this.state.name,
