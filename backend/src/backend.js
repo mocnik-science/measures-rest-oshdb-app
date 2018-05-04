@@ -49,6 +49,11 @@ const HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') :
 LEVEL_PUBLIC = 'PUBLIC'
 LEVEL_USER = 'USER'
 
+CONTEXT = 'context'
+MEASURE = 'measure'
+PERSON = 'person'
+RESULT = 'result'
+
 const app = express()
 
 const bodyParserJson = bodyParser.json()
@@ -149,16 +154,16 @@ const generateGuid = () => uuidv4()
 
 // ids and names
 const name2id = id => id.replace(/[\s-_]+(\w)/g, (match, p, offset) => `-${p}`).replace(/[^-a-zA-Z0-9]/g, '').toLowerCase()
-const className = id => `Measure${id.replace(/^([a-z0-9])|-([a-z0-9])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
+const className = (itemName, id) => `${itemName}${id.replace(/^([a-z0-9])|-([a-z0-9])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
 
 // common
-const idToFilename = (id, ext='json') => `${className(id)}.${ext}`
-const idToPathUserFilename = (user, id, path='', ext='json') => {
+const idToFilename = (itemName, id, ext='json') => `${className(itemName, id)}.${ext}`
+const idToPathUserFilename = (user, itemName, id, path='', ext='json') => {
   if (path !== '') {
     const p = pathUser(user, path)
     if (!fs.existsSync(p)) fs.mkdirSync(p)
   }
-  return pathUser(user, path, idToFilename(id, ext))
+  return pathUser(user, path, idToFilename(itemName, id, ext))
 }
 const pathUser = (user, ...path) => (user) ? join(PATH_USERS, User.getUsername(user), ...path) : join(PATH_PUBLIC, ...path)
 const pathUserAbsolute = (user, ...path) => resolve(pathUser(user, ...path))
@@ -167,25 +172,25 @@ const dirUser = (user, ...path) => {
   if (!fs.existsSync(p)) fs.mkdirSync(p)
   return p
 }
-const itemForUser = (path, user, id) => {
+const itemForUser = (path, user, itemName, id) => {
   if (!id) return null
-  const filename = idToPathUserFilename(user, id, path)
+  const filename = idToPathUserFilename(user, itemName, id, path)
   return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
 }
-const saveItem = (path, user, id, json) => {
-  const jsonOld = itemForUser(path, user, id)
-  fs.writeFileSync(idToPathUserFilename(user, id, path), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
+const saveItem = (path, user, itemName, id, json) => {
+  const jsonOld = itemForUser(path, user, itemName, id)
+  fs.writeFileSync(idToPathUserFilename(user, itemName, id, path), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
 }
-const moveItem = (path, user, idOld, idNew) => {
-  const filenameNew = idToPathUserFilename(user, idNew, path)
+const moveItem = (path, user, itemName, idOld, idNew) => {
+  const filenameNew = idToPathUserFilename(user, itemName, idNew, path)
   if (fs.existsSync(filenameNew)) return false
-  fs.renameSync(idToPathUserFilename(user, idOld, path), filenameNew)
+  fs.renameSync(idToPathUserFilename(user, itemName, idOld, path), filenameNew)
   return true
 }
-const moveItemToPublic = (path, user, id) => {
-  const filenameNew = idToPathUserFilename(null, id, path)
+const moveItemToPublic = (path, user, itemName, id) => {
+  const filenameNew = idToPathUserFilename(null, itemName, id, path)
   if (fs.existsSync(filenameNew)) return false
-  fs.renameSync(idToPathUserFilename(user, id, path), filenameNew)
+  fs.renameSync(idToPathUserFilename(user, itemName, id, path), filenameNew)
   return true
 }
 const allItems = (path, user) => fs.readdirSync(dirUser(user, path))
@@ -205,7 +210,7 @@ const allSettings = () => fs.readdirSync(PATH_USERS)
   .map(pathname => JSON.parse(fs.readFileSync(`${PATH_USERS}/${pathname}/${FILE_SETTINGS}`)))
 const removeJavaDir = user => fs.removeSync(pathUser(user, PATH_JAVA))
 const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, PATH_JAVA, name), code)
-const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilename(user, id, PATH_JAVA, 'java'), code)
+const saveJavaMeasure = (user, itemName, id, code) => fs.writeFileSync(idToPathUserFilename(user, MEASURE, id, PATH_JAVA, 'java'), code)
 
 // levels
 const isLevelPublic = x => x && x.toUpperCase() === LEVEL_PUBLIC
@@ -244,7 +249,7 @@ const serviceCheck = (user, callback) => {
   s.stdout.on('data', outCmd => out += outCmd.toString())
   s.on('close', code => {
     const files = allItems(PATH_MEASURES, user).map(json => {
-      const a = idToPathUserFilename(user, json.id, PATH_JAVA, 'java').split('/')
+      const a = idToPathUserFilename(user, MEASURE, json.id, PATH_JAVA, 'java').split('/')
       return [json.id, a[a.length - 1]]
     })
     const result = {}
@@ -287,7 +292,7 @@ const writeJava = user => {
   }))
 }
 const getMap = (user, port, id) => {
-  const json = itemForUser(PATH_MEASURES, user, id)
+  const json = itemForUser(PATH_MEASURES, MEASURE, user, id)
   return useTemplate(mapIndexTemplate, {
     name: json.name,
     id: json.id,
@@ -303,13 +308,13 @@ const getItems = (path, itemName) => (req, res) => {
   res.status(200).json({success: true, items: items})
 }
 const getItem = (path, itemName) => (req, res) => {
-  const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, req.params.id)
+  const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, itemName, req.params.id)
   if (json == null) res.status(404).send(`${itemName} not found`)
   else res.status(200).json(json)
 }
 const postItem = (path, itemName, data) => (req, res) => {
   const u = isLevelPublic(req.params.level) ? null : req.user
-  const json = itemForUser(path, u, req.params.id)
+  const json = itemForUser(path, u, itemName, req.params.id)
   if (json == null) res.status(404).send(`${itemName} not found`)
   else if (u === null && !req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
@@ -319,10 +324,10 @@ const postItem = (path, itemName, data) => (req, res) => {
       json.timestamp = data.timestamp
       if (data.data.name && json.name !== data.data.name) {
         json.id = name2id(data.data.name)
-        if (!moveItem(path, u, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
+        if (!moveItem(path, u, itemName, req.params.id, json.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
       }
       const jsonNew = Object.assign(json, data.data)
-      saveItem(path, u, json.id, jsonNew)
+      saveItem(path, u, itemName, json.id, jsonNew)
       res.status(200).json({success: true})
     }
   }
@@ -331,18 +336,18 @@ const getItemPublic = (path, itemName) => (req, res) => {
   if (!isLevelUser(req.params.level)) return res.status(200).json({success: false, messages: {itemError: `Only user items can be made public.`}})
   else if (!req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
-    if (!moveItemToPublic(path, req.user, req.params.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
-    const json = itemForUser(path, null, req.params.id)
+    if (!moveItemToPublic(path, req.user, itemName, req.params.id)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})
+    const json = itemForUser(path, null, itemName, req.params.id)
     const jsonNew = Object.assign(json, {level: LEVEL_PUBLIC})
-    saveItem(path, null, json.id, jsonNew)
+    saveItem(path, null, itemName, json.id, jsonNew)
     getItems(path, itemName)(req, res)
   }
 }
 const getItemNew = (path, itemName, data) => (req, res) => {
   let i = 0
   let name = null
-  while (name === null || itemForUser(path, req.user, name2id(name)) !== null) name = `${NEW_ITEM} ${itemName} ${++i}`
-  saveItem(path, req.user, name2id(name), Object.assign({
+  while (name === null || itemForUser(path, req.user, itemName, name2id(name)) !== null) name = `${NEW_ITEM} ${itemName} ${++i}`
+  saveItem(path, req.user, itemName, name2id(name), Object.assign({
     id: name2id(name),
     name: name,
     level: LEVEL_USER,
@@ -367,41 +372,41 @@ app.get('/backend/logout', (req, res) => {
 })
 
 // context
-get('/backend/contexts', getItems(PATH_CONTEXTS, 'context'))
-get('/backend/context/id/:level/:id', getItem(PATH_CONTEXTS, 'context'))
-post('/backend/context/id/:level/:id', postItem(PATH_CONTEXTS, 'context'))
-get('/backend/context/public/:level/:id', getItemPublic(PATH_CONTEXTS, 'context'))
-get('/backend/context/new', getItemNew(PATH_CONTEXTS, 'context', {}))
+get('/backend/contexts', getItems(PATH_CONTEXTS, CONTEXT))
+get('/backend/context/id/:level/:id', getItem(PATH_CONTEXTS, CONTEXT))
+post('/backend/context/id/:level/:id', postItem(PATH_CONTEXTS, CONTEXT))
+get('/backend/context/public/:level/:id', getItemPublic(PATH_CONTEXTS, CONTEXT))
+get('/backend/context/new', getItemNew(PATH_CONTEXTS, CONTEXT, {}))
 
 // measure
-get('/backend/measures', getItems(PATH_MEASURES, 'measure'))
-get('/backend/measure/id/:level/:id', getItem(PATH_MEASURES, 'measure'))
-post('/backend/measure/id/:level/:id', postItem(PATH_MEASURES, 'measure'))
-get('/backend/measure/public/:level/:id', getItemPublic(PATH_MEASURES, 'measure'))
-get('/backend/measure/new', getItemNew(PATH_MEASURES, 'measure', {code: '', enabled: false}))
+get('/backend/measures', getItems(PATH_MEASURES, MEASURE))
+get('/backend/measure/id/:level/:id', getItem(PATH_MEASURES, MEASURE))
+post('/backend/measure/id/:level/:id', postItem(PATH_MEASURES, MEASURE))
+get('/backend/measure/public/:level/:id', getItemPublic(PATH_MEASURES, MEASURE))
+get('/backend/measure/new', getItemNew(PATH_MEASURES, MEASURE, {code: '', enabled: false}))
 
 // person
-get('/backend/persons', getItems(PATH_PERSONS, 'person'))
-get('/backend/person/id/:level/:id', getItem(PATH_PERSONS, 'person'))
-post('/backend/person/id/:level/:id', postItem(PATH_PERSONS, 'person'))
-get('/backend/person/public/:level/:id', getItemPublic(PATH_PERSONS, 'person'))
-get('/backend/person/new', getItemNew(PATH_PERSONS, 'person', {}))
+get('/backend/persons', getItems(PATH_PERSONS, PERSON))
+get('/backend/person/id/:level/:id', getItem(PATH_PERSONS, PERSON))
+post('/backend/person/id/:level/:id', postItem(PATH_PERSONS, PERSON))
+get('/backend/person/public/:level/:id', getItemPublic(PATH_PERSONS, PERSON))
+get('/backend/person/new', getItemNew(PATH_PERSONS, PERSON, {}))
 
 // result
-get('/backend/results', getItems(PATH_RESULTS, 'result'))
-get('/backend/result/id/:level/:id', getItem(PATH_RESULTS, 'result'))
-post('/backend/result/id/:level/:id', postItem(PATH_RESULTS, 'result'))
-get('/backend/result/public/:level/:id', getItemPublic(PATH_RESULTS, 'result'))
-get('/backend/result/new', getItemNew(PATH_RESULTS, 'result', {}))
+get('/backend/results', getItems(PATH_RESULTS, RESULT))
+get('/backend/result/id/:level/:id', getItem(PATH_RESULTS, RESULT))
+post('/backend/result/id/:level/:id', postItem(PATH_RESULTS, RESULT))
+get('/backend/result/public/:level/:id', getItemPublic(PATH_RESULTS, RESULT))
+get('/backend/result/new', getItemNew(PATH_RESULTS, RESULT, {}))
 
 // metadataItems
 get('/backend/items', (req, res) => {
   const data = {}
   for (const i of [
-    {path: PATH_CONTEXTS, item: 'context'},
-    {path: PATH_MEASURES, item: 'measure'},
-    {path: PATH_PERSONS, item: 'person'},
-    {path: PATH_RESULTS, item: 'result'},
+    {path: PATH_CONTEXTS, item: CONTEXT},
+    {path: PATH_MEASURES, item: MEASURE},
+    {path: PATH_PERSONS, item: PERSON},
+    {path: PATH_RESULTS, item: RESULT},
   ]) {
     const items = []
     for (const json of allItems(i.path, req.user)) items.push({id: json.id, name: json.name, level: LEVEL_USER})
