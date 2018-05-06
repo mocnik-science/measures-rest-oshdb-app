@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const soap = require('simplified-oshdb-api-programming/dist/soap-to-java')
+const soap = require('simplified-oshdb-api-programming/dist/soap-to-measure')
 
 const C = require('./../constants')
 const {className, idToPathUserFilename, pathUser} = require('./common')
@@ -23,12 +23,13 @@ module.exports.writeJava = user => {
   const jsons = allItems(C.PATH_MEASURES, user)
   recreateJavaDir(user)
   jsons.filter(json => json.enabled).map(json => {
-    saveJavaMeasure(user, C.MEASURE, json.id, useTemplate(javaTemplate, {
+    const parsedSoap = soap.soapToMeasure(json.code)
+    console.log(parsedSoap)
+    if (parsedSoap.errors) throw parsedSoap.errors.join('\n')
+    saveJavaMeasure(user, C.MEASURE, json.id, useTemplate(javaTemplate, Object.assign({
       id: json.id,
       className: className(C.MEASURE, json.id),
-      code: soap.soapToJava(json.code.replace(/^\s*import\s.+\n?/gm, '')),
-      imports: json.code.split('\n').filter(s => s.match(/^\s*import\s.+/)).join('\n'),
-    }))
+    }, parsedSoap)))
   })
   saveJava(user, 'Run.java', useTemplate(javaRunTemplate, {
     measures: jsons.filter(json => json.enabled).map(json => ({className: className(C.MEASURE, json.id)})),
