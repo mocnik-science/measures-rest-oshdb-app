@@ -24,7 +24,6 @@ module.exports.writeJava = user => {
   recreateJavaDir(user)
   jsons.filter(json => json.enabled).map(json => {
     const parsedSoap = soap.soapToMeasure(json.code)
-    console.log(parsedSoap)
     if (parsedSoap.errors) throw parsedSoap.errors.join('\n')
     saveJavaMeasure(user, C.MEASURE, json.id, useTemplate(javaTemplate, Object.assign({
       id: json.id,
