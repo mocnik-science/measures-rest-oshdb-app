@@ -36,6 +36,8 @@ const AUTOCOMPLETE_METHOD = [
   'getGeometry(',
 ].concat(SOAP_METHODS)
 
+const HEIGHT_HEADER = 72
+
 class PageMeasureCode extends React.Component {
   constructor(props) {
     super(props)
@@ -47,15 +49,18 @@ class PageMeasureCode extends React.Component {
       lastSaved: null,
       lastSavedTry: null,
       buttonLabel: 'saved',
+      editorHeight: window.innerHeight - HEIGHT_HEADER,
     }
     this.editorWillMount = this.editorWillMount.bind(this)
     this.editorDidMount = this.editorDidMount.bind(this)
+    this.onResize = this.onResize.bind(this)
     this.onChange = this.onChange.bind(this)
     this.save = this.save.bind(this)
   }
   componentDidMount() {
     item('measure', this.props.match.params.level, this.props.match.params.id, response => this.setState(response))
     this.saveService = setInterval(this.save, this.props.autoSaveInterval)
+    window.addEventListener('resize', this.onResize)
   }
   componentWillUnmount() {
     clearInterval(this.saveService)
@@ -71,7 +76,12 @@ class PageMeasureCode extends React.Component {
     })
   }
   editorDidMount(editor, monaco) {
+    this._editor = editor
     editor.focus()
+  }
+  onResize() {
+    this.setState({editorHeight: window.innerHeight - HEIGHT_HEADER})
+    if (this._editor) this._editor.layout()
   }
   onChange(newValue, e) {
     this.setState({saved: false, code: newValue, lastSaved: null, lastSavedTry: null, buttonLabel: 'save'})
@@ -85,14 +95,16 @@ class PageMeasureCode extends React.Component {
     }
     if (!force && lastSavedTry !== null) return
     this.setState({lastSavedTry: moment(), buttonLabel: 'saving ...'})
-    itemSave('measure', this.props.match.params.level, this.state.id, {code: this.state.code}, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
+    itemSave('measure', this.props.match.params.level, this.state.id, {
+      code: this.state.code,
+    }, response => this.setState((response.success) ? {saved: true, lastSaved: moment(), lastSavedTry: null, buttonLabel: 'saved'}: {}))
   }
   render() {
     return (
       <Box className={'noScroll' + ((isLevelPublic(this.state.level) && !this.context.user.admin) ? ' disabled' : '')} full={true}>
         <Header>
-          <Box pad='medium'>
-            <Heading>
+          <Box pad='medium' style={{paddingTop: 0, paddingBottom: 0}}>
+            <Heading style={{marginBottom: 0}}>
               {this.state.name}
               {
                 isLevelPublic(this.state.level) ?
@@ -111,12 +123,13 @@ class PageMeasureCode extends React.Component {
           {
             (isLevelPublic(this.state.level) && !this.context.user.admin) ?
             [] : 
-            <Box flex={true} justify='end' direction='row' responsive={false} pad='medium'>
+            <Box flex={true} justify='end' direction='row' responsive={false} pad='medium' style={{paddingTop: 0, paddingBottom: 0}}>
               <Button label={this.state.buttonLabel} onClick={() => this.save(true)}/>
             </Box>
           }
         </Header>
         <MonacoEditor
+          height={this.state.editorHeight}
           language='java'
           theme='vs-dark'
           value={this.state.code}
