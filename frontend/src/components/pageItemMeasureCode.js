@@ -10,7 +10,7 @@ import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import faExclamationTriangle from '@fortawesome/fontawesome-free-solid/faExclamationTriangle'
 import moment from 'moment'
 import MonacoEditor from 'react-monaco-editor'
-import soap from 'simplified-oshdb-api-programming/dist/soap-to-measure'
+import soap from 'simplified-oshdb-api-programming'
 
 import {item, itemSave} from './../backend'
 import {isLevelPublic} from './../tools'
