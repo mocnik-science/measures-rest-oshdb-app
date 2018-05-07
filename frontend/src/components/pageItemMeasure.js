@@ -2,6 +2,7 @@ import React from 'react'
 import Button from 'grommet/components/Button'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCheck from '@fortawesome/fontawesome-free-solid/faCheck'
+import faCloudDownloadAlt from '@fortawesome/fontawesome-free-solid/faCloudDownloadAlt'
 import faCode from '@fortawesome/fontawesome-free-solid/faCode'
 import faExclamationTriangle from '@fortawesome/fontawesome-free-solid/faExclamationTriangle'
 import faMap from '@fortawesome/fontawesome-free-solid/faMap'
@@ -30,7 +31,10 @@ class PageItemMeasure extends React.Component {
         itemName='measure'
         itemsCanBeEnabled={true}
         buttonsOwnItem={item => this.renderErrors(item.id)}
-        buttonsItem={[{path: 'code', icon: faCode}]}
+        buttonsItem={[
+          {path: 'code', icon: faCode},
+          {path: item => `/backend/measure/download/${item.level}/${item.id}`, icon: faCloudDownloadAlt, newTab: true},
+        ]}
         website={item => `/map/${item.id}`}
         websiteIcon={faMap}
       />

@@ -39,10 +39,10 @@ public class {{className}} extends MeasureOSHDB<Number, {{mapReducibleType}}> {
     }
 {{/if}}
 
-@Override
-public Boolean refersToTimeSpan() {
-    return {{refersToTimespan}};
-}
+    @Override
+    public Boolean refersToTimeSpan() {
+        return {{refersToTimespan}};
+    }
 
 {{#if date}}
     @Override

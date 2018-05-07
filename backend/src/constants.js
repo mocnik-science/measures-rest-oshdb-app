@@ -21,6 +21,7 @@ C.CMD_SERVICE_LOGS = './logs'
 C.CMD_SERVICE_START = './start'
 C.CMD_SERVICE_STOP = './stop'
 C.PATH_TEMPLATES = './templates'
+C.PATH_POM_XML = `${C.PATH_SERVICE}/docker/files/pom.xml`
 C.FILE_JAVA_TEMPLATE = `${C.PATH_TEMPLATES}/java.tmpl`
 C.FILE_JAVA_RUN_TEMPLATE = `${C.PATH_TEMPLATES}/javaRun.tmpl`
 C.FILE_MAP_INDEX_TEMPLATE = `${C.PATH_TEMPLATES}/map.tmpl`

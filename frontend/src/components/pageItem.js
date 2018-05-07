@@ -90,19 +90,22 @@ class PageItem extends React.Component {
                       else if (!response.success && response.messages) this.setState({messages: response.messages})
                       else this.setState(response)
                     })
-                    
-                    
-//                     itemDependencies(this.props.itemName, item.level, item.id, response => {
-// console.log(response)
-//                       const dependencies = response.dependencies.filter(item => !isLevelPublic(item.level))
-//                       if (dependencies.length > 0) this.setState({messages: `The ${this.props.itemName} cannot be made public.  The following items are non-public but refer to this ${this.props.itemName}: ${dependencies.map(d => `${d.name} (${d._itemName})`).join(', ')}.`})
-//                       else 
-//                     })
                   }}/> : []
                 }
                 <Button key='button-description' icon={<FontAwesomeIcon icon={faEdit}/>} path={`/${this.props.itemName}/${item.level}/${item.id}/description`}/>
                 {
-                  this.props.buttonsItem.map(b => (<Button key={`button--${b.path}`} icon={<FontAwesomeIcon icon={b.icon}/>} path={`/${this.props.itemName}/${item.level}/${item.id}/${b.path}`}/>))
+                  this.props.buttonsItem.map(b => {
+                    const url = (typeof(b.path) === 'function') ? b.path(item) : `/${this.props.itemName}/${item.level}/${item.id}/${b.path}`
+                    return (<Button
+                      key={`button--${b.path}`}
+                      icon={<FontAwesomeIcon icon={b.icon}/>}
+                      path={(b.newTab) ? null : url}
+                      onClick={(!b.newTab) ? null : e => {
+                        e.preventDefault()
+                        window.open(url)
+                      }}
+                    />)
+                  })
                 }
                 {
                   (this.props.website && this.props.websiteIcon) ?

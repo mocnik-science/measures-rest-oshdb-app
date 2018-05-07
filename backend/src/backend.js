@@ -8,7 +8,7 @@ const C = require('./constants')
 const settingsApp = require('./settings')
 const {useAuthentication, User} = require('./functionality/authentication')
 const {allItemsShort} = require('./functionality/items')
-const {writeJava} = require('./functionality/java')
+const {writeJava, createZipMeasure} = require('./functionality/java')
 const {getMap} = require('./functionality/maps')
 const {getItems, getItem, postItem, getItemDependencies, getItemPublic, getItemNew} = require('./functionality/routesItems')
 const {serviceState, serviceCheck, serviceStart, serviceStop} = require('./functionality/services')
@@ -48,6 +48,9 @@ for (const i of C.ITEMS) {
   get(`/backend/${i.item}/public/:level/:id`, getItemPublic(i.path, i.item))
   get(`/backend/${i.item}/new`, getItemNew(i.path, i.item, i.dataNew))
 }
+
+// download
+get(`/backend/${C.MEASURE}/download/:level/:id`, (req, res) => createZipMeasure(req.user, req.params.level, req.params.id)(req, res))
 
 // metadataItems
 get('/backend/items', (req, res) => {
