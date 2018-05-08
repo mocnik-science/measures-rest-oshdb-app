@@ -1,9 +1,9 @@
 const {spawn, spawnSync} = require('child_process')
 
 const C = require('./../constants')
-const {USER} = require('./authentication')
 const {idToPathUserFilename, pathUserAbsolute} = require('./common')
 const {allItems} = require('./items')
+const {User} = require('./../tier2-authentication/user')
 
 // SERVICES //
 

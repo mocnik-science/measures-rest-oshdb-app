@@ -4,8 +4,7 @@ const JSZip = require('jszip')
 const soap = require('simplified-oshdb-api-programming/dist/soap-to-measure')
 
 const C = require('./../constants')
-const {isLevelPublic} = require('./common')
-const {className, idToPathUserFilename, pathUser} = require('./common')
+const {className, isLevelPublic, idToPathUserFilename, pathUser} = require('./common')
 const {itemForUser, allItems} = require('./items')
 const {readTemplate, useTemplate} = require('./templates')
 

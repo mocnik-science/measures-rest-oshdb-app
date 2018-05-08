@@ -3,7 +3,7 @@ const {join, resolve} = require('path')
 const uuidv4 = require('uuid/v4')
 
 const C = require('./../constants')
-const {User} = require('./authentication')
+const {User} = require('./../tier2-authentication/user')
 
 // HASH //
 

@@ -1,23 +1,46 @@
 const C = require('./../constants')
-const {name2id, isLevelPublic, isLevelUser} = require('./common')
-const {itemForUser, resolveDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems} = require('./items')
+const {name2id, isLevelPublic, isLevelUser} = require('./../tier4-functionality/common')
+const {itemForUser, resolveDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems, allItemsShort} = require('./../tier4-functionality/items')
+const {createZipMeasure} = require('./../tier4-functionality/java')
+
+module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
+  // general
+  for (const i of C.ITEMS) {
+    get(`/backend/${i.item}/all`, getItems(i.path, i.item))
+    get(`/backend/${i.item}/id/:level/:id`, getItem(i.path, i.item))
+    post(`/backend/${i.item}/id/:level/:id`, postItem(i.path, i.item))
+    // get(`/backend/${i.item}/dependencies/:level/:id`, getItemDependencies(i.path, i.item))
+    get(`/backend/${i.item}/public/:level/:id`, getItemPublic(i.path, i.item))
+    get(`/backend/${i.item}/new`, getItemNew(i.path, i.item, i.dataNew))
+  }
+  
+  // metadataItems
+  get('/backend/items', (req, res) => {
+    const data = {}
+    for (const i of C.ITEMS) data[`${i.item}s`] = allItemsShort(i.path, req.user).concat(allItemsShort(i.path, null))
+    res.status(200).json(data)
+  })
+  
+  // download
+  get(`/backend/${C.MEASURE}/download/:level/:id`, (req, res) => createZipMeasure(req.user, req.params.level, req.params.id)(req, res))
+}
 
 // ROUTE ITEMS //
 
-module.exports.getItems = getItems = (path, itemName) => (req, res) => {
+const getItems = (path, itemName) => (req, res) => {
   const items = {}
   for (const json of allItems(path, req.user)) items[`user-${json.id}`] = json
   for (const json of allItems(path, null)) items[`public-${json.id}`] = json
   res.status(200).json({success: true, items: items})
 }
 
-module.exports.getItem = (path, itemName) => (req, res) => {
+const getItem = (path, itemName) => (req, res) => {
   const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, itemName, req.params.id)
   if (json == null) res.status(404).send(`${itemName} not found`)
   else res.status(200).json(json)
 }
 
-module.exports.postItem = (path, itemName, data) => (req, res) => {
+const postItem = (path, itemName, data) => (req, res) => {
   const u = isLevelPublic(req.params.level) ? null : req.user
   const json = itemForUser(path, u, itemName, req.params.id)
   if (json == null) res.status(404).send(`${itemName} not found`)
@@ -38,13 +61,13 @@ module.exports.postItem = (path, itemName, data) => (req, res) => {
   }
 }
 
-// module.exports.getItemDependencies = (path, itemName) => (req, res) => {
+// const getItemDependencies = (path, itemName) => (req, res) => {
 //   const json = itemForUser(path, isLevelPublic(req.params.level) ? null : req.user, itemName, req.params.id)
 //   const dependencies = resolveDependenciesItem(req.user, json.hashid)
 //   res.status(200).json({dependencies: dependencies})
 // }
 
-module.exports.getItemPublic = (path, itemName) => (req, res) => {
+const getItemPublic = (path, itemName) => (req, res) => {
   if (!isLevelUser(req.params.level)) return res.status(200).json({success: false, messages: {itemError: `Only user items can be made public.`}})
   else if (!req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
@@ -60,7 +83,7 @@ module.exports.getItemPublic = (path, itemName) => (req, res) => {
   }
 }
 
-module.exports.getItemNew = (path, itemName, data) => (req, res) => {
+const getItemNew = (path, itemName, data) => (req, res) => {
   let i = 0
   let name = null
   while (name === null || itemForUser(path, req.user, itemName, name2id(name)) !== null) name = `${C.NEW_ITEM} ${itemName} ${++i}`

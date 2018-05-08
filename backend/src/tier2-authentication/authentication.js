@@ -6,10 +6,44 @@ const ldapStrategy = require('passport-ldapauth')
 
 const C = require('./../constants')
 const settingsApp = require('./../settings')
+const {runRoutesPublic} = require('./../tier3a-routes-public/routes')
+const {runRoutesAuthenticated} = require('./../tier3b-routes-authenticated/routes')
+const {User} = require('./user')
+
+module.exports.runAuthentication = app => {
+  // get authenticated 
+  const authenticateUseGetPost = useAuthentication(app)
+  
+  // authentication routes
+  useAuthenticationRoutes(app)
+
+  // routes public
+  runRoutesPublic((...x) => app.use(...x), (...x) => app.get(...x), (...x) => app.post(...x))
+
+  // routes authenticated
+  runRoutesAuthenticated(...authenticateUseGetPost)
+}
+
+// AUTHENTICATION ROUTES //
+
+const useAuthenticationRoutes = app => {
+  app.get('/backend/login', (req, res, next) => passport.authenticate(['local', (settingsApp.ldapOptions) ? 'ldapauth' : null], (err, user, info) => {
+    if (err) res.status(200).json({username: null})
+    else req.logIn(user, err => {
+      if (err) res.status(200).json({username: null})
+      else res.status(200).json(User.getUserinfo(user))
+    })
+  })(req, res, next))
+  app.get('/backend/user', (req, res) => res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null}))
+  app.get('/backend/logout', (req, res) => {
+    req.logout()
+    res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null})
+  })
+}
 
 // AUTHENTICATION //
 
-module.exports.useAuthentication = app => {
+const useAuthentication = app => {
   const requireAuth = (req, res, next) => {
     if (req.user) return next()
     return res.status(403).send('forbidden')
@@ -41,60 +75,9 @@ module.exports.useAuthentication = app => {
   app.use(passport.initialize())
   app.use(passport.session())
   
+  const use = (route, ...xs) => app.use(route, requireAuth, ...xs)
   const get = (route, ...xs) => app.get(route, requireAuth, ...xs)
   const post = (route, ...xs) => app.post(route, requireAuth, ...xs)
   
-  return [get, post]
-}
-
-// USER //
-
-module.exports.User = User = class {
-  constructor() {
-    this._userinfo = null
-  }
-
-  static fromUserinfo(userinfo) {
-    const u = new this
-    u._userinfo = userinfo
-    return u
-  }
-
-  static fromLocal(x) {
-    const u = new this;
-    u._userinfo = {username: x, admin: settingsApp.admins.includes(x)}
-    return u
-  }
-
-  static fromLdap(x) {
-    const u = new this;
-    u._userinfo = {
-      username: x.cn,
-      fullname: x.displayName,
-      surname: x.sn,
-      forename: x.givenName,
-      admin: settingsApp.admins.includes(x.cn),
-    }
-    return u
-  }
-
-  static getUserinfo(u) {
-    return (u && '_userinfo' in u) ? User.fromUserinfo(u._userinfo).userinfo() : {username: null}
-  }
-
-  static getUsername(u) {
-    return (u && '_userinfo' in u) ? User.fromUserinfo(u._userinfo).username() : {username: null}
-  }
-
-  userinfo() {
-    return this._userinfo
-  }
-
-  username() {
-    return this.userinfo().username
-  }
-
-  admin() {
-    return this.userinfo().admin
-  }
+  return [use, get, post]
 }
