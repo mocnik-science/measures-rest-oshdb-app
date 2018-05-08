@@ -30,10 +30,11 @@ const measureJsonToJavaMeasure = json => {
   }, parsedSoap))
 }
 
-const measureJsonToJava = jsons => useTemplate(javaRunTemplate, {
+const measureJsonToJava = (jsons, options={}) => useTemplate(javaRunTemplate, Object.assign({
   measures: jsons.filter(json => json.enabled).map(json => ({className: className(C.MEASURE, json.id)})),
   databaseFile: `/data/dbs/sweden_20180112_z12_keytable.oshdb`,
-})
+  serverOnlyLocal: false,
+}, options))
 
 module.exports.writeJava = user => {
   const jsons = allItems(C.PATH_MEASURES, user)
@@ -47,19 +48,22 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   const cn = className(C.MEASURE, json.id)
   
   const zip = new JSZip()
-  zip.file(join(cn, `${cn}.json`), JSON.stringify(json))
-  zip.file(join(cn, `${cn}.soap`), json.code)
+  zip.file(join(cn, 'data', `${cn}.json`), JSON.stringify(json))
+  zip.file(join(cn, 'data', `${cn}.soap`), json.code)
   
   for (const d of resolveDependenciesItem(C.PATH_MEASURES, isLevelPublic(req.params.level) ? null : user, C.MEASURE, id)) {
     const json = itemForUser(itemNameToItem(d._itemName).path, isLevelPublic(d.level) ? null : user, d._itemName, d.id)
-    zip.file(join(cn, `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
+    zip.file(join(cn, 'data', `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
   }
   
   zip.file(join(cn, 'README.md'), 'This is a readme!')
   
   try {
     const javaMeasure = measureJsonToJavaMeasure(json)
-    const javaRun = measureJsonToJava([json])
+    const javaRun = measureJsonToJava([json], {
+      databaseFile: '{{insert-name-of-database-here}}',
+      serverOnlyLocal: true,
+    })
     zip.folder(join(cn, 'src', 'main', 'java', 'org', 'giscience', 'measures', 'repository'))
       .file(`${cn}.java`, javaMeasure)
       .file('Run.java', javaRun)
