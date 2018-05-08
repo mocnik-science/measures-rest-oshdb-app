@@ -5,7 +5,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import './app.css'
 import './dist/app.css'
 
-import pages from './pages'
+import pages from './pages/pages'
 import Authentication from './components/authentication'
 import SidebarNavigation from './components/sidebarNavigation'
 

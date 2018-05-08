@@ -9,7 +9,7 @@ import faPlay from '@fortawesome/fontawesome-free-solid/faPlay'
 import faRedo from '@fortawesome/fontawesome-free-solid/faRedo'
 import faStop from '@fortawesome/fontawesome-free-solid/faStop'
 
-import {serviceState, serviceStart, serviceStop} from './../backend'
+import {serviceState, serviceStart, serviceStop} from './../other/backend'
 
 class SidebarService extends React.Component {
   constructor(props) {

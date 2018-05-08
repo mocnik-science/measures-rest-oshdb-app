@@ -14,8 +14,8 @@ import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import faEdit from '@fortawesome/fontawesome-free-solid/faEdit'
 import faPlusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
 
-import {itemAll, itemSave, itemPublic, itemNew} from './../backend'
-import {isLevelPublic} from './../tools'
+import {itemAll, itemSave, itemPublic, itemNew} from './../other/backend'
+import {isLevelPublic} from './../other/tools'
 
 class PageItem extends React.Component {
   constructor(props) {

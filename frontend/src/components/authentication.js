@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import LoginForm from 'grommet/components/LoginForm'
 
-import {login, user} from './../backend'
+import {login, user} from './../other/backend'
 
 class Authentication extends React.Component {
   constructor(props) {

@@ -7,9 +7,9 @@ import Sidebar from 'grommet/components/Sidebar'
 import Title from 'grommet/components/Title'
 
 import SidebarState from './sidebarState'
-import pages from './../pages'
+import pages from './../pages/pages'
 
-import {logout} from './../backend'
+import {logout} from './../other/backend'
 
 class SidebarNavigation extends React.Component {
   constructor(props) {

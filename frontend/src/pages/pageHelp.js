@@ -2,7 +2,7 @@ import React from 'react'
 import Box from 'grommet/components/Box'
 import Markdown from 'grommet/components/Markdown'
 
-import {help} from './../backend'
+import {help} from './../other/backend'
 
 class PageHelp extends React.Component {
   constructor(props) {

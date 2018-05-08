@@ -11,8 +11,8 @@ import Toast from 'grommet/components/Toast'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 
-import {item, itemSave} from './../backend'
-import {isLevelPublic} from './../tools'
+import {item, itemSave} from './../other/backend'
+import {isLevelPublic} from './../other/tools'
 
 class PageItemDescription extends React.Component {
   constructor(props) {

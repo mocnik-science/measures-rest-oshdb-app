@@ -12,8 +12,8 @@ import moment from 'moment'
 import MonacoEditor from 'react-monaco-editor'
 import soap from 'simplified-oshdb-api-programming'
 
-import {item, itemSave} from './../backend'
-import {isLevelPublic} from './../tools'
+import {item, itemSave} from './../other/backend'
+import {isLevelPublic} from './../other/tools'
 
 const AUTOCOMPLETE_DIRECTIVES = [
   'snapshots //',

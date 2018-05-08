@@ -2,8 +2,8 @@ import React from 'react'
 import Box from 'grommet/components/Box'
 // import WorldMap from 'grommet/components/WorldMap'
 
-import {items} from './../backend'
-import MeterItems from './meterItems'
+import {items} from './../other/backend'
+import MeterItems from './../components/meterItems'
 
 class PageDashboard extends React.Component {
   constructor(props) {

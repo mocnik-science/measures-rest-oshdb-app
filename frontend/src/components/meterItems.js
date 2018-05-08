@@ -5,7 +5,7 @@ import Label from 'grommet/components/Label'
 import Meter from 'grommet/components/Meter'
 import Value from 'grommet/components/Value'
 
-import {isLevelPublic, isLevelUser} from './../tools'
+import {isLevelPublic, isLevelUser} from './../other/tools'
 
 class MeterItems extends React.Component {
   constructor(props) {

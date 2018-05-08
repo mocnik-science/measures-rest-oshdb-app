@@ -1,11 +1,11 @@
 import React from 'react'
 import FormField from 'grommet/components/FormField'
 import NumberInput from 'grommet/components/NumberInput'
-import Select from './select'
 import TextInput from 'grommet/components/TextInput'
 
-import {items} from './../backend'
-import {itemsToList} from './../tools'
+import {items} from './../other/backend'
+import {itemsToList} from './../other/tools'
+import Select from './../components/select'
 import PageItemDescription from './pageItemDescription'
 
 const styles = {

@@ -8,7 +8,7 @@ import faExclamationTriangle from '@fortawesome/fontawesome-free-solid/faExclama
 import faMap from '@fortawesome/fontawesome-free-solid/faMap'
 import faStethoscope from '@fortawesome/fontawesome-free-solid/faStethoscope'
 
-import {serviceCheck} from './../backend'
+import {serviceCheck} from './../other/backend'
 import PageItem from './pageItem'
 
 class PageItemMeasure extends React.Component {
