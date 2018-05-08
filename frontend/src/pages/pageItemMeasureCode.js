@@ -182,7 +182,7 @@ class PageMeasureCode extends React.Component {
             (isLevelPublic(this.state.level) && !this.context.user.admin) ?
             [] : 
             <Box flex={true} justify='end' direction='row' responsive={false} pad='medium' style={{paddingTop: 0, paddingBottom: 0}}>
-              <Button label={this.state.buttonLabel} onClick={() => this.save(true)}/>
+              <Button label={this.state.buttonLabel} primary={!this.state.saved} onClick={() => this.save(true)}/>
             </Box>
           }
         </Header>
