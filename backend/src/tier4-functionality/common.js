@@ -26,6 +26,11 @@ module.exports.allUsernames = () => fs.readdirSync(C.PATH_USERS).filter(x => !x.
 
 // COMMON //
 
+module.exports.itemNameToItem = itemName => {
+  const items = C.ITEMS.filter(i => i.item === itemName)
+  return (items.length) ? items[0] : null
+}
+
 module.exports.idToFilename = idToFilename = (itemName, id, ext='json') => `${className(itemName, id)}.${ext}`
 
 module.exports.idToPathUserFilename = (user, itemName, id, path='', ext='json') => {

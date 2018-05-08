@@ -4,8 +4,8 @@ const JSZip = require('jszip')
 const soap = require('simplified-oshdb-api-programming/dist/soap-to-measure')
 
 const C = require('./../constants')
-const {className, isLevelPublic, idToPathUserFilename, pathUser} = require('./common')
-const {itemForUser, allItems} = require('./items')
+const {className, isLevelPublic, itemNameToItem, idToPathUserFilename, pathUser} = require('./common')
+const {itemForUser, resolveDependenciesItem, allItems} = require('./items')
 const {readTemplate, useTemplate} = require('./templates')
 
 // JAVA //
@@ -49,11 +49,24 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   const zip = new JSZip()
   zip.file(join(cn, `${cn}.json`), JSON.stringify(json))
   zip.file(join(cn, `${cn}.soap`), json.code)
-  zip.file(join(cn, 'pom.xml'), fs.readFileSync(C.PATH_POM_XML))
+  
+  for (const d of resolveDependenciesItem(C.PATH_MEASURES, isLevelPublic(req.params.level) ? null : user, C.MEASURE, id)) {
+    const json = itemForUser(itemNameToItem(d._itemName).path, isLevelPublic(d.level) ? null : user, d._itemName, d.id)
+    zip.file(join(cn, `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
+  }
+  
   zip.file(join(cn, 'README.md'), 'This is a readme!')
-  zip.folder(join(cn, 'src', 'main', 'java', 'org', 'giscience', 'measures', 'repository'))
-    .file(`${cn}.java`, measureJsonToJavaMeasure(json))
-    .file('Run.java', measureJsonToJava([json]))
+  
+  try {
+    const javaMeasure = measureJsonToJavaMeasure(json)
+    const javaRun = measureJsonToJava([json])
+    zip.folder(join(cn, 'src', 'main', 'java', 'org', 'giscience', 'measures', 'repository'))
+      .file(`${cn}.java`, javaMeasure)
+      .file('Run.java', javaRun)
+    zip.file(join(cn, 'pom.xml'), fs.readFileSync(C.PATH_POM_XML))
+  } catch (error) {
+    zip.file(join(cn, 'ERROR.md'), 'The SOAP code could not be parsed, so no JAVA code has been generated.')
+  }
   
   zip
     .generateNodeStream({type: 'nodebuffer', streamFiles: true})
