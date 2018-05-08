@@ -1,35 +1,9 @@
 const fs = require('fs-extra')
 
 const C = require('./../constants')
-const {generateGuid, idToPathUserFilename, pathUser, dirUser} = require('./common')
+const {generateGuid, isLevelUser, allUsernames, idToPathUserFilename, pathUser, pathUsername, dirUser, dirUsername} = require('./common')
 
 // ITEMS //
-
-const replaceAllItemLists = (user, hashid, idNew, levelNew, nameNew) => {
-  const modifyJson = (json, firstLevel=true) => {
-    if (typeof(json) === 'object' && json !== null) {
-      if (!firstLevel && 'hashid' in json && json.hashid == hashid && 'id' in json && 'level' in json && 'label' in json && 'value' in json) {
-        json.id = idNew
-        json.level = levelNew
-        json.label = nameNew
-        json.value = idNew
-      }
-      Object.entries(json).forEach(([k, v]) => modifyJson(v, false))
-    }
-    return json
-  }
-  const walk = (u, path) => fs.readdirSync(dirUser(u, path))
-    .filter(filename => filename.endsWith('.json'))
-    .filter(filename => ![C.FILE_SETTINGS].includes(filename))
-    .map(filename => {
-      const f = pathUser(u, path, filename)
-      const json = JSON.parse(fs.readFileSync(f))
-      const jsonNew = modifyJson(Object.assign({}, json))
-      if (json !== jsonNew) fs.writeFileSync(f, JSON.stringify(jsonNew))
-    })
-  for (i of C.ITEMS) walk(user, i.path)
-  for (i of C.ITEMS) walk(null, i.path)
-}
 
 module.exports.itemForUser = itemForUser = (path, user, itemName, id) => {
   if (!id) return null
@@ -61,8 +35,8 @@ module.exports.resolveDependenciesItem = (user, hashid) => {
       const json = JSON.parse(fs.readFileSync(f))
       dependenciesJson(itemName, json)
     })
-  for (i of C.ITEMS) walk(i.item, user, i.path)
-  for (i of C.ITEMS) walk(i.item, null, i.path)
+  for (const i of C.ITEMS) walk(i.item, user, i.path)
+  for (const i of C.ITEMS) walk(i.item, null, i.path)
   return dependencies
 }
 
@@ -71,8 +45,35 @@ module.exports.saveItem = (path, user, itemName, id, json) => {
   fs.writeFileSync(idToPathUserFilename(user, itemName, id, path), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
 }
 
-module.exports.moveItem = (path, user, itemName, idOld, data) => {
-  replaceAllItemLists(user, data.hashid, data.id, data.level, data.name)
+const replaceAllItemLists = (user, hashid, idNew, levelNew, nameNew) => {
+  const modifyJson = (json, firstLevel=true) => {
+    if (typeof(json) === 'object' && json !== null) {
+      if (!firstLevel && 'hashid' in json && json.hashid == hashid && 'id' in json && 'level' in json && 'label' in json && 'value' in json) {
+        json.id = idNew
+        json.level = levelNew
+        json.label = nameNew
+        json.value = idNew
+      }
+      Object.entries(json).forEach(([k, v]) => modifyJson(v, false))
+    }
+    return json
+  }
+  const walk = (username, path) => fs.readdirSync(dirUsername(username, path))
+    .filter(filename => filename.endsWith('.json'))
+    .filter(filename => ![C.FILE_SETTINGS].includes(filename))
+    .map(filename => {
+      const f = pathUsername(username, path, filename)
+      const json = JSON.parse(fs.readFileSync(f))
+      const jsonNew = modifyJson(Object.assign({}, json))
+      if (json !== jsonNew) fs.writeFileSync(f, JSON.stringify(jsonNew))
+    })
+  if (user === null) for (const username of allUsernames()) for (const i of C.ITEMS) walk(username, i.path)
+  else for (const i of C.ITEMS) walk(user.username(), i.path)
+  for (const i of C.ITEMS) walk(null, i.path)
+}
+
+module.exports.moveItem = (path, user, itemName, idOld, levelOld, data) => {
+  replaceAllItemLists(isLevelUser(levelOld) ? user : null, data.hashid, data.id, data.level, data.name)
   const filenameNew = idToPathUserFilename(user, itemName, data.id, path)
   if (fs.existsSync(filenameNew)) return false
   fs.renameSync(idToPathUserFilename(user, itemName, idOld, path), filenameNew)

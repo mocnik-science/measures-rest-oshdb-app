@@ -52,7 +52,7 @@ const postItem = (path, itemName, data) => (req, res) => {
       json.timestamp = data.timestamp
       if (data.data.name && json.name !== data.data.name) {
         json.id = name2id(data.data.name)
-        if (!moveItem(path, u, itemName, req.params.id, Object.assign(json, data.data))) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
+        if (!moveItem(path, u, itemName, req.params.id, req.params.level, Object.assign(json, data.data))) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name exists already.`}})
       }
       const jsonNew = Object.assign(json, data.data)
       saveItem(path, u, itemName, json.id, jsonNew)

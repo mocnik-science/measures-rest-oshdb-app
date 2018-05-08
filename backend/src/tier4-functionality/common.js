@@ -20,6 +20,10 @@ module.exports.isLevelPublic = x => x && x.toLowerCase() === C.LEVEL_PUBLIC
 
 module.exports.isLevelUser = x => x && x.toLowerCase() === C.LEVEL_USER
 
+// USERS //
+
+module.exports.allUsernames = () => fs.readdirSync(C.PATH_USERS).filter(x => !x.startsWith('.'))
+
 // COMMON //
 
 module.exports.idToFilename = idToFilename = (itemName, id, ext='json') => `${className(itemName, id)}.${ext}`
@@ -32,12 +36,14 @@ module.exports.idToPathUserFilename = (user, itemName, id, path='', ext='json') 
   return pathUser(user, path, idToFilename(itemName, id, ext))
 }
 
-module.exports.pathUser = pathUser = (user, ...path) => (user) ? join(C.PATH_USERS, user.username(), ...path) : join(C.PATH_PUBLIC, ...path)
+module.exports.pathUser = pathUser = (user, ...path) => pathUsername((user) ? user.username() : null, ...path)
+module.exports.pathUsername = pathUsername = (username, ...path) => (username !== null) ? join(C.PATH_USERS, username, ...path) : join(C.PATH_PUBLIC, ...path)
 
 module.exports.pathUserAbsolute = (user, ...path) => resolve(pathUser(user, ...path))
 
-module.exports.dirUser = (user, ...path) => {
-  const p = pathUser(user, ...path)
+module.exports.dirUser = (user, ...path) => dirUsername((user) ? user.username() : null, ...path)
+module.exports.dirUsername = dirUsername = (username, ...path) => {
+  const p = pathUsername(username, ...path)
   if (!fs.existsSync(p)) fs.mkdirSync(p)
   return p
 }
