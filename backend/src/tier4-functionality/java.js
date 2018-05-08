@@ -23,14 +23,14 @@ const javaRunTemplate = template(C.FILE_JAVA_RUN_TEMPLATE)
 
 const measureJsonToJavaMeasure = json => {
   const parsedSoap = soap.soapToMeasure(json.code)
-  if (parsedSoap.errors) throw parsedSoap.errors.join('\n')
+  if (parsedSoap.errors.length > 0) throw parsedSoap.errors.join('\n')
   return javaMeasureTemplate(Object.assign({
     id: json.id,
     className: className(C.MEASURE, json.id),
   }, parsedSoap))
 }
 
-const measureJsonToJava = (jsons, options={}) => javaRunTemplate(Object.assign({
+const measureJsonToJavaRun = (jsons, options={}) => javaRunTemplate(Object.assign({
   measures: jsons.filter(json => json.enabled).map(json => ({className: className(C.MEASURE, json.id)})),
   databaseFile: `/data/dbs/sweden_20180112_z12_keytable.oshdb`,
   serverOnlyLocal: false,
@@ -40,7 +40,7 @@ module.exports.writeJava = user => {
   const jsons = allItems(C.PATH_MEASURES, user)
   recreateJavaDir(user)
   jsons.filter(json => json.enabled).map(json => saveJavaMeasure(user, C.MEASURE, json.id, measureJsonToJavaMeasure(json)))
-  saveJava(user, 'Run.java', measureJsonToJava(jsons))
+  saveJava(user, 'Run.java', measureJsonToJavaRun(jsons))
 }
 
 const downloadReadmeTemplate = template(C.FILE_DOWNLOAD_README_TEMPLATE)
@@ -59,11 +59,11 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
     zip.file(join(cn, 'data', `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
   }
   
-  zip.file(join(cn, downloadReadmeTemplate({})))
+  zip.file(join(cn, 'README.md'), downloadReadmeTemplate({}))
   
   try {
     const javaMeasure = measureJsonToJavaMeasure(json)
-    const javaRun = measureJsonToJava([json], {
+    const javaRun = measureJsonToJavaRun([json], {
       databaseFile: '{{insert-name-of-database-here}}',
       serverOnlyLocal: true,
     })
@@ -72,7 +72,7 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
       .file('Run.java', javaRun)
     zip.file(join(cn, 'pom.xml'), fs.readFileSync(C.PATH_POM_XML))
   } catch (error) {
-    zip.file(join(cn, downloadErrorTemplate({})))
+    zip.file(join(cn, 'ERROR.md'), downloadErrorTemplate({}))
   }
   
   zip
