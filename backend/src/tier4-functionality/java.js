@@ -6,7 +6,7 @@ const soap = require('simplified-oshdb-api-programming/dist/soap-to-measure')
 const C = require('./../constants')
 const {className, isLevelPublic, itemNameToItem, idToPathUserFilename, pathUser} = require('./common')
 const {itemForUser, resolveDependenciesItem, allItems} = require('./items')
-const {readTemplate, useTemplate} = require('./templates')
+const {template} = require('./templates')
 
 // JAVA //
 
@@ -18,19 +18,19 @@ const recreateJavaDir = user => {
 const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, C.PATH_JAVA, name), code)
 const saveJavaMeasure = (user, itemName, id, code) => fs.writeFileSync(idToPathUserFilename(user, C.MEASURE, id, C.PATH_JAVA, 'java'), code)
 
-const javaTemplate = readTemplate(C.FILE_JAVA_TEMPLATE)
-const javaRunTemplate = readTemplate(C.FILE_JAVA_RUN_TEMPLATE)
+const javaMeasureTemplate = template(C.FILE_JAVA_MEASURE_TEMPLATE)
+const javaRunTemplate = template(C.FILE_JAVA_RUN_TEMPLATE)
 
 const measureJsonToJavaMeasure = json => {
   const parsedSoap = soap.soapToMeasure(json.code)
   if (parsedSoap.errors) throw parsedSoap.errors.join('\n')
-  return useTemplate(javaTemplate, Object.assign({
+  return javaMeasureTemplate(Object.assign({
     id: json.id,
     className: className(C.MEASURE, json.id),
   }, parsedSoap))
 }
 
-const measureJsonToJava = (jsons, options={}) => useTemplate(javaRunTemplate, Object.assign({
+const measureJsonToJava = (jsons, options={}) => javaRunTemplate(Object.assign({
   measures: jsons.filter(json => json.enabled).map(json => ({className: className(C.MEASURE, json.id)})),
   databaseFile: `/data/dbs/sweden_20180112_z12_keytable.oshdb`,
   serverOnlyLocal: false,
@@ -42,6 +42,9 @@ module.exports.writeJava = user => {
   jsons.filter(json => json.enabled).map(json => saveJavaMeasure(user, C.MEASURE, json.id, measureJsonToJavaMeasure(json)))
   saveJava(user, 'Run.java', measureJsonToJava(jsons))
 }
+
+const downloadReadmeTemplate = template(C.FILE_DOWNLOAD_README_TEMPLATE)
+const downloadErrorTemplate = template(C.FILE_DOWNLOAD_ERROR_TEMPLATE)
 
 module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   const json = itemForUser(C.PATH_MEASURES, isLevelPublic(req.params.level) ? null : user, C.MEASURE, id)
@@ -56,7 +59,7 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
     zip.file(join(cn, 'data', `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
   }
   
-  zip.file(join(cn, 'README.md'), 'This is a readme!')
+  zip.file(join(cn, downloadReadmeTemplate({})))
   
   try {
     const javaMeasure = measureJsonToJavaMeasure(json)
@@ -69,7 +72,7 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
       .file('Run.java', javaRun)
     zip.file(join(cn, 'pom.xml'), fs.readFileSync(C.PATH_POM_XML))
   } catch (error) {
-    zip.file(join(cn, 'ERROR.md'), 'The SOAP code could not be parsed, so no JAVA code has been generated.')
+    zip.file(join(cn, downloadErrorTemplate({})))
   }
   
   zip
