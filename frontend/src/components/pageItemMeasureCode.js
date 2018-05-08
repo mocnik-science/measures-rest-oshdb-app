@@ -163,7 +163,7 @@ class PageMeasureCode extends React.Component {
         <Header>
           <Box pad='medium' style={{paddingTop: 0, paddingBottom: 0}}>
             <Heading style={{marginBottom: 0}}>
-              {this.state.name}
+              {this.state.name.trim()}
               {
                 isLevelPublic(this.state.level) ?
                   <span style={{
