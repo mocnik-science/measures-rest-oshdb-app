@@ -39,7 +39,7 @@ class PageItem extends React.Component {
   render() {
     const label = (item, className) =>
       <Label className='pageItemLabel'>
-        {item.name}
+        {item.name.trim()}
         {
           isLevelPublic(item.level) ?
           <span style={{

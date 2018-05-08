@@ -46,7 +46,7 @@ class PageItemDescription extends React.Component {
         <Form style={{width: 600}} className={(isLevelPublic(this.props.data.level) && !this.context.user.admin) ? 'disabled' : ''}>
           <Header>
             <Heading>
-              {this.props.name}
+              {this.props.name.trim()}
               {
                 isLevelPublic(this.props.data.level) ?
                   <span style={{
