@@ -59,7 +59,10 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
     zip.file(join(cn, 'data', `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
   }
   
-  zip.file(join(cn, 'README.md'), downloadReadmeTemplate({}))
+  zip.file(join(cn, 'README.md'), downloadReadmeTemplate({
+    id: json.id,
+    description: (json.description.trim() !== '') ? json.description : null,
+  }))
   
   try {
     const javaMeasure = measureJsonToJavaMeasure(json)
