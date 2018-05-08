@@ -3,7 +3,6 @@ const {spawn, spawnSync} = require('child_process')
 const C = require('./../constants')
 const {idToPathUserFilename, pathUserAbsolute} = require('./common')
 const {allItems} = require('./items')
-const {User} = require('./../tier2-authentication/user')
 
 // SERVICES //
 
@@ -13,10 +12,10 @@ let serviceCancel = false
 const portReachable = (host, port) => (spawnSync(`${C.CMD_SERVICE_REACHABLE} http://${host}:${port}`, {shell: true}).status == 0)
 
 module.exports.serviceState = (user, port) => {
-  const running = [C.SERVICE_IS_CHECKING, C.SERVICE_IS_STARTING, C.SERVICE_IS_STARTED].includes(serviceHasState) || spawnSync(`${C.CMD_SERVICE_STATE} ${User.getUsername(user)}`, {cwd: C.PATH_SERVICE, shell: true}).status == 0
+  const running = [C.SERVICE_IS_CHECKING, C.SERVICE_IS_STARTING, C.SERVICE_IS_STARTED].includes(serviceHasState) || spawnSync(`${C.CMD_SERVICE_STATE} ${user.username()}`, {cwd: C.PATH_SERVICE, shell: true}).status == 0
   let logs = null
   if (running) {
-    const ls = spawnSync(`${C.CMD_SERVICE_LOGS} ${User.getUsername(user)}`, {cwd: C.PATH_SERVICE, shell: true}).stderr.toString()
+    const ls = spawnSync(`${C.CMD_SERVICE_LOGS} ${user.username()}`, {cwd: C.PATH_SERVICE, shell: true}).stderr.toString()
     const lsArray = ls.split('\n').reverse()
     const logsArray = []
     for (let lArray of lsArray) {
@@ -33,7 +32,7 @@ module.exports.serviceState = (user, port) => {
 }
 
 module.exports.serviceCheck = (user, callback) => {
-  const s = spawn(`${C.CMD_SERVICE_CHECK} ${User.getUsername(user)} ${pathUserAbsolute(user, C.PATH_JAVA)}`, {cwd: C.PATH_SERVICE, shell: true})
+  const s = spawn(`${C.CMD_SERVICE_CHECK} ${user.username()} ${pathUserAbsolute(user, C.PATH_JAVA)}`, {cwd: C.PATH_SERVICE, shell: true})
   let out = ''
   s.stdout.on('data', outCmd => out += outCmd.toString())
   s.on('close', code => {
@@ -49,9 +48,9 @@ module.exports.serviceCheck = (user, callback) => {
   })
 }
 
-module.exports.serviceStart = (user, port) => spawnSync(`${C.CMD_SERVICE_START} ${User.getUsername(user)} ${pathUserAbsolute(user, C.PATH_JAVA)} ${port}`, {cwd: C.PATH_SERVICE, shell: true})
+module.exports.serviceStart = (user, port) => spawnSync(`${C.CMD_SERVICE_START} ${user.username()} ${pathUserAbsolute(user, C.PATH_JAVA)} ${port}`, {cwd: C.PATH_SERVICE, shell: true})
 
 module.exports.serviceStop = user => {
   serviceCancel = true
-  spawnSync(`${C.CMD_SERVICE_STOP} ${User.getUsername(user)}`, {cwd: C.PATH_SERVICE, shell: true})
+  spawnSync(`${C.CMD_SERVICE_STOP} ${user.username()}`, {cwd: C.PATH_SERVICE, shell: true})
 }

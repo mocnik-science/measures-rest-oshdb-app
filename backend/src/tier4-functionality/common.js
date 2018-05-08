@@ -3,7 +3,6 @@ const {join, resolve} = require('path')
 const uuidv4 = require('uuid/v4')
 
 const C = require('./../constants')
-const {User} = require('./../tier2-authentication/user')
 
 // HASH //
 
@@ -33,7 +32,7 @@ module.exports.idToPathUserFilename = (user, itemName, id, path='', ext='json') 
   return pathUser(user, path, idToFilename(itemName, id, ext))
 }
 
-module.exports.pathUser = pathUser = (user, ...path) => (user) ? join(C.PATH_USERS, User.getUsername(user), ...path) : join(C.PATH_PUBLIC, ...path)
+module.exports.pathUser = pathUser = (user, ...path) => (user) ? join(C.PATH_USERS, user.username(), ...path) : join(C.PATH_PUBLIC, ...path)
 
 module.exports.pathUserAbsolute = (user, ...path) => resolve(pathUser(user, ...path))
 
