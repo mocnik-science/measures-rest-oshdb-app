@@ -1,6 +1,6 @@
 const C = require('./../constants')
 const {name2id, isLevelPublic, isLevelUser} = require('./../tier4-functionality/common')
-const {itemForUser, resolveDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems, allItemsShort} = require('./../tier4-functionality/items')
+const {itemForUser, resolveDependenciesItem, resolveInverseDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems, allItemsShort} = require('./../tier4-functionality/items')
 const {createZipMeasure} = require('./../tier4-functionality/java')
 
 module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
@@ -72,8 +72,10 @@ const getItemPublic = (path, itemName) => (req, res) => {
   else if (!req.user.admin()) res.status(403).send(`no rights to modify`)
   else {
     const json = itemForUser(path, req.user, itemName, req.params.id)
-    const dependencies = resolveDependenciesItem(req.user, json.hashid).filter(item => !isLevelPublic(item.level))
+    const dependencies = resolveDependenciesItem(path, req.user, itemName, json.id).filter(item => !isLevelPublic(item.level))
+    const inverseDependencies = resolveInverseDependenciesItem(req.user, json.hashid).filter(item => !isLevelPublic(item.level))
     if (dependencies.length > 0) res.status(200).json({success: false, dependencies: dependencies})
+    else if (inverseDependencies.length > 0) res.status(200).json({success: false, inverseDependencies: inverseDependencies})
     else {
       const jsonNew = Object.assign(json, {level: C.LEVEL_PUBLIC})
       if (!moveItemToPublic(path, req.user, itemName, req.params.id, jsonNew)) return res.status(200).json({success: false, messages: {nameError: `A ${itemName} with a very similar (or same) name has already been published.`}})

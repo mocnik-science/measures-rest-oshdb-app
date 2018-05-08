@@ -86,7 +86,8 @@ class PageItem extends React.Component {
                     e.preventDefault()
                     itemPublic(this.props.itemName, item.level, item.id, response => {
                       if (!response) this.setState({message: 'Unknown error'})
-                      else if (!response.success && response.dependencies) this.setState({messages: `The ${this.props.itemName} cannot be made public.  The following items are non-public but refer to this ${this.props.itemName}: ${response.dependencies.map(d => `${d.name} (${d._itemName})`).join(', ')}.`})
+                      else if (!response.success && response.dependencies) this.setState({messages: `The ${this.props.itemName} cannot be made public.  The following items are non-public but this ${this.props.itemName} refers to them: ${response.dependencies.map(d => `${d.name} (${d._itemName})`).join(', ')}.`})
+                      else if (!response.success && response.inverseDependencies) this.setState({messages: `The ${this.props.itemName} cannot be made public.  The following items are non-public but refer to this ${this.props.itemName}: ${response.inverseDependencies.map(d => `${d.name} (${d._itemName})`).join(', ')}.`})
                       else if (!response.success && response.messages) this.setState({messages: response.messages})
                       else this.setState(response)
                     })
