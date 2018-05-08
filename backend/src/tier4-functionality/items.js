@@ -34,7 +34,13 @@ const walkThroughItems = (itemName, user, path, callback) => {
     })
 }
 
-          // _itemName: (hashid !== null) ? itemName : null,
+const uniqueDependencies = dependencies => {
+  const depDict = {}
+  dependencies.forEach(d => {
+    depDict[d.hashid] = d
+  })
+  return Object.values(depDict)
+}
 
 // which elements does the element with the provided hashid depend on?
 module.exports.resolveDependenciesItem = (path, user, itemName, id) => {
@@ -54,7 +60,7 @@ module.exports.resolveDependenciesItem = (path, user, itemName, id) => {
   })
   for (const i of C.ITEMS) walk(i.item, user, i.path)
   for (const i of C.ITEMS) walk(i.item, null, i.path)
-  return dependencies
+  return uniqueDependencies(dependencies)
 }
 
 // which elements depend on the element with the provided hashid?
@@ -71,7 +77,7 @@ module.exports.resolveInverseDependenciesItem = (user, hashid) => {
   })
   for (const i of C.ITEMS) walk(i.item, user, i.path)
   for (const i of C.ITEMS) walk(i.item, null, i.path)
-  return dependencies
+  return uniqueDependencies(dependencies)
 }
 
 const replaceAllItemLists = (user, hashid, idNew, levelNew, nameNew) => {
