@@ -231,6 +231,7 @@ class PageMeasureDescription extends React.Component {
             <Select options={this.state.documentedByList} multiple={true} value={this.state.documentedBy} onChange={e => this.setState({documentedBy: e.value})}/>
           </FormField>,
         ]}
+        longForm={true}
         {...this.props}
       />
     )

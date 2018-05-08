@@ -45,29 +45,36 @@ class PageItemDescription extends React.Component {
         }
         <Form style={{width: 600}} className={(isLevelPublic(this.props.data.level) && !this.context.user.admin) ? 'disabled' : ''}>
           <Header>
-            <Heading>
-              {this.props.name.trim()}
+            <Heading style={{width: '100%'}}>
               {
-                isLevelPublic(this.props.data.level) ?
-                  <span style={{
-                    display: 'inlineBlock',
-                    position: 'absolute',
-                    marginLeft: 20,
-                    marginTop: -12,
-                    color: '#b81623',
-                  }}>
-                    <FontAwesomeIcon icon={faCertificate} style={{fontSize: 24}}/>
-                  </span> : []
+                (isLevelPublic(this.props.data.level) && !this.context.user.admin) ?
+                [] : 
+                <Button label='save' type='submit' primary={true} onClick={this.save} style={{float: 'right'}}/>
               }
-              </Heading>
+              <div style={{paddingRight: 140}}>
+                {this.props.name.trim()}
+                {
+                  isLevelPublic(this.props.data.level) ?
+                    <span style={{
+                      display: 'inlineBlock',
+                      position: 'absolute',
+                      marginLeft: 20,
+                      marginTop: -12,
+                      color: '#b81623',
+                    }}>
+                      <FontAwesomeIcon icon={faCertificate} style={{fontSize: 24}}/>
+                    </span> : []
+                }
+              </div>
+            </Heading>
           </Header>
           <FormFields>
             {this.props.fields}
           </FormFields>
           {
-            (isLevelPublic(this.props.data.level) && !this.context.user.admin) ?
+            (!this.props.longForm || (isLevelPublic(this.props.data.level) && !this.context.user.admin)) ?
             [] : 
-            <Footer pad={{'vertical': 'medium', 'display': 'inline-block'}}>
+            <Footer flex={true} justify="center" pad={{vertical: 'medium'}}>
               <Button label='save' type='submit' primary={true} onClick={this.save}/>
             </Footer>
           }
@@ -84,10 +91,12 @@ PageItemDescription.propTypes = {
   name: PropTypes.string.isRequired,
   data: PropTypes.object,
   fields: PropTypes.array,
+  longForm: PropTypes.bool,
 }
 PageItemDescription.defaultProps = {
   data: {},
   fields: [],
+  longForm: false,
 }
 PageItemDescription.contextTypes = {
   user: PropTypes.object.isRequired,
