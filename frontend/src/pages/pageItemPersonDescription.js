@@ -44,11 +44,11 @@ class PageItemPersonDescription extends React.Component {
           level: this.state.level,
         }}
         fields={[
-          <div style={styles.formFieldRow}>
-            <FormField key='name' label='forename' error={this.state.nameError} style={styles.formField}>
+          <div key="name" style={styles.formFieldRow}>
+            <FormField key='forename' label='forename' error={this.state.nameError} style={styles.formField}>
               <TextInput value={this.state.forename} onDOMChange={e => this.setState({forename: e.target.value})}/>
             </FormField>
-            <FormField key='name' label='surname' error={this.state.nameError} style={styles.formFieldLast}>
+            <FormField key='surname' label='surname' error={this.state.nameError} style={styles.formFieldLast}>
               <TextInput value={this.state.surname} onDOMChange={e => this.setState({surname: e.target.value})}/>
             </FormField>
           </div>,
