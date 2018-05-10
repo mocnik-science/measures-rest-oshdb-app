@@ -22,11 +22,27 @@ C.CMD_SERVICE_START = './start'
 C.CMD_SERVICE_STOP = './stop'
 C.PATH_TEMPLATES = './templates'
 C.PATH_POM_XML = `${C.PATH_SERVICE}/docker/files/pom.xml`
-C.FILE_JAVA_MEASURE_TEMPLATE = `${C.PATH_TEMPLATES}/javaMeasure.java.tmpl`
-C.FILE_JAVA_RUN_TEMPLATE = `${C.PATH_TEMPLATES}/javaRun.java.tmpl`
-C.FILE_MAP_INDEX_TEMPLATE = `${C.PATH_TEMPLATES}/map.html.tmpl`
-C.FILE_DOWNLOAD_README_TEMPLATE = `${C.PATH_TEMPLATES}/README.md.tmpl`
-C.FILE_DOWNLOAD_ERROR_TEMPLATE = `${C.PATH_TEMPLATES}/ERROR.md.tmpl`
+C.FILE_JAVA_MEASURE_TEMPLATE = `${C.PATH_TEMPLATES}/javaMeasure.java.handlebars`
+C.FILE_JAVA_RUN_TEMPLATE = `${C.PATH_TEMPLATES}/javaRun.java.handlebars`
+C.FILE_MAP_INDEX_TEMPLATE = `${C.PATH_TEMPLATES}/map.html.handlebars`
+C.FILE_DOWNLOAD_README_TEMPLATE = `${C.PATH_TEMPLATES}/README.md.handlebars`
+C.FILE_DOWNLOAD_ERROR_TEMPLATE = `${C.PATH_TEMPLATES}/ERROR.md.handlebars`
+C.PATH_TEMPLATES_LOD_VIEWS = './templates-lod'
+C.PATH_TEMPLATES_LOD_LAYOUTS = './templates-lod/layouts'
+C.PATH_TEMPLATES_LOD_PARTIALS = './templates-lod/partials'
+C.PATH_TEMPLATES_LOD_STATIC = './templates-lod/static'
+C.REPOSITORY_NAME_LONG = 'OSM Measure Repository'
+C.REPOSITORY_NAME_SHORT = 'OSM Measure Repo'
+C.REPOSITORY_NAMESPACES = {
+  // dcterms: 'http://purl.org/dc/terms/',
+  // foaf: 'http://xmlns.com/foaf/0.1/',
+  // geo: 'http://www.opengis.net/ont/geosparql#',
+  // owl: 'http://www.w3.org/2002/07/owl#',
+  rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
+  // xsd: 'http://www.w3.org/2001/XMLSchema#',
+  dq: 'http://purl.org/data-quality#',
+  osmdq: 'http://purl.org/osm-data-quality#',
+}
 C.HOST_SERVICE = 'localhost'
 C.PORT_SERVICE = 14242
 C.KEY = join(os.homedir(), '.cert/key.pem')
@@ -40,15 +56,15 @@ C.HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') : !C.
 C.LEVEL_PUBLIC = 'public'
 C.LEVEL_USER = 'user'
 
-C.CONTEXT = 'context'
 C.MEASURE = 'measure'
-C.PERSON = 'person'
 C.RESULT = 'result'
+C.CONTEXT = 'context'
+C.PERSON = 'person'
 C.ITEMS = [
-  {item: C.CONTEXT, path: C.PATH_CONTEXTS, dataNew: {}},
-  {item: C.MEASURE, path: C.PATH_MEASURES, dataNew: {code: '', enabled: false}},
-  {item: C.PERSON, path: C.PATH_PERSONS, dataNew: {}},
-  {item: C.RESULT, path: C.PATH_RESULTS, dataNew: {}},
+  {item: C.MEASURE, path: C.PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false}},
+  {item: C.RESULT, path: C.PATH_RESULTS, name: 'results', dataNew: {}},
+  {item: C.CONTEXT, path: C.PATH_CONTEXTS, name: 'contexts', dataNew: {}},
+  {item: C.PERSON, path: C.PATH_PERSONS, name: 'people', dataNew: {}},
 ]
 
 C.SERVICE_IS_CHECKING = 'checking code ...'

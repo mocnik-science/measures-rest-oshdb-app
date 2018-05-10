@@ -130,10 +130,10 @@ module.exports.moveItemToPublic = (path, user, itemName, id, data) => {
   return true
 }
 
-module.exports.allItems = allItems = (path, user) => fs.readdirSync(dirUser(user, path))
+module.exports.allItems = allItems = (path, user=null) => fs.readdirSync(dirUser(user, path))
   .filter(filename => filename.endsWith('.json'))
   .filter(filename => ![C.FILE_SETTINGS].includes(filename))
   .map(filename => JSON.parse(fs.readFileSync(pathUser(user, path, filename))))
 
-module.exports.allItemsShort = (path, user) => allItems(path, user)
+module.exports.allItemsShort = (path, user=null) => allItems(path, user)
   .map(json => ({hashid: json.hashid, id: json.id, name: json.name, level: json.level}))

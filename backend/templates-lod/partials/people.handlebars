@@ -1,0 +1,4 @@
+{{#each people}}
+  {{#if @index !== 0}}, {{/fi}
+  <span property="rdf:_{{ @index }}"{{#if this.uri}} resource="{{{ this.uri }}}"{{/if}} typeof="foaf:Person"><a property="foaf:homepage" href="{{{ this.homepage }}}"><span property="foaf:firstName" content="{{ this.forename }}">{{ this.forenameShort }}</span> <span property="foaf:familyName">{{ this.surname }}</span></a></span>
+{{/each}}

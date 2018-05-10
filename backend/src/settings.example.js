@@ -15,4 +15,5 @@ module.exports = {
     },
   },
   mapUrl: port => `http://\${window.location.hostname}:{{port}}`,
+  repositoryUrl: 'http://osm-measure.geog.uni-heidelberg.de',
 },

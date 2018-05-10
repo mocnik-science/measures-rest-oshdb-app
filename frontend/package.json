@@ -9,6 +9,9 @@
     "/map": {
       "target": "http://localhost:3001"
     },
+    "/repository": {
+      "target": "http://localhost:3001"
+    },
     "/static/vs": {
       "target": "http://localhost:3001"
     },
