@@ -8,7 +8,7 @@ const {template} = require('./templates')
 const mapIndexTemplate = template(C.FILE_MAP_INDEX_TEMPLATE)
 
 module.exports.getMap = (user, port, id) => {
-  const json = itemForUser(C.PATH_MEASURES, user, C.MEASURE, id)
+  const json = itemForUser(C.MEASURE, user, id)
   return mapIndexTemplate({
     name: json.name,
     id: json.id,

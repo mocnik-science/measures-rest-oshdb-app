@@ -9,10 +9,10 @@ C.PATH_USERS = `${C.PATH_DATA}/users`
 C.PATH_PUBLIC = `${C.PATH_DATA}/public`
 C.PATH_DBS = `${C.PATH_DATA}/dbs`
 C.PATH_JAVA = 'java'
-C.PATH_CONTEXTS = 'contexts'
-C.PATH_MEASURES = 'measures'
-C.PATH_PERSONS = 'persons'
-C.PATH_RESULTS = 'results'
+const PATH_CONTEXTS = 'contexts'
+const PATH_MEASURES = 'measures'
+const PATH_PERSONS = 'persons'
+const PATH_RESULTS = 'results'
 C.FILE_SETTINGS = 'settings.json'
 C.CMD_SERVICE_REACHABLE = 'curl --max-time .25'
 C.CMD_SERVICE_STATE = './state'
@@ -56,16 +56,11 @@ C.HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') : !C.
 C.LEVEL_PUBLIC = 'public'
 C.LEVEL_USER = 'user'
 
-C.MEASURE = 'measure'
-C.RESULT = 'result'
-C.CONTEXT = 'context'
-C.PERSON = 'person'
-C.ITEMS = [
-  {itemName: C.MEASURE, path: C.PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false}},
-  {itemName: C.RESULT, path: C.PATH_RESULTS, name: 'results', dataNew: {}},
-  {itemName: C.CONTEXT, path: C.PATH_CONTEXTS, name: 'contexts', dataNew: {}},
-  {itemName: C.PERSON, path: C.PATH_PERSONS, name: 'people', dataNew: {}},
-]
+C.MEASURE = {itemName: 'measure', path: PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false}}
+C.RESULT = {itemName: 'result', path: PATH_RESULTS, name: 'results', dataNew: {}}
+C.CONTEXT = {itemName: 'context', path: PATH_CONTEXTS, name: 'contexts', dataNew: {}}
+C.PERSON = {itemName: 'person', path: PATH_PERSONS, name: 'people', dataNew: {}}
+C.ITEM_CLASSES = [C.MEASURE, C.RESULT, C.CONTEXT, C.PERSON]
 
 C.SERVICE_IS_CHECKING = 'checking code ...'
 C.SERVICE_IS_STARTING = 'service starting ...'

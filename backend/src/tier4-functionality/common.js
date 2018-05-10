@@ -27,18 +27,17 @@ module.exports.allUsernames = () => fs.readdirSync(C.PATH_USERS).filter(x => !x.
 // COMMON //
 
 module.exports.itemNameToItem = itemName => {
-  const items = C.ITEMS.filter(i => i.itemName === itemName)
+  const items = C.ITEM_CLASSES.filter(c => c.itemName === itemName)
   return (items.length) ? items[0] : null
 }
 
-module.exports.idToFilename = idToFilename = (itemName, id, ext='json') => `${className(itemName, id)}.${ext}`
+module.exports.idToFilename = idToFilename = (itemClass, id, ext='json') => `${className(itemClass.itemName, id)}.${ext}`
 
-module.exports.idToPathUserFilename = (user, itemName, id, path='', ext='json') => {
-  if (path !== '') {
-    const p = pathUser(user, path)
-    if (!fs.existsSync(p)) fs.mkdirSync(p)
-  }
-  return pathUser(user, path, idToFilename(itemName, id, ext))
+module.exports.idToPathUserFilename = (itemClass, user, id, path=null, ext='json') => {
+  if (path === null) path = itemClass.path
+  const p = pathUser(user, path)
+  if (!fs.existsSync(p)) fs.mkdirSync(p)
+  return pathUser(user, path, idToFilename(itemClass, id, ext))
 }
 
 module.exports.pathUser = pathUser = (user, ...path) => pathUsername((user) ? user.username() : null, ...path)

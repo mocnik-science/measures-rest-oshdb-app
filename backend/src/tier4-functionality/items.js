@@ -5,9 +5,9 @@ const {generateGuid, isLevelUser, allUsernames, idToPathUserFilename, pathUser, 
 
 // FILE/DEPENDENCIY WALKERS //
 
-module.exports.itemForUser = itemForUser = (path, user, itemName, id) => {
+module.exports.itemForUser = itemForUser = (itemClass, user, id) => {
   if (!id) return null
-  const filename = idToPathUserFilename(user, itemName, id, path)
+  const filename = idToPathUserFilename(itemClass, user, id)
   return (!fs.existsSync(filename) || !fs.statSync(filename).isFile()) ? null : JSON.parse(fs.readFileSync(filename))
 }
 
@@ -23,14 +23,14 @@ const extractDepencenciesFromJson = (json) => {
   return dependencies
 }
 
-const walkThroughItems = (itemName, user, path, callback) => {
-  fs.readdirSync(dirUser(user, path))
+const walkThroughItems = (itemClass, user, callback) => {
+  fs.readdirSync(dirUser(user, itemClass.path))
     .filter(filename => filename.endsWith('.json'))
     .filter(filename => ![C.FILE_SETTINGS].includes(filename))
     .map(filename => {
-      const f = pathUser(user, path, filename)
+      const f = pathUser(user, itemClass.path, filename)
       const json = JSON.parse(fs.readFileSync(f))
-      callback(json, itemName)
+      callback(json, itemClass.itemName)
     })
 }
 
@@ -43,8 +43,8 @@ const uniqueDependencies = dependencies => {
 }
 
 // which elements does the element with the provided hashid depend on?
-module.exports.resolveDependenciesItem = (path, user, itemName, id) => {
-  const json = itemForUser(path, user, itemName, id)
+module.exports.resolveDependenciesItem = (itemClass, user, id) => {
+  const json = itemForUser(itemClass, user, id)
   const dependenciesHashid = extractDepencenciesFromJson(json)
   const dependencies = []
   const walk = (...param) => walkThroughItems(...param, (json, itemName) => {
@@ -58,8 +58,8 @@ module.exports.resolveDependenciesItem = (path, user, itemName, id) => {
       })
     }
   })
-  for (const i of C.ITEMS) walk(i.itemName, user, i.path)
-  for (const i of C.ITEMS) walk(i.itemName, null, i.path)
+  for (const c of C.ITEM_CLASSES) walk(c, user)
+  for (const c of C.ITEM_CLASSES) walk(c, null)
   return uniqueDependencies(dependencies)
 }
 
@@ -75,8 +75,8 @@ module.exports.resolveInverseDependenciesItem = (user, hashid) => {
       _itemName: itemName,
     })
   })
-  for (const i of C.ITEMS) walk(i.itemName, user, i.path)
-  for (const i of C.ITEMS) walk(i.itemName, null, i.path)
+  for (const c of C.ITEM_CLASSES) walk(c, user)
+  for (const c of C.ITEM_CLASSES) walk(c, null)
   return uniqueDependencies(dependencies)
 }
 
@@ -93,40 +93,40 @@ const replaceAllItemLists = (user, hashid, idNew, levelNew, nameNew) => {
     }
     return json
   }
-  const walk = (username, path) => fs.readdirSync(dirUsername(username, path))
+  const walk = (itemClass, username) => fs.readdirSync(dirUsername(username, itemClass.path))
     .filter(filename => filename.endsWith('.json'))
     .filter(filename => ![C.FILE_SETTINGS].includes(filename))
     .map(filename => {
-      const f = pathUsername(username, path, filename)
+      const f = pathUsername(username, itemClass.path, filename)
       const json = JSON.parse(fs.readFileSync(f))
       const jsonNew = modifyJson(Object.assign({}, json))
       if (json !== jsonNew) fs.writeFileSync(f, JSON.stringify(jsonNew))
     })
-  if (user === null) for (const username of allUsernames()) for (const i of C.ITEMS) walk(username, i.path)
-  else for (const i of C.ITEMS) walk(user.username(), i.path)
-  for (const i of C.ITEMS) walk(null, i.path)
+  if (user === null) for (const username of allUsernames()) for (const c of C.ITEM_CLASSES) walk(c, username)
+  else for (const c of C.ITEM_CLASSES) walk(c, user.username())
+  for (const c of C.ITEM_CLASSES) walk(c, null)
 }
 
 // OTHER //
 
-module.exports.saveItem = (path, user, itemName, id, json) => {
-  const jsonOld = itemForUser(path, user, itemName, id)
-  fs.writeFileSync(idToPathUserFilename(user, itemName, id, path), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
+module.exports.saveItem = (itemClass, user, id, json) => {
+  const jsonOld = itemForUser(itemClass, user, id)
+  fs.writeFileSync(idToPathUserFilename(itemClass, user, id), JSON.stringify(Object.assign(json, {hashid: (jsonOld) ? jsonOld.hashid : generateGuid()})))
 }
 
-module.exports.moveItem = (path, user, itemName, idOld, levelOld, data) => {
+module.exports.moveItem = (itemClass, user, idOld, levelOld, data) => {
   replaceAllItemLists(isLevelUser(levelOld) ? user : null, data.hashid, data.id, data.level, data.name)
-  const filenameNew = idToPathUserFilename(user, itemName, data.id, path)
+  const filenameNew = idToPathUserFilename(itemClass, user, data.id)
   if (fs.existsSync(filenameNew)) return false
-  fs.renameSync(idToPathUserFilename(user, itemName, idOld, path), filenameNew)
+  fs.renameSync(idToPathUserFilename(itemClass, user, idOld), filenameNew)
   return true
 }
 
-module.exports.moveItemToPublic = (path, user, itemName, id, data) => {
+module.exports.moveItemToPublic = (itemClass, user, id, data) => {
   replaceAllItemLists(user, data.hashid, data.id, data.level, data.name)
-  const filenameNew = idToPathUserFilename(null, itemName, id, path)
+  const filenameNew = idToPathUserFilename(itemClass, null, id)
   if (fs.existsSync(filenameNew)) return false
-  fs.renameSync(idToPathUserFilename(user, itemName, id, path), filenameNew)
+  fs.renameSync(idToPathUserFilename(itemClass, user, id), filenameNew)
   return true
 }
 

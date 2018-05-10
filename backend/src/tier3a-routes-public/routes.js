@@ -14,10 +14,10 @@ module.exports.runRoutesPublic = (use, get, post) => {
   // repository (lod)
   use('/repository/static/', express.static(C.PATH_TEMPLATES_LOD_STATIC))
   get('/repository/measure/:id', (req, res) => {
-    const measure = itemForUser(C.PATH_MEASURES, null, C.MEASURE, req.params.id)
+    const measure = itemForUser(C.MEASURES, null, req.params.id)
     console.log(measure)
     const implementedBy = []
-    for (const p of measure.implementedBy) implementedBy.push(itemForUser(C.PATH_PERSON, null, C.PERSON, p.id))
+    for (const p of measure.implementedBy) implementedBy.push(itemForUser(C.PERSON, null, p.id))
 
     
     res.render('measure', Object.assign(defaultData(req), {
@@ -43,7 +43,7 @@ module.exports.runRoutesPublic = (use, get, post) => {
 
 const defaultData = req => {
   const items = []
-  C.ITEMS.forEach(i => items.push(Object.assign({list: allItemsShort(i.path)}, i)))
+  C.ITEM_CLASSES.forEach(c => items.push(Object.assign({list: allItemsShort(c.path)}, c)))
   return {
     home: {
       titleLong: C.REPOSITORY_NAME_LONG,

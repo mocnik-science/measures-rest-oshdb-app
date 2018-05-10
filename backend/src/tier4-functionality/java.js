@@ -16,7 +16,7 @@ const recreateJavaDir = user => {
   fs.mkdirSync(dir)
 }
 const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, C.PATH_JAVA, name), code)
-const saveJavaMeasure = (user, itemName, id, code) => fs.writeFileSync(idToPathUserFilename(user, C.MEASURE, id, C.PATH_JAVA, 'java'), code)
+const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilename(C.MEASUER, user, id, C.PATH_JAVA, 'java'), code)
 
 const javaMeasureTemplate = template(C.FILE_JAVA_MEASURE_TEMPLATE)
 const javaRunTemplate = template(C.FILE_JAVA_RUN_TEMPLATE)
@@ -37,9 +37,9 @@ const measureJsonToJavaRun = (jsons, options={}) => javaRunTemplate(Object.assig
 }, options))
 
 module.exports.writeJava = user => {
-  const jsons = allItems(C.PATH_MEASURES, user)
+  const jsons = allItems(C.MEASURE.path, user)
   recreateJavaDir(user)
-  jsons.filter(json => json.enabled).map(json => saveJavaMeasure(user, C.MEASURE, json.id, measureJsonToJavaMeasure(json)))
+  jsons.filter(json => json.enabled).map(json => saveJavaMeasure(user, json.id, measureJsonToJavaMeasure(json)))
   saveJava(user, 'Run.java', measureJsonToJavaRun(jsons))
 }
 
@@ -47,15 +47,15 @@ const downloadReadmeTemplate = template(C.FILE_DOWNLOAD_README_TEMPLATE)
 const downloadErrorTemplate = template(C.FILE_DOWNLOAD_ERROR_TEMPLATE)
 
 module.exports.createZipMeasure = (user, level, id) => (req, res) => {
-  const json = itemForUser(C.PATH_MEASURES, isLevelPublic(req.params.level) ? null : user, C.MEASURE, id)
-  const cn = className(C.MEASURE, json.id)
+  const json = itemForUser(C.MEASURE, isLevelPublic(req.params.level) ? null : user, id)
+  const cn = className(C.MEASURE.path, json.id)
   
   const zip = new JSZip()
   zip.file(join(cn, 'data', `${cn}.json`), JSON.stringify(json))
   zip.file(join(cn, 'data', `${cn}.soap`), json.code)
   
-  for (const d of resolveDependenciesItem(C.PATH_MEASURES, isLevelPublic(req.params.level) ? null : user, C.MEASURE, id)) {
-    const json = itemForUser(itemNameToItem(d._itemName).path, isLevelPublic(d.level) ? null : user, d._itemName, d.id)
+  for (const d of resolveDependenciesItem(C.MEASURE, isLevelPublic(req.params.level) ? null : user, id)) {
+    const json = itemForUser(itemNameToItem(d._itemName), isLevelPublic(d.level) ? null : user, d.id)
     zip.file(join(cn, 'data', `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
   }
   

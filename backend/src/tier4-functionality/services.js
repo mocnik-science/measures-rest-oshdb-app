@@ -36,12 +36,12 @@ module.exports.serviceCheck = (user, callback) => {
   let out = ''
   s.stdout.on('data', outCmd => out += outCmd.toString())
   s.on('close', code => {
-    const files = allItems(C.PATH_MEASURES, user).map(json => {
-      const a = idToPathUserFilename(user, C.MEASURE, json.id, C.PATH_JAVA, 'java').split('/')
+    const files = allItems(C.MEASURE.path, user).map(json => {
+      const a = idToPathUserFilename(C.MEASURE, user, json.id, C.PATH_JAVA, 'java').split('/')
       return [json.id, a[a.length - 1]]
     })
     const result = {}
-    for (const json of allItems(C.PATH_MEASURES, user)) if (json.enabled) result[json.id] = ''
+    for (const json of allItems(C.MEASURE.path, user)) if (json.enabled) result[json.id] = ''
     for (const l of out.split('\n')) for (const file of files)
       if (result[file[0]] !== undefined && ~l.indexOf(file[1])) result[file[0]] = ((result[file[0]]) ? result[file[0]] : '') + l + '\n'
     callback(result)
