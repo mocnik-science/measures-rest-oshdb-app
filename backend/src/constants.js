@@ -56,7 +56,7 @@ C.HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') : !C.
 C.LEVEL_PUBLIC = 'public'
 C.LEVEL_USER = 'user'
 
-C.MEASURE = {itemName: 'measure', path: PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false}}
+C.MEASURE = {itemName: 'measure', path: PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false, appliesToDataset: {label: 'OpenStreetMap', value: 'osmdq:OpenStreetMap'}}}
 C.RESULT = {itemName: 'result', path: PATH_RESULTS, name: 'results', dataNew: {}}
 C.CONTEXT = {itemName: 'context', path: PATH_CONTEXTS, name: 'contexts', dataNew: {}}
 C.PERSON = {itemName: 'person', path: PATH_PERSONS, name: 'people', dataNew: {}}

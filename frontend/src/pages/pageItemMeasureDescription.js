@@ -33,7 +33,6 @@ class PageMeasureDescription extends React.Component {
       appliesToDataset: [],
       appliesToDatasetList: [
         {label: 'OpenStreetMap', value: 'osmdq:OpenStreetMap'},
-        {label: 'Sweden', value: 'osmdr:sweden'},
       ],
       appliesToDatasetError: null,
       assesses: [],
