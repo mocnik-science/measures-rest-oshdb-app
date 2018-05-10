@@ -6,18 +6,18 @@ const {createZipMeasure} = require('./../tier4-functionality/java')
 module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
   // general
   for (const i of C.ITEMS) {
-    get(`/backend/${i.item}/all`, getItems(i.path, i.item))
-    get(`/backend/${i.item}/id/:level/:id`, getItem(i.path, i.item))
-    post(`/backend/${i.item}/id/:level/:id`, postItem(i.path, i.item))
-    // get(`/backend/${i.item}/dependencies/:level/:id`, getItemDependencies(i.path, i.item))
-    get(`/backend/${i.item}/public/:level/:id`, getItemPublic(i.path, i.item))
-    get(`/backend/${i.item}/new`, getItemNew(i.path, i.item, i.dataNew))
+    get(`/backend/${i.itemName}/all`, getItems(i.path, i.itemName))
+    get(`/backend/${i.itemName}/id/:level/:id`, getItem(i.path, i.itemName))
+    post(`/backend/${i.itemName}/id/:level/:id`, postItem(i.path, i.itemName))
+    // get(`/backend/${i.itemName}/dependencies/:level/:id`, getItemDependencies(i.path, i.itemName))
+    get(`/backend/${i.itemName}/public/:level/:id`, getItemPublic(i.path, i.itemName))
+    get(`/backend/${i.itemName}/new`, getItemNew(i.path, i.itemName, i.dataNew))
   }
   
   // metadataItems
   get('/backend/items', (req, res) => {
     const data = {}
-    for (const i of C.ITEMS) data[`${i.item}s`] = allItemsShort(i.path, req.user).concat(allItemsShort(i.path, null))
+    for (const i of C.ITEMS) data[`${i.itemName}s`] = allItemsShort(i.path, req.user).concat(allItemsShort(i.path, null))
     res.status(200).json(data)
   })
   

@@ -27,7 +27,7 @@ module.exports.allUsernames = () => fs.readdirSync(C.PATH_USERS).filter(x => !x.
 // COMMON //
 
 module.exports.itemNameToItem = itemName => {
-  const items = C.ITEMS.filter(i => i.item === itemName)
+  const items = C.ITEMS.filter(i => i.itemName === itemName)
   return (items.length) ? items[0] : null
 }
 

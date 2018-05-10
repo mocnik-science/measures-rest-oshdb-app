@@ -61,10 +61,10 @@ C.RESULT = 'result'
 C.CONTEXT = 'context'
 C.PERSON = 'person'
 C.ITEMS = [
-  {item: C.MEASURE, path: C.PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false}},
-  {item: C.RESULT, path: C.PATH_RESULTS, name: 'results', dataNew: {}},
-  {item: C.CONTEXT, path: C.PATH_CONTEXTS, name: 'contexts', dataNew: {}},
-  {item: C.PERSON, path: C.PATH_PERSONS, name: 'people', dataNew: {}},
+  {itemName: C.MEASURE, path: C.PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false}},
+  {itemName: C.RESULT, path: C.PATH_RESULTS, name: 'results', dataNew: {}},
+  {itemName: C.CONTEXT, path: C.PATH_CONTEXTS, name: 'contexts', dataNew: {}},
+  {itemName: C.PERSON, path: C.PATH_PERSONS, name: 'people', dataNew: {}},
 ]
 
 C.SERVICE_IS_CHECKING = 'checking code ...'
