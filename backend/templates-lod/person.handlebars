@@ -1,0 +1,16 @@
+{{#> item }}
+  <div class="row">
+    <div class="metadata col-lg-10 offset-lg-1">
+      <span property="foaf:firstName" content="{{{ item.forename }}}"></span>
+      <span property="foaf:familyName" content="{{{ item.surname }}}"></span>
+      <dl class="row">
+        {{#if item.homepage}}
+          <dt class="col-sm-3">homepage</dt>
+          <dd class="col-sm-9">
+            <a property="foaf:homepage" href="{{{ item.homepage }}}" class="badge badge-data">{{ item.homepage }}</a>
+          </dd>
+        {{/if}}
+      </dl>
+    </div>
+  </div>
+{{/item}}

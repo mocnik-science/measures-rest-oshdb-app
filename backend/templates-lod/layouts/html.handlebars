@@ -21,7 +21,7 @@
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">{{ capitalize name }}</a>
             <div class="dropdown-menu">
               {{#each list}}
-                <a class="dropdown-item" href="{{{ ../../home.url }}}/{{{ ../item }}}/{{{ id }}}">{{name}}</a>
+                <a class="dropdown-item" href="{{{ ../../home.url }}}/{{{ ../itemName }}}/{{{ id }}}">{{name}}</a>
               {{/each}}
             </div>
           </li>
@@ -33,7 +33,7 @@
       </ul>
     </div>
   </nav>
-  <div class="container"{{#if item.uri}} resource="{{{ item.uri }}}"{{/if}}{{#if item.type}} typeof="{{{ item.type }}}"{{/if}}>
+  <div class="container">
     {{{body}}}
   </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

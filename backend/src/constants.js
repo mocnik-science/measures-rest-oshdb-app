@@ -35,11 +35,11 @@ C.REPOSITORY_NAME_LONG = 'OSM Measure Repository'
 C.REPOSITORY_NAME_SHORT = 'OSM Measure Repo'
 C.REPOSITORY_NAMESPACES = {
   // dcterms: 'http://purl.org/dc/terms/',
-  // foaf: 'http://xmlns.com/foaf/0.1/',
+  foaf: 'http://xmlns.com/foaf/0.1/',
   // geo: 'http://www.opengis.net/ont/geosparql#',
   // owl: 'http://www.w3.org/2002/07/owl#',
   rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
-  // xsd: 'http://www.w3.org/2001/XMLSchema#',
+  xsd: 'http://www.w3.org/2001/XMLSchema#',
   dq: 'http://purl.org/data-quality#',
   osmdq: 'http://purl.org/osm-data-quality#',
 }
@@ -48,6 +48,16 @@ C.PORT_SERVICE = 14242
 C.KEY = join(os.homedir(), '.cert/key.pem')
 C.CERT = join(os.homedir(), '.cert/cert.pem')
 C.NEW_ITEM = 'new'
+
+C.LOD_GROUNDING_DICTIONARY = {
+  'dq:extrinsicPerceptionBasedGrounding': 'perception-based',
+  'dq:intrinsicDataBasedGrounding': 'data-based (intrinsic)',
+  'dq:extrinsicDataBasedGrounding': 'data-based (extrinsic)',
+  'dq:intrinsicGroundingInProcessedData': 'processed data (intrinsic)',
+  'dq:extrinsicGroundingInProcessedData': 'processed data (extrinsic)',
+  'dq:intrinsicGroundingInRulesPatternsKnowledge': 'rules/patterns/knowledge (intrinsic)',
+  'dq:extrinsicGroundingInRulesPatternsKnowledge': 'rules/patterns/knowledge (extrinsic)',
+}
 
 C.DEVELOPMENT = (process.env.DEVELOPMENT != undefined) ? (process.env.DEVELOPMENT == 'true') : true
 C.PORT = (process.env.PORT) ? process.env.PORT : (C.DEVELOPMENT) ? 3001 : 443

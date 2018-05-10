@@ -43,7 +43,7 @@ class PageResultDescription extends React.Component {
           <FormField key='name' label='name' error={this.state.nameError}>
             <TextInput value={this.state.name} onDOMChange={e => this.setState({name: e.target.value})}/>
           </FormField>,
-          <FormField key='description' label='description (human readable)' error={this.state.descriptionError}>
+          <FormField key='description' label='description' error={this.state.descriptionError}>
             <textarea rows="5" type="text" name="description" value={this.state.description} onChange={e => this.setState({description: e.target.value})}/>
           </FormField>,
           <FormField key='documentedBy' label='documented by' error={this.state.documentedByError}>

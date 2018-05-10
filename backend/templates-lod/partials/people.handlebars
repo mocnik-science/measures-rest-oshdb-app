@@ -1,4 +1,7 @@
-{{#each people}}
-  {{#if @index !== 0}}, {{/fi}
-  <span property="rdf:_{{ @index }}"{{#if this.uri}} resource="{{{ this.uri }}}"{{/if}} typeof="foaf:Person"><a property="foaf:homepage" href="{{{ this.homepage }}}"><span property="foaf:firstName" content="{{ this.forename }}">{{ this.forenameShort }}</span> <span property="foaf:familyName">{{ this.surname }}</span></a></span>
-{{/each}}
+{{#each people}}{{!
+  }}{{#if @index}}, {{/if}}
+  <span property="{{{ ../property }}}"{{#if this.uri}} resource="{{{ this.uri }}}"{{/if}} typeof="foaf:Person">
+    <a property="foaf:homepage" href="{{#if this.homepage}}{{{ this.homepage }}}{{else}}{{{ ../home.url }}}/person/{{{ this.id }}}{{/if}}">
+    <span property="foaf:firstName" content="{{ this.forename }}">{{ this.forenameShort }}</span> <span property="foaf:familyName">{{ this.surname }}</span></a>{{!
+  }}</span>{{!
+}}{{/each}}

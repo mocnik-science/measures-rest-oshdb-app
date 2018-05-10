@@ -1,3 +1,65 @@
 {{#> item }}
-Test
+  <div class="row">
+    <div class="metadata col-lg-10 offset-lg-1">
+      <div property="dq:api" class="api">{{{ itemMeta.api.prefix }}}<em>{{{ itemMeta.api.main }}}</em>{{{ itemMeta.api.suffix }}}</div>
+      <dl class="row">
+        <dt class="col-sm-3">valid only in context</dt>
+        <dd class="col-sm-9">
+          {{#each item.validInContext}}
+            <a property="dq:validInContext" href="{{{ ../home.url }}}/context/{{{ id }}}" class="badge badge-data">{{ label }}</a>
+          {{/each}}
+        </dd>
+        <dt class="col-sm-3">presumes</dt>
+        <dd class="col-sm-9">
+          {{#each item.presumes}}
+            <span property="dq:presumes" typeof="dq:condition">
+              <span property="dq:forResult" resource="{{{ ../home.url }}}/result/{{{ forResult.id }}}"></span>
+              <span property="dq:operator" resource="{{{ operator.id }}}"></span>
+              <span property="dq:withValue" content="{{{ withValue }}}" datatype="xsd:float"></span>
+            </span>
+            <a href="{{{ ../home.url }}}/result/{{{ forResult.id }}}" class="badge badge-data">{{ forResult.label }} {{ operator.label }} {{ withValue }}</a>
+          {{/each}}
+        </dd>
+        <dt class="col-sm-3">expected result</dt>
+        <dd class="col-sm-9">
+          <span property="dq:typeOfResult" resource="{{{ home.url }}}/result/{{{ item.typeOfResult.id }}}"></span>
+          <span property="dq:minimumResult" content="{{{ item.minimumResult }}}" datatype="xsd:float"></span>
+          <span property="dq:maximumResult" content="{{{ item.maximumResult }}}" datatype="xsd:float"></span>
+          <a href="{{{ home.url }}}/result/{{{ item.typeOfResult.id }}}" class="badge badge-data">{{ item.typeOfResult.label }}{{#if item.minimumResult}}, > {{ item.minimumResult }}{{/if}}{{#if item.maximumResult}}{{#if item.minimumResult}} and {{else}},{{/if}} < {{ item.maximumResult }}{{/if}}</a>
+        </dd>
+        {{#if itemMeta.isQualityMeasure}}
+          <dt class="col-sm-3">grounding</dt>
+          <dd class="col-sm-9">
+            {{#each itemMeta.usesGrounding}}
+              <a property="dq:usesGrounding" href="{{{ ../home.url }}}/documentation#{{{ id }}}" resource="{{{ id }}}" class="badge badge-data">{{ label }}</a>
+            {{/each}}
+          </dd>
+        <dt class="col-sm-3">data quality aspects</dt>
+        <dd class="col-sm-9">
+          {{#each item.assesses}}
+            <a property="dq:assesses" href="{{{ ../home.url }}}/documentation#{{{ id }}}" resource="{{{ id }}}" class="badge badge-data">{{ label }}</a>
+          {{/each}}
+        </dd>
+        {{/if}}
+        {{#if itemMeta.isOSM}}
+          <dt class="col-sm-3">assessed elements</dt>
+          <dd class="col-sm-9">
+            {{#each item.assessesElementType}}
+              <a property="osmdq:assessesElementType" href="{{{ ../home.url }}}/documentation#{{{ id }}}" resource="{{{ id }}}" class="badge badge-data">{{ label }}</a>
+            {{/each}}
+          </dd>
+          <dt class="col-sm-3">assessed tags</dt>
+          <dd class="col-sm-9">
+            {{#each itemMeta.assessesTag}}
+              <span property="osmdq:assessesTag" typeof="osmdq:tag" class="badge badge-data">
+                <span property="osmdq:key">"{{ key }}"</span>
+                {{#if value}}= <span property="osmdq:value">"{{ value }}"</span>{{/if}}
+              {{ label }}
+              </span>
+            {{/each}}
+          </dd>
+        {{/if}}
+      </dl>
+    </div>
+  </div>
 {{/item}}

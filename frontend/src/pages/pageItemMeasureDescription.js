@@ -54,19 +54,19 @@ class PageMeasureDescription extends React.Component {
       maximumResultError: null,
       usesGrounding: [],
       usesGroundingListPerceptionBasedGrounding: [
-        {label: 'extrinsic', value: 'dq:extrinsicGrounding|dq:perceptionBasedGrounding'},
+        {label: 'extrinsic', value: 'dq:extrinsicPerceptionBasedGrounding'},
       ],
       usesGroundingListDataBasedGrounding: [
-        {label: 'intrinsic', value: 'dq:intrinsicGrounding|dq:dataBasedGrounding'},
-        {label: 'extrinsic', value: 'dq:extrinsicGrounding|dq:dataBasedGrounding'},
+        {label: 'intrinsic', value: 'dq:intrinsicDataBasedGrounding'},
+        {label: 'extrinsic', value: 'dq:extrinsicDataBasedGrounding'},
       ],
       usesGroundingListGroundingInProcessedData: [
-        {label: 'intrinsic', value: 'dq:intrinsicGrounding|dq:groundingInProcessedData'},
-        {label: 'extrinsic', value: 'dq:extrinsicGrounding|dq:groundingInProcessedData'},
+        {label: 'intrinsic', value: 'dq:intrinsicGroundingInProcessedData'},
+        {label: 'extrinsic', value: 'dq:extrinsicGroundingInProcessedData'},
       ],
       usesGroundingListGroundingInRulesPatternsKnowledge: [
-        {label: 'intrinsic', value: 'dq:intrinsic|dq:groundingInRulesPatternsKnowledge'},
-        {label: 'extrinsic', value: 'dq:dq:extrinsic|dq:groundingInRulesPatternsKnowledge'},
+        {label: 'intrinsic', value: 'dq:intrinsicGroundingInRulesPatternsKnowledge'},
+        {label: 'extrinsic', value: 'dq:extrinsicGroundingInRulesPatternsKnowledge'},
       ],
       usesGroundingError: null,
       presumes: {},
@@ -175,7 +175,7 @@ class PageMeasureDescription extends React.Component {
           <FormField key='name' label='name' error={this.state.nameError}>
             <TextInput value={this.state.name} onDOMChange={e => this.setState({name: e.target.value})}/>
           </FormField>,
-          <FormField key='description' label='description (human readable)' error={this.state.descriptionError}>
+          <FormField key='description' label='description' error={this.state.descriptionError}>
             <textarea rows="5" type="text" name="description" value={this.state.description} onChange={e => this.setState({description: e.target.value})}/>
           </FormField>,
           <FormField key='appliesToDataset' label='dataset' error={this.state.appliesToDatasetError}>
@@ -214,7 +214,7 @@ class PageMeasureDescription extends React.Component {
               ))
             }
           </FormField>,
-          <FormField key='validInContext' label='valid in context' error={this.state.validInContextError}>
+          <FormField key='validInContext' label='valid only in context' error={this.state.validInContextError}>
             <Select options={this.state.validInContextList} multiple={true} forLevel={this.state.level} value={this.state.validInContext} onChange={e => this.setState({validInContext: e.value})}/>
           </FormField>,
           <FormField key='assessesElementType' label='assessed element types' error={this.state.assessesElementTypeError}>

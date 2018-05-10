@@ -3,6 +3,7 @@ const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const fs = require('fs')
 const https = require('https')
+const marked = require('marked')
 
 const C = require('./../constants')
 const {runAuthentication} = require('./../tier2-authentication/authentication')
@@ -24,6 +25,9 @@ module.exports.runWebserver = () => {
     precompiled: false,
     helpers: {
       capitalize: s => s[0].toUpperCase() + s.slice(1),
+      markdown: function(options) {
+        return marked(options.fn(this).trim())
+      },
     },
   }))
   app.set('view engine', 'handlebars')

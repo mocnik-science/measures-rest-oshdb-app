@@ -1,43 +1,42 @@
-<div class="h4 text-muted itemTypeTitle">{{ item.itemTypeTitle }}</div>
-<h1 property="dcterms:title">{{ item.itemTitle }}</h1>
-
-<div style="display:flex; justify-content: space-between">
-  {{#if implementedBy}}<div property="dq:implementedBy" typeof="rdf:Seq" class="subtitle-information-left">implemented by {{> people people=implementedBy }}</div>{{/if}}
-
-
-
-
-
-</div>
-
-
-
-
-    <div property="dq:implementedBy" typeof="rdf:Seq" class="subtitle-information-left">written by @!templatePeople(people=implementedBy)!@</div>
-    <div property="dcterms:license" typeof="dcterms:LicenseDocument" class="subtitle-information-right">page licensed under the <a property="dcterms:source" href="@!license['source']!@"><span property="dcterms:title">@!license['title']!@</span></a></div>
-    <div property="dcterms:description" content="$!descriptionRaw!$">
-        <!--(for d in description)--><p>@!d!@</p><!--(end)-->
-    </div>
-    <!--(if len(references) == 0)-->
-    <!--(elif len(references) == 1)-->
-        <div property="dcterms:references" typeof="rdf:Seq" class="references">More information can be found in @!templateReference(i=0, reference=references[0])!@</div>
-    <!--(else)-->
-        <div property="dcterms:references" typeof="rdf:Seq" class="references">More information can be found in:
-            <ul>
-                <!--(for i, reference in enumerate(references))-->
-                    <li>@!templateReference(i=i, reference=reference, delimiter=(',' if i < len(references) - 1 else '.'))!@</li>
-                <!--(end)-->
-            </ul>
-        </div>
-    <!--(end)-->
-
-
-
-{{> @partial-block}}
-
-<div class="footer">
-  <a href="http://www.w3.org/2012/pyRdfa/extract?uri={{{ url }}}" target="blank_">[turtle]</a>
-  <a href="http://www.w3.org/2012/pyRdfa/extract?format=xml&amp;uri={{{ url }}}" target="blank_">[rdf/xml]</a>
-  <a href="http://www.w3.org/2012/pyRdfa/extract?format=nt&amp;uri={{{ url }}}" target="blank_">[n-triples]</a>
-  <a href="http://www.w3.org/2012/pyRdfa/extract?format=json&amp;uri={{{ url }}}" target="blank_">[json-ld]</a>
-</div>
+<div{{#if itemMeta.uri}} resource="{{{ itemMeta.uri }}}"{{/if}}{{#if itemMeta.type}} typeof="{{{ itemMeta.type }}}"{{/if}}/>
+  <div class="h4 text-muted itemTypeTitle">{{ itemMeta.itemTypeTitle }}</div>
+  <h1 property="dcterms:title">{{ itemMeta.itemTitle }}</h1>
+  
+  <div style="display:flex; justify-content: space-between">
+    {{#if itemMeta.implementedBy}}<div class="subtitle-information">implemented by {{> people people=itemMeta.implementedBy property='dq:implementedBy' }}</div>{{/if}}
+    {{#if itemMeta.documentedBy}}<div class="subtitle-information">documented by {{> people people=itemMeta.documentedBy property='dq:documentedBy' }}</div>{{/if}}
+    {{#if license}}
+      <div property="dcterms:license" typeof="dcterms:LicenseDocument" class="subtitle-information">{{ itemsLicensed }} licensed under the <a property="dcterms:source" href="{{{ license.source }}}"><span property="dcterms:title">{{ license.title }}</span></a></div>
+    {{/if}}
+  </div>
+  
+  {{> @partial-block}}
+  
+  <div property="dcterms:description" content="{{ item.description }}">
+    {{#markdown}}
+      {{{ item.description }}}
+    {{/markdown}}
+  </div>
+  
+  {{#if item.references}}
+      <!--(if len(references) == 0)-->
+      <!--(elif len(references) == 1)-->
+          <div property="dcterms:references" typeof="rdf:Seq" class="references">More information can be found in @!templateReference(i=0, reference=references[0])!@</div>
+      <!--(else)-->
+          <div property="dcterms:references" typeof="rdf:Seq" class="references">More information can be found in:
+              <ul>
+                  <!--(for i, reference in enumerate(references))-->
+                      <li>@!templateReference(i=i, reference=reference, delimiter=(',' if i < len(references) - 1 else '.'))!@</li>
+                  <!--(end)-->
+              </ul>
+          </div>
+      <!--(end)-->
+  {{/if}}
+  
+  <div class="footer">
+    <a href="http://www.w3.org/2012/pyRdfa/extract?uri={{{ url }}}" target="blank_">[turtle]</a>
+    <a href="http://www.w3.org/2012/pyRdfa/extract?format=xml&amp;uri={{{ url }}}" target="blank_">[rdf/xml]</a>
+    <a href="http://www.w3.org/2012/pyRdfa/extract?format=nt&amp;uri={{{ url }}}" target="blank_">[n-triples]</a>
+    <a href="http://www.w3.org/2012/pyRdfa/extract?format=json&amp;uri={{{ url }}}" target="blank_">[json-ld]</a>
+  </div>
+<div>
