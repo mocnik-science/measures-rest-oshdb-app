@@ -6,19 +6,23 @@ import {isLevelPublic} from './../other/tools'
 
 export default class SelectNew extends React.Component {
   render() {
+    const {forLevel, ...otherProps} = this.props
     return (
       <SelectNewInner
-        {...this.props}
-        options={this.props.options.filter(i => (isLevelPublic(this.props.forLevel)) ? isLevelPublic(i.level) : true)}
+        {...otherProps}
+        options={this.props.options.filter(i => (isLevelPublic(this.props.forLevel)) ? isLevelPublic(i.level) : true).map(i => {
+          if (i.id === undefined) i.id = i.value
+          return i
+        })}
       />
     )
   }
 }
 SelectNew.propTypes = {
-  forLevel: PropTypes.oneOf(['private', 'public']),
+  forLevel: PropTypes.oneOf(['user', 'public']),
 }
 SelectNew.defaultProps = {
-  forLevel: 'private',
+  forLevel: 'user',
 }
 
 class SelectNewInner extends Select {
