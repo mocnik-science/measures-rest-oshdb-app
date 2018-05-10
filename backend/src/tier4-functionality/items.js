@@ -58,8 +58,8 @@ module.exports.resolveDependenciesItem = (path, user, itemName, id) => {
       })
     }
   })
-  for (const i of C.ITEMS) walk(i.item, user, i.path)
-  for (const i of C.ITEMS) walk(i.item, null, i.path)
+  for (const i of C.ITEMS) walk(i.itemName, user, i.path)
+  for (const i of C.ITEMS) walk(i.itemName, null, i.path)
   return uniqueDependencies(dependencies)
 }
 
@@ -75,8 +75,8 @@ module.exports.resolveInverseDependenciesItem = (user, hashid) => {
       _itemName: itemName,
     })
   })
-  for (const i of C.ITEMS) walk(i.item, user, i.path)
-  for (const i of C.ITEMS) walk(i.item, null, i.path)
+  for (const i of C.ITEMS) walk(i.itemName, user, i.path)
+  for (const i of C.ITEMS) walk(i.itemName, null, i.path)
   return uniqueDependencies(dependencies)
 }
 
