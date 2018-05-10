@@ -186,7 +186,7 @@ class PageMeasureDescription extends React.Component {
             <Select options={this.state.assessesList} multiple={true} value={this.state.assesses} onChange={e => this.setState({assesses: e.value})}/>
           </FormField>,
           <FormField key='typeOfResult' label='type of result' error={this.state.typeOfResultError}>
-            <Select options={this.state.typeOfResultList} value={this.state.typeOfResult} onChange={e => this.setState({typeOfResult: e.value})}/>
+            <Select options={this.state.typeOfResultList} forLevel={this.state.level} value={this.state.typeOfResult} onChange={e => this.setState({typeOfResult: e.value})}/>
           </FormField>,
           <FormField key='minimumResult' label='minimum result' error={this.state.minimumResultError}>
             <NumberInput value={this.state.minimumResult} onChange={e => this.setState({minimumResult: e.target.value})}/>
@@ -208,7 +208,7 @@ class PageMeasureDescription extends React.Component {
             {
               Object.entries(this.state.presumes).map(([j, p]) => (
                 <FormField key={`presumes-${j}`} className="flex-row inner-formfield">
-                  <Select className="presumesForResult" options={this.state.presumesForResultList} value={p.forResult} onChange={e => this.setPresume(j, 'forResult', e.value)}/>
+                  <Select className="presumesForResult" options={this.state.presumesForResultList} forLevel={this.state.level} value={p.forResult} onChange={e => this.setPresume(j, 'forResult', e.value)}/>
                   <Select className="presumesOperator" options={this.state.presumesOperatorList} value={p.operator} onChange={e => this.setPresume(j, 'operator', e.value)}/>
                   <TextInput style={{textAlign: 'right'}} className="presumesWithValue" value={p.withValue} onDOMChange={e => this.setPresume(j, 'withValue', e.target.value)} placeHolder="number"/>
                 </FormField>
@@ -216,7 +216,7 @@ class PageMeasureDescription extends React.Component {
             }
           </FormField>,
           <FormField key='validInContext' label='valid in context' error={this.state.validInContextError}>
-            <Select options={this.state.validInContextList} multiple={true} value={this.state.validInContext} onChange={e => this.setState({validInContext: e.value})}/>
+            <Select options={this.state.validInContextList} multiple={true} forLevel={this.state.level} value={this.state.validInContext} onChange={e => this.setState({validInContext: e.value})}/>
           </FormField>,
           <FormField key='assessesElementType' label='assessed element types' error={this.state.assessesElementTypeError}>
             <Select options={this.state.assessesElementTypeList} multiple={true} value={this.state.assessesElementType} onChange={e => this.setState({assessesElementType: e.value})}/>
@@ -225,10 +225,10 @@ class PageMeasureDescription extends React.Component {
             <TextInput value={this.state.assessesTag} onDOMChange={e => this.setState({assessesTag: e.target.value})} placeHolder={'e.g., "highway"="*", "highway"="residential"'}/>
           </FormField>,
           <FormField key='implementedBy' label='implemented by' error={this.state.implementedByError}>
-            <Select options={this.state.implementedByList} multiple={true} value={this.state.implementedBy} onChange={e => this.setState({implementedBy: e.value})}/>
+            <Select options={this.state.implementedByList} multiple={true} forLevel={this.state.level} value={this.state.implementedBy} onChange={e => this.setState({implementedBy: e.value})}/>
           </FormField>,
           <FormField key='documentedBy' label='documented by' error={this.state.documentedByError}>
-            <Select options={this.state.documentedByList} multiple={true} value={this.state.documentedBy} onChange={e => this.setState({documentedBy: e.value})}/>
+            <Select options={this.state.documentedByList} multiple={true} forLevel={this.state.level} value={this.state.documentedBy} onChange={e => this.setState({documentedBy: e.value})}/>
           </FormField>,
         ]}
         longForm={true}

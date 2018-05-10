@@ -47,7 +47,7 @@ class PageResultDescription extends React.Component {
             <textarea rows="5" type="text" name="description" value={this.state.description} onChange={e => this.setState({description: e.target.value})}/>
           </FormField>,
           <FormField key='documentedBy' label='documented by' error={this.state.documentedByError}>
-            <Select options={this.state.documentedByList} multiple={true} value={this.state.documentedBy} onChange={e => this.setState({documentedBy: e.value})}/>
+            <Select options={this.state.documentedByList} multiple={true} forLevel={this.state.level} value={this.state.documentedBy} onChange={e => this.setState({documentedBy: e.value})}/>
           </FormField>,
         ]}
         {...this.props}
