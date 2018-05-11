@@ -2,8 +2,7 @@ const express = require('express')
 
 const C = require('./../constants')
 const settingsApp = require('./../settings')
-const {itemForUser} = require('./../tier4-functionality/items')
-const {typesFromMeasure, isOSM, isQualityMeasure, nameForTypesOfMeasure, groundingsFromMeasure, tagsFromMeasure, listToPersonList, forenameToForenameShort, defaultData} = require('./../tier4-functionality/lod')
+const {getMeasure, getResult, getContext, getPerson} = require('./../tier4-functionality/lod')
 
 module.exports.runRoutesPublicLOD = (use, get, post) => {
   get('/repository/measure/:id', getMeasure(null))
