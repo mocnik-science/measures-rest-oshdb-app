@@ -68,4 +68,4 @@ export const serviceCheck = fetchWithCallback('backend/service/check')
 export const serviceStart = fetchWithCallback('/backend/service/start')
 export const serviceStop = fetchWithCallback('/backend/service/stop')
 
-export const help = (file, callback) => fetchRawWithCallback(`/static/help/${file}.md`)(callback)
+export const docs = (file, callback) => fetchRawWithCallback(`/static/docs/${file}.md`)(callback)

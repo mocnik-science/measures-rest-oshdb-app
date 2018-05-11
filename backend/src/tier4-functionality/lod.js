@@ -116,7 +116,7 @@ const listToPersonList = list => {
 
 const forenameToForenameShort = forename => (forename) ? forename.replace(/[a-zß-ÿ]/g, '') : ''
 
-const defaultData = (req, withTypes=false) => {
+module.exports.defaultData = defaultData = (req, withTypes=false) => {
   const items = []
   C.ITEM_CLASSES.map(c => items.push(Object.assign({list: allItemsShort(c.path)}, c)))
   return {
