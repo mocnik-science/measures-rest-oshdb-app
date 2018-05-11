@@ -1,25 +1,41 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Box from 'grommet/components/Box'
+import Split from 'grommet/components/Split'
+import Title from 'grommet/components/Title'
 
+import {mapInfo} from './../other/backend'
 import Map from './../components/map'
 
 class PageMap extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      text: '',
+      measure: null,
+      url: null,
     }
-  }
-  componentDidMount() {
+    mapInfo(this.props.match.params.level, this.props.match.params.id, response => this.setState(response))
   }
   render() {
     return (
       <div style={{height: '100%'}}>
-        <Map
-          level={this.props.match.params.level}
-          id={this.props.match.params.id}
-        />
+        <Split flex='left'>
+          {
+            (this.state.measure) ?
+            [
+              <Map
+                key='map'
+                url={this.state.url}
+                id={this.state.measure.id}
+              />,
+              <Box key='sidebar' pad='medium' style={{width: 300}}>
+                <Title>{this.state.measure.name}</Title>
+                <p><b>You will soon find functionality here for analyzing the data.</b></p>
+                <p>{this.state.measure.description}</p>
+              </Box>
+            ] : []
+          }
+        </Split>
       </div>
     )
   }

@@ -3,7 +3,10 @@
   overflow: hidden!important;
 }
 /* map */
-.leaflet-control-container a:hover {
+.leaflet-control-zoom a {
+  color: #000!important;
+}
+.leaflet-control-zoom a:hover {
   text-decoration: none!important;
 }
 /* code */
