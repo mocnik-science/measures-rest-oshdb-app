@@ -48,15 +48,16 @@ const downloadErrorTemplate = template(C.FILE_DOWNLOAD_ERROR_TEMPLATE)
 
 module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   const json = itemForUser(C.MEASURE, isLevelPublic(req.params.level) ? null : user, id)
-  const cn = className(C.MEASURE.path, json.id)
+  const cn = className(C.MEASURE, json.id)
   
   const zip = new JSZip()
   zip.file(join(cn, 'data', `${cn}.json`), JSON.stringify(json))
   zip.file(join(cn, 'data', `${cn}.soap`), json.code)
   
   for (const d of resolveDependenciesItem(C.MEASURE, isLevelPublic(req.params.level) ? null : user, id)) {
-    const json = itemForUser(itemNameToItem(d._itemName), isLevelPublic(d.level) ? null : user, d.id)
-    zip.file(join(cn, 'data', `${className(d._itemName, d.id)}.json`), JSON.stringify(json))
+    const itemClass = itemNameToItem(d._itemName)
+    const json = itemForUser(itemClass, isLevelPublic(d.level) ? null : user, d.id)
+    zip.file(join(cn, 'data', `${className(itemClass, d.id)}.json`), JSON.stringify(json))
   }
   
   zip.file(join(cn, 'README.md'), downloadReadmeTemplate({

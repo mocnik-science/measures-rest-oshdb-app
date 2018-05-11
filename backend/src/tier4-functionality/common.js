@@ -12,7 +12,7 @@ module.exports.generateGuid = () => uuidv4()
 
 module.exports.name2id = id => id.replace(/[\s-_]+(\w)/g, (match, p, offset) => `-${p}`).replace(/[^-a-zA-Z0-9]/g, '').toLowerCase()
 
-module.exports.className = className = (itemName, id) => `${itemName[0].toUpperCase() + itemName.slice(1)}${id.replace(/^([a-z0-9])|-([a-z0-9])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
+module.exports.className = className = (itemClass, id) => `${itemClass.itemName[0].toUpperCase() + itemClass.itemName.slice(1)}${id.replace(/^([a-z0-9])|-([a-z0-9])/g, (match, p1, p2, offset) => p1 ? p1.toUpperCase() : p2.toUpperCase())}`
 
 // LEVELS //
 
@@ -31,7 +31,7 @@ module.exports.itemNameToItem = itemName => {
   return (items.length) ? items[0] : null
 }
 
-module.exports.idToFilename = idToFilename = (itemClass, id, ext='json') => `${className(itemClass.itemName, id)}.${ext}`
+module.exports.idToFilename = idToFilename = (itemClass, id, ext='json') => `${className(itemClass, id)}.${ext}`
 
 module.exports.idToPathUserFilename = (itemClass, user, id, path=null, ext='json') => {
   if (path === null) path = itemClass.path
