@@ -9,6 +9,15 @@
 .leaflet-control-zoom a:hover {
   text-decoration: none!important;
 }
+.leaflet-control-container .leaflet-top.leaflet-left {
+  position: fixed;
+  top: 40px;
+  left: -2px;
+  z-index: 10000;
+}
+.leaflet-bar {
+  box-shadow: none;
+}
 /* code */
 pre {
   border-left: 5px solid #b81623;
