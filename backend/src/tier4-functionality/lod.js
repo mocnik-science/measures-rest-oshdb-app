@@ -8,6 +8,7 @@ const {itemForUser, allItemsShort} = require('./items')
 
 module.exports.getMeasure = user => (req, res) => {
   const item = itemForUser(C.MEASURE, user, req.params.id)
+  if (!item) res.status(404).send('Item does not exist')
   const types = typesFromMeasure(item)
   res.render('measure', Object.assign(defaultData(req), {
     title: item.name,
@@ -33,6 +34,7 @@ module.exports.getMeasure = user => (req, res) => {
 }
 module.exports.getResult = user => (req, res) => {
   const item = itemForUser(C.RESULT, user, req.params.id)
+  if (!item) res.status(404).send('Item does not exist')
   res.render('result', Object.assign(defaultData(req), {
     title: item.name,
     itemMeta: {
@@ -47,6 +49,7 @@ module.exports.getResult = user => (req, res) => {
 }
 module.exports.getContext = user => (req, res) => {
   const item = itemForUser(C.CONTEXT, user, req.params.id)
+  if (!item) res.status(404).send('Item does not exist')
   res.render('context', Object.assign(defaultData(req), {
     title: item.name,
     itemMeta: {
@@ -61,6 +64,7 @@ module.exports.getContext = user => (req, res) => {
 }
 module.exports.getPerson = user => (req, res) => {
   const item = itemForUser(C.PERSON, user, req.params.id)
+  if (!item) res.status(404).send('Item does not exist')
   res.render('person', Object.assign(defaultData(req), {
     title: item.name,
     type: 'foaf:person',

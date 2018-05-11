@@ -44,7 +44,7 @@ const postItem = (itemClass, data) => (req, res) => {
   const u = isLevelPublic(req.params.level) ? null : req.user
   const json = itemForUser(itemClass, u, req.params.id)
   if (json == null) res.status(404).send(`${itemClass.itemName} not found`)
-  else if (u === null && !req.user.admin()) res.status(403).send(`no rights to modify`)
+  else if (u === null && !req.user.admin()) res.status(403).send('no rights to modify')
   else {
     const data = req.body
     if (json.timestamp >= data.timestamp) res.status(200).json({success: true})
