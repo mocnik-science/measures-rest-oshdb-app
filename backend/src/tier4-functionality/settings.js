@@ -12,7 +12,7 @@ module.exports.settings = user => {
   return JSON.parse(fs.readFileSync(filename))
 }
 
-module.exports.allSettings = () => fs.readdirSync(C.PATH_USERS)
+module.exports.allSettings = allSettings = () => fs.readdirSync(C.PATH_USERS)
   .filter(pathname => !pathname.startsWith('.'))
   .filter(pathname => fs.existsSync(`${C.PATH_USERS}/${pathname}/${C.FILE_SETTINGS}`))
   .map(pathname => JSON.parse(fs.readFileSync(`${C.PATH_USERS}/${pathname}/${C.FILE_SETTINGS}`)))
