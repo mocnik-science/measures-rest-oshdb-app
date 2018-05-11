@@ -96,6 +96,7 @@ server {
   listen 80;
   listen [::]:80 ssl;
   
+  server_name osm-measure.geog.uni-heidelberg.de;
   server_name osm-measure-edit.geog.uni-heidelberg.de;
   
   return 301 https://$host$request_uri;
@@ -198,13 +199,6 @@ sudo service nginx restart
 
 ## Publish the measures
 
-```bash
-mkdir -p ~/www/osm-measure.geog.uni-heidelberg.de
-cd ~/www
-find . -type d -exec chmod 0755 {} \;
-find . -type f -exec chmod 0644 {} \;
-```
-
 Create a file `/etc/nginx/sites-available/osm-measure` (via `sudo vi`) with the following content:
 
 ```
@@ -222,7 +216,7 @@ server {
     proxy_pass http://127.0.0.1:$1;
   }
   location / {
-    root /home/f/fmocnik/www/osm-measure.geog.uni-heidelberg.de;
+    proxy_pass http://127.0.0.1:2999/repository/;
   }
 }
 ```
