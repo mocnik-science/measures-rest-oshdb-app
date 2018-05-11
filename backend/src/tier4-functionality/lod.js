@@ -97,7 +97,7 @@ const nameForTypesOfMeasure = types => {
   return ''
 }
 
-const groundingsFromMeasure = measure => (!measure.usesGrounding) ? [] : measure.usesGrounding.map(g => ({
+const groundingsFromMeasure = measure => (measure.usesGrounding === undefined || measure.usesGrounding === null) ? [] : measure.usesGrounding.map(g => ({
   id: g.id,
   label: C.LOD_GROUNDING_DICTIONARY[g.id],
 }))
