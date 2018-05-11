@@ -1,7 +1,9 @@
 const C = require('./../constants')
+const settingsApp = require('./../settings')
 const {name2id, isLevelPublic, isLevelUser} = require('./../tier4-functionality/common')
 const {itemForUser, resolveDependenciesItem, resolveInverseDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems, allItemsShort} = require('./../tier4-functionality/items')
 const {createZipMeasure} = require('./../tier4-functionality/java')
+const {settings} = require('./../tier4-functionality/settings')
 
 module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
   // general
@@ -23,6 +25,15 @@ module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
   
   // download
   get(`/backend/${C.MEASURE.itemName}/download/:level/:id`, (req, res) => createZipMeasure(req.user, req.params.level, req.params.id)(req, res))
+  
+  // map data
+  get('/backend/map/:level/:id', (req, res) => {
+    const json = itemForUser(C.MEASURE, isLevelPublic(req.params.level) ? null : req.user, req.params.id)
+    res.status(200).json({
+      measure: json,
+      url: settingsApp.mapUrl(settings(req.user).port),
+    })
+  })
 }
 
 // ROUTE ITEMS //

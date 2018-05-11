@@ -14,6 +14,6 @@ module.exports = {
       searchFilter: '...(user={{username}})...',
     },
   },
-  mapUrl: port => `http://\${window.location.hostname}:${port}`,
+  mapUrl: port => `https://osm-measure.geog.uni-heidelberg.de/user/${port}`,
   repositoryUrl: 'http://osm-measure.geog.uni-heidelberg.de',
-},
+}

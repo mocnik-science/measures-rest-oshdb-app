@@ -61,6 +61,8 @@ export const itemNew = (itemName, callback) => fetchWithCallback(`/backend/${ite
 
 export const items = fetchWithCallback('/backend/items')
 
+export const mapInfo = (level, id, callback) => fetchWithCallback(`/backend/map/${level}/${id}`)(callback)
+
 export const serviceState = fetchWithCallback('/backend/service/state')
 export const serviceCheck = fetchWithCallback('backend/service/check')
 export const serviceStart = fetchWithCallback('/backend/service/start')

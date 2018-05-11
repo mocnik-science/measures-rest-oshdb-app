@@ -17,6 +17,7 @@ class PageMap extends React.Component {
     return (
       <div style={{height: '100%'}}>
         <Map
+          level={this.props.match.params.level}
           id={this.props.match.params.id}
         />
       </div>
