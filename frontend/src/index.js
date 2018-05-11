@@ -7,4 +7,5 @@ ReactDOM.render(
   <BrowserRouter>
     <App/>
   </BrowserRouter>,
-  document.getElementById('content'))
+  document.getElementById('content')
+)

@@ -9,12 +9,14 @@ import PageItemPerson from './pageItemPerson'
 import PageItemPersonDescription from './pageItemPersonDescription'
 import PageItemResult from './pageItemResult'
 import PageItemResultDescription from './pageItemResultDescription'
+import PageMap from './pageMap'
 
 const pages = [
   {path: '/dashboard', label: 'Dashboard', component: PageDashboard, exact: true, menu: true},
   {path: '/measure', label: 'Measures', component: PageItemMeasure, exact: true, menu: true},
   {path: '/measure/:level/:id/description', label: null, component: PageItemMeasureDescription, exact: false, menu: false},
   {path: '/measure/:level/:id/code', label: null, component: PageItemMeasureCode, exact: false, menu: false},
+  {path: '/measure/:level/:id/map', label: null, component: PageMap, exact: false, menu: false, navigationCollapsed: true},
   {path: '/result', label: 'Results', component: PageItemResult, exact: true, menu: true},
   {path: '/result/:level/:id/description', label: null, component: PageItemResultDescription, exact: false, menu: false},
   {path: '/context', label: 'Contexts', component: PageItemContext, exact: true, menu: true},

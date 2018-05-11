@@ -2,6 +2,10 @@
 .noScroll {
   overflow: hidden!important;
 }
+/* map */
+.leaflet-control-container a:hover {
+  text-decoration: none!important;
+}
 /* code */
 pre {
   border-left: 5px solid #b81623;
@@ -120,6 +124,12 @@ input.grommetux-check-box__input:checked ~ .grommetux-check-box__control:after {
   border: none!important;
 }
 /* menu */
+.sidebar {
+  transition: width .5s;
+}
+.sidebar.collapsed {
+  width: 42px;
+}
 .hasSubpage {
   height: 36px;
 }

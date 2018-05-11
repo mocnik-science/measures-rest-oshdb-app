@@ -9,6 +9,7 @@ import faMap from '@fortawesome/fontawesome-free-solid/faMap'
 import faStethoscope from '@fortawesome/fontawesome-free-solid/faStethoscope'
 
 import {serviceCheck} from './../other/backend'
+import {isLevelPublic} from './../other/tools'
 import PageItem from './pageItem'
 
 class PageItemMeasure extends React.Component {
@@ -34,6 +35,7 @@ class PageItemMeasure extends React.Component {
         buttonsItem={[
           {path: 'code', icon: faCode},
           {path: item => `/backend/measure/download/${item.level}/${item.id}`, icon: faCloudDownloadAlt, newTab: true},
+          {path: 'map', icon: faMap, onlyIf: item => item.enabled || isLevelPublic(item.level)},
         ]}
         website={item => `/map/${item.id}`}
         websiteIcon={faMap}

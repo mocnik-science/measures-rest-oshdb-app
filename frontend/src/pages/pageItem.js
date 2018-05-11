@@ -100,8 +100,8 @@ class PageItem extends React.Component {
                     return (<Button
                       key={`button--${b.path}`}
                       icon={<FontAwesomeIcon icon={b.icon}/>}
-                      path={(b.newTab) ? null : url}
-                      onClick={(!b.newTab) ? null : e => {
+                      path={(b.newTab || (b.onlyIf && !b.onlyIf(item))) ? null : url}
+                      onClick={(!b.newTab || (b.onlyIf && !b.onlyIf(item))) ? null : e => {
                         e.preventDefault()
                         window.open(url)
                       }}
