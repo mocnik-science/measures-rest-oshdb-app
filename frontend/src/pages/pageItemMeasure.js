@@ -37,8 +37,6 @@ class PageItemMeasure extends React.Component {
           {path: item => `/backend/measure/download/${item.level}/${item.id}`, icon: faCloudDownloadAlt, newTab: true},
           {path: 'map', icon: faMap, onlyIf: item => item.enabled || isLevelPublic(item.level)},
         ]}
-        website={item => `/map/${item.id}`}
-        websiteIcon={faMap}
       />
     )
   }
