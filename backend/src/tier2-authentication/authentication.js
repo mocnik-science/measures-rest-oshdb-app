@@ -13,14 +13,14 @@ const {User} = require('./user')
 module.exports.runAuthentication = app => {
   // get authenticated 
   const authenticateUseGetPost = useAuthentication(app)
-  // routes public
-  runRoutesPublic((...x) => app.use(...x), (...x) => app.get(...x), (...x) => app.post(...x))
-
-  // routes authenticated
-  runRoutesAuthenticated(...authenticateUseGetPost)
-
   // authentication routes
   useAuthenticationRoutes(app)
+  
+  // routes authenticated
+  runRoutesAuthenticated(...authenticateUseGetPost)
+  
+  // routes public
+  runRoutesPublic((...x) => app.use(...x), (...x) => app.get(...x), (...x) => app.post(...x))
 }
 
 // AUTHENTICATION ROUTES //
@@ -47,7 +47,7 @@ const useAuthentication = app => {
     if (req.user) return next()
     return res.status(403).send('forbidden')
   }
-    
+  
   passport.use(new localPassportStrategy((username, password, done) => {
     const usernames = settingsApp.localUsers
     if (usernames[username] !== undefined && usernames[username] === password) {
