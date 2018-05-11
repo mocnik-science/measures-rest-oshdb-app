@@ -118,11 +118,7 @@ const forenameToForenameShort = forename => (forename) ? forename.replace(/[a-zÃ
 
 const defaultData = (req, withTypes=false) => {
   const items = []
-  C.ITEM_CLASSES.map(c => {
-    const items = allItemsShort(c.path)
-    if (withTypes) console.log(items)
-    items.push(Object.assign({list: items}, c))
-  })
+  C.ITEM_CLASSES.map(c => items.push(Object.assign({list: allItemsShort(c.path)}, c)))
   return {
     home: {
       titleLong: C.REPOSITORY_NAME_LONG,
