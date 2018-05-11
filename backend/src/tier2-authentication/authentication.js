@@ -13,15 +13,14 @@ const {User} = require('./user')
 module.exports.runAuthentication = app => {
   // get authenticated 
   const authenticateUseGetPost = useAuthentication(app)
-  
-  // authentication routes
-  useAuthenticationRoutes(app)
-
   // routes public
   runRoutesPublic((...x) => app.use(...x), (...x) => app.get(...x), (...x) => app.post(...x))
 
   // routes authenticated
   runRoutesAuthenticated(...authenticateUseGetPost)
+
+  // authentication routes
+  useAuthenticationRoutes(app)
 }
 
 // AUTHENTICATION ROUTES //
