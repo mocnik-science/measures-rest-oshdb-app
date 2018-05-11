@@ -108,12 +108,13 @@ const tagsFromMeasure = measure => measure.assessesTag.split(/[,;]/).map(t => t.
 }))
 
 const listToPersonList = list => {
+  if (!list) return []
   const result = list.map(p => itemForUser(C.PERSON, null, p.id)).filter(p => p)
   result.map(p => p.forenameShort = forenameToForenameShort(p.forename))
   return result
 }
 
-const forenameToForenameShort = forename => forename.replace(/[a-zß-ÿ]/g, '')
+const forenameToForenameShort = forename => (forename) ? forename.replace(/[a-zß-ÿ]/g, '') : ''
 
 const defaultData = (req, withTypes=false) => {
   const items = []
