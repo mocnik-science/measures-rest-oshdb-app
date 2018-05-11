@@ -87,7 +87,7 @@ const typesFromMeasure = measure => {
 }
 
 const isOSM = measure => measure.appliesToDataset && measure.appliesToDataset.id === 'osmdq:OpenStreetMap'
-const isQualityMeasure = measure => (measure.usesGrounding.length > 0)
+const isQualityMeasure = measure => measure.usesGrounding && measure.usesGrounding.length > 0
 
 const nameForTypesOfMeasure = types => {
   if (types.includes('osmdq:spatialDataQualityMeasure')) return 'OpenStreetMap Data Quality Measure'
