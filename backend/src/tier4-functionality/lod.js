@@ -102,7 +102,7 @@ const groundingsFromMeasure = measure => (measure.usesGrounding === undefined ||
   label: C.LOD_GROUNDING_DICTIONARY[g.id],
 }))
 
-const tagsFromMeasure = measure => measure.assessesTag.split(/[,;]/).map(t => t.match(/ *"?([^"=]*)"? *(= *"?([^"=]*)"? *)?/)).map(t => ({
+const tagsFromMeasure = measure => (measure.assessesTag === undefined || measure.assessesTag === null) ? [] : measure.assessesTag.split(/[,;]/).map(t => t.match(/ *"?([^"=]*)"? *(= *"?([^"=]*)"? *)?/)).map(t => ({
   key: t[1].trim(),
   value: (t[3]) ? t[3].trim() : undefined,
 }))
