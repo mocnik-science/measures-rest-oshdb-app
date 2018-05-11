@@ -16,7 +16,7 @@ const recreateJavaDir = user => {
   fs.mkdirSync(dir)
 }
 const saveJava = (user, name, code) => fs.writeFileSync(pathUser(user, C.PATH_JAVA, name), code)
-const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilename(C.MEASUER, user, id, C.PATH_JAVA, 'java'), code)
+const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilename(C.MEASURE, user, id, C.PATH_JAVA, 'java'), code)
 
 const javaMeasureTemplate = template(C.FILE_JAVA_MEASURE_TEMPLATE)
 const javaRunTemplate = template(C.FILE_JAVA_RUN_TEMPLATE)
