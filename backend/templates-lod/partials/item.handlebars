@@ -1,5 +1,9 @@
 <div{{#if itemMeta.uri}} resource="{{{ itemMeta.uri }}}"{{/if}}{{#if itemMeta.type}} typeof="{{{ itemMeta.type }}}"{{/if}}/>
-  <div class="h4 text-muted itemTypeTitle">{{ itemMeta.itemTypeTitle }}</div>
+  {{#if itemMeta.linkToMap}}
+    <a class="link-map fas fa-map fa-2x" href="{{{ itemMeta.linkToMap }}}" target="_blank"></a>
+  {{/if}}
+  
+  <div class="h4 itemTypeTitle">{{ itemMeta.itemTypeTitle }}</div>
   <h1 property="dcterms:title">{{ itemMeta.itemTitle }}</h1>
   
   <div style="display:flex; justify-content: space-between">

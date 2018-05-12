@@ -28,8 +28,17 @@ a, a:hover {
         display: none;
     }
 }
+.link-map {
+    float: right;
+    color: #bbb;
+    margin-top: 4px;
+}
+.link-map:hover {
+    text-decoration: none;
+}
 .itemTypeTitle {
     margin-bottom: -2px;
+    color: #aaa;
 }
 .container {
     padding-top: 30px;

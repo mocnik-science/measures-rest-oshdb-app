@@ -21,6 +21,7 @@ module.exports.getMeasure = user => (req, res) => {
       isQualityMeasure: isQualityMeasure(item),
       implementedBy: listToPersonList(item.implementedBy),
       documentedBy: listToPersonList(item.documentedBy),
+      linkToMap: `${settingsApp.repositoryUrl}/map/${item.id}`,
       api: {
         prefix: settingsApp.apiPublic.prefix,
         main: settingsApp.apiPublic.main(item.id, C.PORT_PUBLIC_SERVICE),
