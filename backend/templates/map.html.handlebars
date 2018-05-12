@@ -12,6 +12,15 @@
     <script src="/static/libs/Leaflet.PixiOverlay/L.PixiOverlay.js"></script>
     <script src="/static/libs/geogrid.min.js"></script>
     <style>
+      .leaflet-container a, a {
+        color: #b81623;
+      }
+      .leaflet-container a:hover, a:hover {
+        color: #8f111c;
+      }
+      .leaflet-control-zoom a {
+        color: #000!important;
+      }
       #map {
         position: absolute;
         top: 0;
@@ -27,6 +36,7 @@
         L.isea3hLayer({
           url: `{{url}}?bbox={bbox}&resolution={resolution}`,
           urlLibs: '/static/libs',
+          colorProgressBar: '#b81623',
         }).addTo(map);
       });
     </script>
