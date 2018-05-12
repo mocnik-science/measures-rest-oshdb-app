@@ -20,7 +20,11 @@ class PageItemDescription extends React.Component {
     this.state = {
       messages: {},
     }
+    this.onKeyDown = this.onKeyDown.bind(this)
     this.save = this.save.bind(this)
+  }
+  onKeyDown(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') this.save(e)
   }
   save(e) {
     e.preventDefault()
@@ -68,7 +72,7 @@ class PageItemDescription extends React.Component {
               </div>
             </Heading>
           </Header>
-          <FormFields>
+          <FormFields onKeyDown={this.onKeyDown}>
             {this.props.fields}
           </FormFields>
           {
