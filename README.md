@@ -83,8 +83,7 @@ Then use `crontab -e` to add:
 
 ```batch
 sudo iptables-unblocktcp 80 global
-sudo iptables-unblocktcp 443
-sudo iptables-unblocktcp 2999
+sudo iptables-unblocktcp 443 global
 ```
 
 ## Configure nginx
