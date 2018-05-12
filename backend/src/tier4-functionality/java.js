@@ -82,6 +82,8 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   
   zip
     .generateNodeStream({type: 'nodebuffer', streamFiles: true})
-    .on('open', () => res.set('Content-Type', 'application/zip'))
+    .on('open', () => res
+      .set('Content-Type', 'application/zip')
+      .set('Content-Disposition', `attachment;filename=${cn}.zip`))
     .pipe(res)
 }
