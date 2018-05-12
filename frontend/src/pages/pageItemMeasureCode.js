@@ -120,6 +120,7 @@ class PageMeasureCode extends React.Component {
   editorDidMount(editor, monaco) {
     this._editor = editor
     editor.focus()
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => this.save(true))
     editor.onDidChangeCursorPosition(this.onChangeCursorPosition)
     this.onChangeCursorPosition(null)
   }
@@ -223,7 +224,7 @@ PageMeasureCode.propTypes = {
 }
 PageMeasureCode.defaultProps = {
   itemSave: (level, id, data, callback) => {},
-  autoSaveInterval: 5000,
+  autoSaveInterval: 15000,
   autoSaveTimeout: 5000,
 }
 PageMeasureCode.contextTypes = {
