@@ -214,6 +214,9 @@ server {
     rewrite ^/user/([0-9]+)/(.*) /$2 break;
     proxy_pass http://127.0.0.1:$1;
   }
+  location ~ "^/api/" {
+    proxy_pass http://127.0.0.1:31415;
+  }
   location / {
     proxy_pass http://127.0.0.1:2999/repository/;
   }
