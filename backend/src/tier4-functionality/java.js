@@ -80,10 +80,11 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
     zip.file(join(cn, 'ERROR.md'), downloadErrorTemplate({}))
   }
   
+  res
+    .set('Content-Type', 'application/zip')
+    .set('Content-Disposition', `attachment;filename=${cn}.zip`))
+  
   zip
     .generateNodeStream({type: 'nodebuffer', streamFiles: true})
-    .on('open', () => res
-      .set('Content-Type', 'application/zip')
-      .set('Content-Disposition', `attachment;filename=${cn}.zip`))
     .pipe(res)
 }
