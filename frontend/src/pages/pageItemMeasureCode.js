@@ -97,11 +97,11 @@ class PageMeasureCode extends React.Component {
   }
   componentDidMount() {
     item('measure', this.props.match.params.level, this.props.match.params.id, response => this.setState(response))
-    this.saveService = setInterval(this.save, this.props.autoSaveInterval)
+    this._saveService = setInterval(this.save, this.props.autoSaveInterval)
     window.addEventListener('resize', this.onResize)
   }
   componentWillUnmount() {
-    clearInterval(this.saveService)
+    clearInterval(this._saveService)
   }
   editorWillMount(monaco) {
     this._monaco = monaco
