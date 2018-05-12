@@ -35,13 +35,6 @@ public class {{className}} extends MeasureOSHDB<Number, {{mapReducibleType}}> {
         super(oshdb, oshdb_keydb);
     }
 
-{{#if intervalInDays}}
-    @Override
-    public Integer intervalInDays() {
-        return {{intervalInDays}};
-    }
-
-{{/if}}
     @Override
     public Boolean refersToTimeSpan() {
         return {{refersToTimespan}};
@@ -64,6 +57,13 @@ public class {{className}} extends MeasureOSHDB<Number, {{mapReducibleType}}> {
     @Override
     public Integer defaultDaysBefore() {
         return {{daysBefore}};
+    }
+
+{{/if}}
+{{#if intervalInDays}}
+    @Override
+    public Integer defaultIntervalInDays() {
+        return {{intervalInDays}};
     }
 
 {{/if}}
