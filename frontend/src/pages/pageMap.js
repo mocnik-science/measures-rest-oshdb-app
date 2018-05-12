@@ -18,8 +18,8 @@ class PageMap extends React.Component {
   }
   render() {
     return (
-      <div style={{height: '100%'}}>
-        <Split flex='left'>
+      <div class='map-split'>
+        <Split flex='left' separator={true}>
           {
             (this.state.measure) ?
             [
