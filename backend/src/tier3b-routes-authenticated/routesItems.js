@@ -23,7 +23,7 @@ module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
   })
   
   // download
-  get(`/backend/${C.MEASURE.itemName}/download/:level/:id`, (req, res) => createZipMeasure(req.user, req.params.level, req.params.id)(req, res))
+  get(`/backend/${C.MEASURE.itemName}/download/:level/:id`, createZipMeasure(req.user, req.params.level, req.params.id))
 }
 
 // ROUTE ITEMS //

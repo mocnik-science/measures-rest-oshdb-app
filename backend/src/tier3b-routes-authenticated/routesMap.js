@@ -7,7 +7,7 @@ const {settings} = require('./../tier4-functionality/settings')
 
 module.exports.runRoutesAuthenticatedMap = (use, get, post) => {
   // html map page
-  get('/repository/map/:level/:id', (req, res) => getMap(req, res, isLevelPublic(req.params.level) ? null : req.user, req.params.level))
+  get('/repository/map/:level/:id', getMap(isLevelPublic(req.params.level) ? null : req.user, req.params.level))
   
   // map data
   get('/backend/map/:level/:id', (req, res) => {

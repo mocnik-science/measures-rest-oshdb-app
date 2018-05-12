@@ -9,7 +9,7 @@ const {settings} = require('./../tier4-functionality/settings')
 
 const mapIndexTemplate = template(C.FILE_MAP_INDEX_TEMPLATE)
 
-module.exports.getMap = (req, res, user, level) => {
+module.exports.getMap = (user, level) => (req, res) => {
   const json = itemForUser(C.MEASURE, user, req.params.id)
   if (json === null) res.status(404).send('measure not found')
   else {
