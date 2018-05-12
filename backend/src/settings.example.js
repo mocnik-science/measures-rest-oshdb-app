@@ -17,10 +17,10 @@ module.exports = {
   repositoryUrl: 'https://osm-measure.geog.uni-heidelberg.de',
   apiUser: {
     prefix: 'https://',
-    main: (id, port) => `osm-measure.geog.uni-heidelberg.de/api/${id}/grid`,
+    main: (id, port) => `osm-measure.geog.uni-heidelberg.de/user/${port}/api/${id}/grid`,
   },
   apiPublic: {
     prefix: 'https://',
-    main: (id, port) => `osm-measure.geog.uni-heidelberg.de/user/${port}/api/${id}/grid`,
+    main: (id, port) => `osm-measure.geog.uni-heidelberg.de/api/${id}/grid`,
   },
 }
