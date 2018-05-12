@@ -26,7 +26,6 @@ class PageMap extends React.Component {
               <Map
                 key='map'
                 url={this.state.url}
-                id={this.state.measure.id}
               />,
               <Box key='sidebar' pad='medium' style={{width: 300}}>
                 <Title>{this.state.measure.name}</Title>

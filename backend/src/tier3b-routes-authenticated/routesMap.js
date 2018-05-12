@@ -7,17 +7,14 @@ const {settings} = require('./../tier4-functionality/settings')
 
 module.exports.runRoutesAuthenticatedMap = (use, get, post) => {
   // html map page
-  get('/map/:id', (req, res) => {
-    res.set('Content-Type', 'text/html')
-    res.status(200).send(getMap(req.user, settings(req.user).port, req.params.id))
-  })
+  get('/map/:level/:id', (req, res) => res.status(200).send(getMap(req, res, isLevelPublic(req.params.level) ? null : req.user, req.params.level)))
   
   // map data
   get('/backend/map/:level/:id', (req, res) => {
     const json = itemForUser(C.MEASURE, isLevelPublic(req.params.level) ? null : req.user, req.params.id)
     res.status(200).json({
       measure: json,
-      url: settingsApp.mapUrl(settings(req.user).port),
+      url: isLevelPublic(req.params.level) ? settingsApp.apiPublic.prefix + settingsApp.apiPublic.main(req.params.id, C.PORT_PUBLIC_SERVICE) : settingsApp.apiUser.prefix + settingsApp.apiUser.main(req.params.id, settings(req.user).port),
     })
   })
 }

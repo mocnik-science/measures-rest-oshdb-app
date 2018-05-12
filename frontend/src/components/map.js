@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 
 class Map extends React.Component {
@@ -9,7 +10,7 @@ class Map extends React.Component {
     this._map = this._L.map('map').setView([57, 12], 10)
     this._L.stamenTileLayer('toner-lite').addTo(this._map);
     this._isea3h = this._L.isea3hLayer({
-      url: `${this.props.url}/api/${this.props.id}/grid?bbox={bbox}&resolution={resolution}`,
+      url: `${this.props.url}?bbox={bbox}&resolution={resolution}`,
       urlLibs: '/static/libs',
       colorProgressBar: '#b81623',
     }).addTo(this._map)
@@ -21,6 +22,9 @@ class Map extends React.Component {
   render() {
     return (<div id='map' style={{height: '100%'}}></div>)
   }
+}
+Map.propTypes = {
+  url: PropTypes.string.isRequired,
 }
 
 export default Map

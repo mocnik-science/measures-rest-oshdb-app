@@ -20,6 +20,7 @@ C.CMD_SERVICE_CHECK = './check'
 C.CMD_SERVICE_LOGS = './logs'
 C.CMD_SERVICE_START = './start'
 C.CMD_SERVICE_STOP = './stop'
+C.CMD_SERVICE_PUBLIC_START = './public-start'
 C.PATH_TEMPLATES = './templates'
 C.PATH_POM_XML = `${C.PATH_SERVICE}/docker/files/pom.xml`
 C.FILE_JAVA_MEASURE_TEMPLATE = `${C.PATH_TEMPLATES}/javaMeasure.java.handlebars`
@@ -45,6 +46,7 @@ C.REPOSITORY_NAMESPACES = {
 }
 C.HOST_SERVICE = 'localhost'
 C.PORT_SERVICE = 14242
+C.PORT_PUBLIC_SERVICE = 31415
 C.KEY = join(os.homedir(), '.cert/key.pem')
 C.CERT = join(os.homedir(), '.cert/cert.pem')
 C.NEW_ITEM = 'new'

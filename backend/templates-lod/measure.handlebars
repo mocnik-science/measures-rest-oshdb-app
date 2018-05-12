@@ -1,7 +1,10 @@
 {{#> item }}
   <div class="row">
     <div class="metadata col-lg-10 offset-lg-1">
-      <div property="dq:api" class="api">{{{ itemMeta.api.prefix }}}<em>{{{ itemMeta.api.main }}}</em>{{{ itemMeta.api.suffix }}}</div>
+      <div property="dq:api" class="api" content="{{{ itemMeta.api.prefix }}}{{{ itemMeta.api.main }}}{{{ itemMeta.api.suffix }}}">
+        <span>{{{ itemMeta.api.prefix }}}<em>{{{ itemMeta.api.main }}}</em></span>
+        <span>{{{ itemMeta.api.suffix }}}</span>
+      </div>
       <dl class="row">
         <dt class="col-sm-3">valid only in context</dt>
         <dd class="col-sm-9">

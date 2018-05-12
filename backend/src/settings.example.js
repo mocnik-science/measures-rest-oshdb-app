@@ -14,6 +14,13 @@ module.exports = {
       searchFilter: '...(user={{username}})...',
     },
   },
-  mapUrl: port => `https://osm-measure.geog.uni-heidelberg.de/user/${port}`,
   repositoryUrl: 'https://osm-measure.geog.uni-heidelberg.de',
+  apiUser: {
+    prefix: 'https://',
+    main: (id, port) => `osm-measure.geog.uni-heidelberg.de/api/${id}/grid`,
+  },
+  apiPublic: {
+    prefix: 'https://',
+    main: (id, port) => `osm-measure.geog.uni-heidelberg.de/user/${port}/api/${id}/grid`,
+  },
 }

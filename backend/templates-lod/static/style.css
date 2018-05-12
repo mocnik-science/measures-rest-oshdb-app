@@ -66,6 +66,9 @@ a.badge-data:hover {
     min-height: 24px;
 }
 .api {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     font-size: 13px;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
     word-break: break-all;
@@ -92,14 +95,6 @@ a.badge-data:hover {
     margin-left: 10px;
     margin-right: 10px;
 }
-
-
-
-
-
-
-
-
 
 
 

@@ -30,8 +30,8 @@ const measureJsonToJavaMeasure = json => {
   }, parsedSoap))
 }
 
-const measureJsonToJavaRun = (jsons, options={}) => javaRunTemplate(Object.assign({
-  measures: jsons.filter(json => json.enabled).map(json => ({className: className(C.MEASURE, json.id)})),
+const measureJsonToJavaRun = (user, jsons, options={}) => javaRunTemplate(Object.assign({
+  measures: jsons.filter(json => (user === null || json.enabled)).map(json => ({className: className(C.MEASURE, json.id)})),
   databaseFile: `/data/dbs/sweden_20180112_z12_keytable.oshdb`,
   serverOnlyLocal: false,
 }, options))
@@ -39,22 +39,23 @@ const measureJsonToJavaRun = (jsons, options={}) => javaRunTemplate(Object.assig
 module.exports.writeJava = user => {
   const jsons = allItems(C.MEASURE.path, user)
   recreateJavaDir(user)
-  jsons.filter(json => json.enabled).map(json => saveJavaMeasure(user, json.id, measureJsonToJavaMeasure(json)))
-  saveJava(user, 'Run.java', measureJsonToJavaRun(jsons))
+  jsons.filter(json => (user === null || json.enabled)).map(json => saveJavaMeasure(user, json.id, measureJsonToJavaMeasure(json)))
+  saveJava(user, 'Run.java', measureJsonToJavaRun(user, jsons))
 }
 
 const downloadReadmeTemplate = template(C.FILE_DOWNLOAD_README_TEMPLATE)
 const downloadErrorTemplate = template(C.FILE_DOWNLOAD_ERROR_TEMPLATE)
 
 module.exports.createZipMeasure = (user, level, id) => (req, res) => {
-  const json = itemForUser(C.MEASURE, isLevelPublic(req.params.level) ? null : user, id)
+  const u = isLevelPublic(req.params.level) ? null : user
+  const json = itemForUser(C.MEASURE, u, id)
   const cn = className(C.MEASURE, json.id)
   
   const zip = new JSZip()
   zip.file(join(cn, 'data', `${cn}.json`), JSON.stringify(json))
   zip.file(join(cn, 'data', `${cn}.soap`), json.code)
   
-  for (const d of resolveDependenciesItem(C.MEASURE, isLevelPublic(req.params.level) ? null : user, id)) {
+  for (const d of resolveDependenciesItem(C.MEASURE, u, id)) {
     const itemClass = itemNameToItem(d._itemName)
     const json = itemForUser(itemClass, isLevelPublic(d.level) ? null : user, d.id)
     zip.file(join(cn, 'data', `${className(itemClass, d.id)}.json`), JSON.stringify(json))
@@ -67,7 +68,7 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   
   try {
     const javaMeasure = measureJsonToJavaMeasure(json)
-    const javaRun = measureJsonToJavaRun([json], {
+    const javaRun = measureJsonToJavaRun(u, [json], {
       databaseFile: '{{insert-name-of-database-here}}',
       serverOnlyLocal: true,
     })

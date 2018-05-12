@@ -22,8 +22,8 @@ module.exports.getMeasure = user => (req, res) => {
       implementedBy: listToPersonList(item.implementedBy),
       documentedBy: listToPersonList(item.documentedBy),
       api: {
-        prefix: 'http://',
-        main: 'purl.org/osm-data-quality/measure/measure-test/grid',
+        prefix: settingsApp.apiPublic.prefix,
+        main: settingsApp.apiPublic.main(item.id, C.PORT_PUBLIC_SERVICE),
         suffix: '?resolution={resolution}&bbox={bounding box}',
       },
       usesGrounding: groundingsFromMeasure(item),

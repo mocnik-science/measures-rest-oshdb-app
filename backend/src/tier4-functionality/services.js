@@ -54,3 +54,5 @@ module.exports.serviceStop = user => {
   serviceCancel = true
   spawnSync(`${C.CMD_SERVICE_STOP} ${user.username()}`, {cwd: C.PATH_SERVICE, shell: true})
 }
+
+module.exports.servicePublicStart = () => spawnSync(`${C.CMD_SERVICE_PUBLIC_START} ${pathUserAbsolute(null, C.PATH_JAVA)}`, {cwd: C.PATH_SERVICE, shell: true})

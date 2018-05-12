@@ -1,7 +1,8 @@
 const C = require('./../constants')
 const {name2id, isLevelPublic, isLevelUser} = require('./../tier4-functionality/common')
 const {itemForUser, resolveDependenciesItem, resolveInverseDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems, allItemsShort} = require('./../tier4-functionality/items')
-const {createZipMeasure} = require('./../tier4-functionality/java')
+const {writeJava, createZipMeasure} = require('./../tier4-functionality/java')
+const {servicePublicStart} = require('./../tier4-functionality/services')
 
 module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
   // general
@@ -56,6 +57,10 @@ const postItem = (itemClass, data) => (req, res) => {
       }
       const jsonNew = Object.assign(json, data.data)
       saveItem(itemClass, u, json.id, jsonNew)
+      if (u === null) {
+        writeJava(null)
+        servicePublicStart()
+      }
       res.status(200).json({success: true})
     }
   }
@@ -80,6 +85,8 @@ const getItemPublic = itemClass => (req, res) => {
       const jsonNew = Object.assign(json, {level: C.LEVEL_PUBLIC})
       if (!moveItemToPublic(itemClass, req.user, req.params.id, jsonNew)) return res.status(200).json({success: false, messages: {nameError: `A ${itemClass.itemName} with a very similar (or same) name has already been published.`}})
       saveItem(itemClass, null, json.id, jsonNew)
+      writeJava(null)
+      servicePublicStart()
       getItems(itemClass)(req, res)
     }
   }
