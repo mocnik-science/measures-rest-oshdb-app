@@ -222,10 +222,10 @@ server {
 
   server_name osm-measure.geog.uni-heidelberg.de;
 
-  location ^~ /api/ {
+  location /api/ {
     proxy_pass http://127.0.0.1:31415;
   }
-  location ^~ /sparql/ {
+  location /sparql {
     proxy_pass http://127.0.0.1:8000;
   }
   location / {
@@ -245,10 +245,10 @@ server {
     rewrite ^/user/([0-9]+)/(.*) /$2 break;
     proxy_pass http://127.0.0.1:$1;
   }
-  location ^~ /api/ {
+  location /api/ {
     proxy_pass http://127.0.0.1:31415;
   }
-  location ^~ /sparql/ {
+  location /sparql {
     proxy_pass http://127.0.0.1:8000;
   }
   location / {
