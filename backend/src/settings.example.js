@@ -23,4 +23,5 @@ module.exports = {
     prefix: 'https://',
     main: (id, port) => `osm-measure.geog.uni-heidelberg.de/api/${id}/grid`,
   },
+  sparqlEndpoint: 'https://osm-measure.geog.uni-heidelberg.de/sparql',
 }

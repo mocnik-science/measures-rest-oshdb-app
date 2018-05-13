@@ -30,7 +30,7 @@ $(document).ready(function() {
     $('#sparql-result').removeClass('hidden');
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:8000/sparql',
+      url: $('#sparql-form').data('endpoint'),
       data: {
         query: $('#sparql-query').val(),
       },
