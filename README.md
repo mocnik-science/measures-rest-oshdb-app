@@ -1,9 +1,12 @@
-# Installation
+# Measures REST OSHDB App
+
+## Installation
 
 In the following, you will find a description of how to install the software on an exemplary server.  You might have to adjuste the following commands in case of your own server.  The description includes the following software projects:
 
 * measures-rest-oshdb-app
 * measures-rest-oshdb-docker
+* measures-rest-sparql
 * vocabulary-osm-data-quality
 * vocabulary-data-quality
 
@@ -235,3 +238,15 @@ Then:
 sudo ln -s /etc/nginx/sites-available/osm-measure /etc/nginx/sites-enabled/osm-measure
 sudo service nginx restart
 ```
+
+## Author
+
+This software is written and maintained by Franz-Benjamin Mocnik, <mocnik@uni-heidelberg.de>, GIScience Research Group, Institute of Geography, Heidelberg University.
+
+The development has been supported by the DFG project *A framework for measuring the fitness for purpose of OpenStreetMap data based on intrinsic quality indicators* (FA 1189/3-1).
+
+(c) by Heidelberg University, 2018.
+
+## License
+
+The code is licensed under the [MIT license](https://github.com/giscience/measures-rest-oshdb/blob/master/LICENSE).
