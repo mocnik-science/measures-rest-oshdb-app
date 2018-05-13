@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import Box from 'grommet/components/Box'
 // import WorldMap from 'grommet/components/WorldMap'
@@ -21,7 +22,7 @@ class PageDashboard extends React.Component {
   render() {
     return (
       <Box pad='large' align='center'>
-        <h2 style={{marginBottom: 80}}>Welcome!</h2>
+        <h2 style={{marginBottom: 80}}>Welcome{(this.context.user.forename) ? ' ' + this.context.user.forename : (this.context.user.username) ? ' ' + this.context.user.username : ''}!</h2>
         {/*
         <h2>Measures</h2>
         */}
@@ -59,6 +60,9 @@ class PageDashboard extends React.Component {
       </Box>
     )
   }
+}
+PageDashboard.contextTypes = {
+  user: PropTypes.object.isRequired,
 }
 
 export default PageDashboard
