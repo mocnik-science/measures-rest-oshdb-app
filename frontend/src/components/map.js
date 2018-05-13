@@ -7,7 +7,7 @@ class Map extends React.Component {
     this._L = window.L
   }
   componentDidMount() {
-    this._map = this._L.map('map').setView([57, 12], 10)
+    this._map = this._L.map('map').setView([57.7, 12.0], 10)
     this._L.stamenTileLayer('toner-lite').addTo(this._map);
     this._isea3h = this._L.isea3hLayer({
       url: `${this.props.url}?bbox={bbox}&resolution={resolution}`,
