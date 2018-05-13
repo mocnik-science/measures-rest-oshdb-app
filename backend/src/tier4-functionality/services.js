@@ -9,7 +9,7 @@ const {allItems} = require('./items')
 let serviceHasState = null
 let serviceCancel = false
 
-const portReachable = (host, port) => (spawnSync(`${C.CMD_SERVICE_REACHABLE} http://${host}:${port}`, {shell: true}).status == 0)
+const portReachable = (host, port) => spawnSync(`${C.CMD_SERVICE_REACHABLE} http://${host}:${port}`, {shell: true}).status == 0
 
 module.exports.serviceState = (user, port) => {
   const running = [C.SERVICE_IS_CHECKING, C.SERVICE_IS_STARTING, C.SERVICE_IS_STARTED].includes(serviceHasState) || spawnSync(`${C.CMD_SERVICE_STATE} ${user.username()}`, {cwd: C.PATH_SERVICE, shell: true}).status == 0

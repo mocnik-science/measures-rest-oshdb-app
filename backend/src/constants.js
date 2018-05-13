@@ -32,6 +32,7 @@ C.PATH_TEMPLATES_LOD_VIEWS = './templates-lod'
 C.PATH_TEMPLATES_LOD_LAYOUTS = './templates-lod/layouts'
 C.PATH_TEMPLATES_LOD_PARTIALS = './templates-lod/partials'
 C.PATH_TEMPLATES_LOD_STATIC = './templates-lod/static'
+C.CMD_SPARQL_RESTART = 'pm2 restart measures-rest-sparql'
 C.REPOSITORY_NAME_LONG = 'OSM Measure Repository'
 C.REPOSITORY_NAME_SHORT = 'OSM MR'
 C.REPOSITORY_NAMESPACES = {

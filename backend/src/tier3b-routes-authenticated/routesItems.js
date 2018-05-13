@@ -3,6 +3,7 @@ const {name2id, isLevelPublic, isLevelUser} = require('./../tier4-functionality/
 const {itemForUser, resolveDependenciesItem, resolveInverseDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems, allItemsShort} = require('./../tier4-functionality/items')
 const {writeJava, createZipMeasure} = require('./../tier4-functionality/java')
 const {servicePublicStart} = require('./../tier4-functionality/services')
+const {restartEndpoint} = require('./../tier4-functionality/sparql')
 
 module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
   // general
@@ -60,6 +61,7 @@ const postItem = (itemClass, data) => (req, res) => {
       if (u === null) {
         writeJava(null)
         servicePublicStart()
+        restartEndpoint()
       }
       res.status(200).json({success: true})
     }
@@ -87,6 +89,7 @@ const getItemPublic = itemClass => (req, res) => {
       saveItem(itemClass, null, json.id, jsonNew)
       writeJava(null)
       servicePublicStart()
+      restartEndpoint()
       getItems(itemClass)(req, res)
     }
   }
