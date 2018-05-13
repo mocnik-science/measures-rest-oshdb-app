@@ -17,6 +17,10 @@ module.exports.runRoutesPublicLOD = (use, get, post) => {
   get('/repository/query', (req, res) => res.render('query', Object.assign(defaultData(req, true), {
     endpoint: settingsApp.sparqlEndpoint,
   })))
-  get('/repository/about', (req, res) => res.render('about', Object.assign(defaultData(req, true), {})))
-  get('/repository', (req, res) => res.render('home', Object.assign(defaultData(req, true), {})))
+  get('/repository/about', (req, res) => res.render('about', Object.assign(defaultData(req, true), {
+    about: fs.readFileSync('./docs-lod/about.md'),
+  })))
+  get('/repository', (req, res) => res.render('home', Object.assign(defaultData(req, true), {
+    homepage: fs.readFileSync('./docs-lod/home.md'),
+  })))
 }
