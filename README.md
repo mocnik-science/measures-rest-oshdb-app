@@ -98,7 +98,6 @@ server {
   listen 80;
   listen [::]:80 ssl;
   
-  server_name osm-measure.geog.uni-heidelberg.de;
   server_name osm-measure-edit.geog.uni-heidelberg.de;
   
   return 301 https://$host$request_uri;
@@ -166,10 +165,17 @@ mkdir ~/measures-rest-oshdb-data/public
 mkdir ~/measures-rest-oshdb-data/users
 ```
 
-## Sparql endpiont
+## Measures REST SPARQL
+
+To install the SPARQL endpoint, execute the following commands:
 
 ```bash
 sudo apt install python3-pip
+git clone http://github.com/giscience/measures-rest-sparql
+cd measures-rest-sparql
+npm install
+pm2 start pm2/measures-rest-sparql.yaml
+pm2 save
 ```
 
 ## Vocabulary
@@ -211,6 +217,22 @@ Create a file `/etc/nginx/sites-available/osm-measure` (via `sudo vi`) with the 
 
 ```
 server {
+  listen 80;
+  listen [::]:80;
+
+  server_name osm-measure.geog.uni-heidelberg.de;
+
+  location ^~ /api/ {
+    proxy_pass http://127.0.0.1:31415;
+  }
+  location ^~ /sparql/ {
+    proxy_pass http://127.0.0.1:8000;
+  }
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+server {
   listen 443 ssl;
   listen [::]:443 ssl;
 
@@ -223,8 +245,11 @@ server {
     rewrite ^/user/([0-9]+)/(.*) /$2 break;
     proxy_pass http://127.0.0.1:$1;
   }
-  location ~ "^/api/" {
+  location ^~ /api/ {
     proxy_pass http://127.0.0.1:31415;
+  }
+  location ^~ /sparql/ {
+    proxy_pass http://127.0.0.1:8000;
   }
   location / {
     proxy_pass http://127.0.0.1:2999/repository/;
