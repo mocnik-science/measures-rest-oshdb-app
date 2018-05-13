@@ -58,7 +58,7 @@ $(document).ready(function() {
             $.each(prefixes, function(keyPrefix, valuePrefix) {
               if (v.startsWith(valuePrefix)) v2 = keyPrefix + ':' + v.slice(valuePrefix.length);
             });
-            v = '<a href="' + v + '">' + v2 + '</a>'
+            v = '<a href="' + v + '" target="_blank">' + v2 + '</a>'
           }
           tr += '<td>' + v + '</td>';
         });
