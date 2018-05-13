@@ -18,7 +18,7 @@ class PageMap extends React.Component {
   }
   render() {
     return (
-      <div class='map-split'>
+      <div className='map-split'>
         <Split flex='left' separator={true}>
           {
             (this.state.measure) ?
