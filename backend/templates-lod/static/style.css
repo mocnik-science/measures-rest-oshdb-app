@@ -1,3 +1,6 @@
+.hidden {
+    display: none;
+}
 a, a:hover {
     color: #b81623;
 }
@@ -104,7 +107,12 @@ a.badge-data:hover {
     margin-left: 10px;
     margin-right: 10px;
 }
-
+#sparql-result {
+    margin-top: 20px;
+}
+.sparql-warning-content {
+    font-weight: 700;
+}
 
 
 

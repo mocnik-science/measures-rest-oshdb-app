@@ -163,6 +163,12 @@ mkdir ~/measures-rest-oshdb-data/public
 mkdir ~/measures-rest-oshdb-data/users
 ```
 
+## Sparql endpiont
+
+```bash
+sudo apt install python3-pip
+```
+
 ## Vocabulary
 
 In addition, the needed vocabulary can be delivered using nginx:

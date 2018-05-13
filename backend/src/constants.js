@@ -35,7 +35,7 @@ C.PATH_TEMPLATES_LOD_STATIC = './templates-lod/static'
 C.REPOSITORY_NAME_LONG = 'OSM Measure Repository'
 C.REPOSITORY_NAME_SHORT = 'OSM Measure Repo'
 C.REPOSITORY_NAMESPACES = {
-  // dcterms: 'http://purl.org/dc/terms/',
+  dcterms: 'http://purl.org/dc/terms/',
   foaf: 'http://xmlns.com/foaf/0.1/',
   // geo: 'http://www.opengis.net/ont/geosparql#',
   // owl: 'http://www.w3.org/2002/07/owl#',
@@ -68,10 +68,34 @@ C.HTTPS = (process.env.HTTPS != undefined) ? (process.env.HTTPS == 'true') : !C.
 C.LEVEL_PUBLIC = 'public'
 C.LEVEL_USER = 'user'
 
-C.MEASURE = {itemName: 'measure', path: PATH_MEASURES, name: 'measures', dataNew: {code: '', enabled: false, appliesToDataset: {label: 'OpenStreetMap', value: 'osmdq:OpenStreetMap'}}}
-C.RESULT = {itemName: 'result', path: PATH_RESULTS, name: 'results', dataNew: {}}
-C.CONTEXT = {itemName: 'context', path: PATH_CONTEXTS, name: 'contexts', dataNew: {}}
-C.PERSON = {itemName: 'person', path: PATH_PERSONS, name: 'people', dataNew: {}}
+C.MEASURE = {
+  itemName: 'measure',
+  itemTypeLOD: 'dq:measure',
+  path: PATH_MEASURES,
+  name: 'measures',
+  dataNew: {code: '', enabled: false, appliesToDataset: {label: 'OpenStreetMap', value: 'osmdq:OpenStreetMap'}},
+}
+C.RESULT = {
+  itemName: 'result',
+  itemTypeLOD: 'dq:result',
+  path: PATH_RESULTS,
+  name: 'results',
+  dataNew: {},
+}
+C.CONTEXT = {
+  itemName: 'context',
+  itemTypeLOD: 'dq:context',
+  path: PATH_CONTEXTS,
+  name: 'contexts',
+  dataNew: {},
+}
+C.PERSON = {
+  itemName: 'person',
+  itemTypeLOD: 'foaf:person',
+  path: PATH_PERSONS,
+  name: 'people',
+  dataNew: {},
+}
 C.ITEM_CLASSES = [C.MEASURE, C.RESULT, C.CONTEXT, C.PERSON]
 
 C.SERVICE_IS_CHECKING = 'checking code ...'
