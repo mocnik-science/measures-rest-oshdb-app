@@ -33,7 +33,7 @@ C.PATH_TEMPLATES_LOD_LAYOUTS = './templates-lod/layouts'
 C.PATH_TEMPLATES_LOD_PARTIALS = './templates-lod/partials'
 C.PATH_TEMPLATES_LOD_STATIC = './templates-lod/static'
 C.REPOSITORY_NAME_LONG = 'OSM Measure Repository'
-C.REPOSITORY_NAME_SHORT = 'OSM Measure Repo'
+C.REPOSITORY_NAME_SHORT = 'OSM MR'
 C.REPOSITORY_NAMESPACES = {
   dcterms: 'http://purl.org/dc/terms/',
   foaf: 'http://xmlns.com/foaf/0.1/',

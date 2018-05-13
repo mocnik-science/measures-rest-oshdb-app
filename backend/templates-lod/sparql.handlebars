@@ -4,7 +4,7 @@
   <textarea class="form-control" id="sparql-query" rows="16"></textarea>
 </form>
 
-<div id="sparql-result">
+<div id="sparql-result" class="hidden">
   <div class="alert alert-danger sparql-warning hidden">
     <h4 class="alert-heading">Error</h4>
     <p>There occurred an exception during the evaluation of the query:</p>
@@ -15,5 +15,15 @@
       <thead></thead>
       <tbody></tbody>
     </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">What is a SPARQL query?  Which vocabulary to use?</h5>
+    <p class="card-text">This website contains semantic information about the measures.  This information is human readable as well as formally represented as Linked Open Data (LOD).  Linked Open Data is a representation that can easily be extracted and used by machines.  SPARQL queries allow to dynamically filter the semantic information.</p>
+    <a href="http://www.w3.org/TR/sparql11-query/" class="card-link">Information about SPARQL queries</a>
+    <a href="http://purl.org/data-quality" class="card-link">Data Quality Vocabulary</a>
+    <a href="http://purl.org/osm-data-quality" class="card-link">OpenStreetMap Data Quality Vocabulary</a>
   </div>
 </div>

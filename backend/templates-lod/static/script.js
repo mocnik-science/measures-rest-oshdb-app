@@ -27,6 +27,7 @@ $(document).ready(function() {
   // perform query
   $('#sparql-form').submit(function(event) {
     event.preventDefault();
+    $('#sparql-result').removeClass('hidden');
     $.ajax({
       type: 'POST',
       url: 'http://localhost:8000/sparql',

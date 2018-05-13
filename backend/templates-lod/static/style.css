@@ -15,7 +15,7 @@ a, a:hover {
         display: none;
     }
 }
-@media screen and (min-width: 768px) and (max-width: 840px) {
+@media screen and (min-width: 768px) and (max-width: 900px) {
     .navbar-brand-long {
         display: none;
     }
@@ -23,7 +23,7 @@ a, a:hover {
         display: inline-block;
     }
 }
-@media screen and (min-width: 841px) {
+@media screen and (min-width: 901px) {
     .navbar-brand-long {
         display: inline-block;
     }
@@ -107,8 +107,11 @@ a.badge-data:hover {
     margin-left: 10px;
     margin-right: 10px;
 }
+#sparql-form {
+    margin-bottom: 20px;
+}
 #sparql-result {
-    margin-top: 20px;
+    margin-bottom: 60px;
 }
 .sparql-warning-content {
     font-weight: 700;
