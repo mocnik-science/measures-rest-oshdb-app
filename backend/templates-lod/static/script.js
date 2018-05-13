@@ -21,7 +21,7 @@ $(document).ready(function() {
   let query = $.map(prefixes, function(value, key) {
     return 'PREFIX ' + key + ': <' + value + '>';
   }).join('\n');
-  query += '\n\nSELECT ?measure ?type WHERE {\n    ?measure rdf:type dq:measure .\n    ?measure osmdq:assessesElementType ?type\n} LIMIT 20\n';
+  query += '\n\nSELECT ?name ?measure WHERE {\n    ?measure rdf:type dq:measure .\n    ?measure dcterms:title ?name\n} LIMIT 20\n';
   $('#sparql-query').val(query);
   
   // perform query
