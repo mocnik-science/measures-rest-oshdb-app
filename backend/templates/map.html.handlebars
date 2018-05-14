@@ -31,7 +31,7 @@
     </style>
     <script>
       $(document).ready(function() {
-        var map = L.map('map').setView([57, 12], 10);
+        var map = L.map('map').setView([57.7, 12.0], 10);
         new L.StamenTileLayer('toner-lite').addTo(map);
         L.isea3hLayer({
           url: `{{url}}?bbox={bbox}&resolution={resolution}`,
