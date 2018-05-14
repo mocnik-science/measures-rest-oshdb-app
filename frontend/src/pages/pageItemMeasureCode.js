@@ -110,10 +110,10 @@ class PageMeasureCode extends React.Component {
       provideCompletionItems: (model, position, token, context) => {
         if (position.column < 3) return []
         const matches = t => (t === model.getValueInRange({startLineNumber: position.lineNumber, startColumn: position.column - t.length, endLineNumber: position.lineNumber, endColumn: position.column}))
-        if (matches('// ')) return AUTOCOMPLETE_DIRECTIVES.map(l => ({label: l}))
-        if (matches('lineageBy(')) return SOAP_AGGREGATION_METHODS.map(l => ({label: l}))
-        if (matches('.')) return AUTOCOMPLETE_METHOD.map(l => ({label: l}))
-        return AUTOCOMPLETE_OBJECT.map(l => ({label: l}))
+        if (matches('// ')) return [...new Set(AUTOCOMPLETE_DIRECTIVES.map(l => ({label: l})))]
+        if (matches('lineageBy(')) return [...new Set(SOAP_AGGREGATION_METHODS.map(l => ({label: l})))]
+        if (matches('.')) return [...new Set(AUTOCOMPLETE_METHOD.map(l => ({label: l})))]
+        return [...new Set(AUTOCOMPLETE_OBJECT.map(l => ({label: l})))]
       },
     })
   }
