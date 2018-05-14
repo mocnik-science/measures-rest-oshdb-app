@@ -19,11 +19,11 @@ A data quality measure compares the actual data to other information for assessi
 
 ## Results
 
-Some measures depend on the geographical context (e.g., urban vs rural, areas in which the data is of high quality, etc.).  Such context can be expressed by other measures.  As an example, a measure $\mu$ may **presume** that a certain value $u$ (e.g., the “urbanity”) is larger than a certain value.  This value $u$ can, in turn, be computed by another measure $\nu$.  Each measure has an **expected result** – the measure $\nu$ has, as a result, the urbanity of the examined grid cells represented as a number in a certain range.
+Some measures depend on the geographical context (e.g., urban vs rural, areas in which the data is of high quality, etc.).  Such context can be expressed by other measures – a measure describes some context dependent on the geographical location.  As an example, a measure $\mu$ may **presume** that a certain value $u$ (e.g., the “urbanity”) is larger than a certain value.  This value $u$ can, in turn, be computed by another measure $\nu$.  Each measure has an **expected result** – the measure $\nu$ has, as a result, the urbanity of the examined grid cells represented as a number in a certain range.
 
 ## Contexts
 
-Some measures are only **valid in a certain context**.  While one usually aims at finding measures that are independet of the context, some of them might restrict to the context of disaster management, routing, or other contexts.
+Some measures are only **valid in a certain context** of use.  As an example, a measure might only have a meaningful interpretation in the context of disaster management or in the context of routing.  Such a restriction is of global nature (independent of the location) and refers to the use of the data.  Restrictions to the interpretation can formally be represented as a **context**.  One usually aims at finding measures that are independet of a context.
 
 ## People
 
@@ -31,4 +31,4 @@ Knowledge in general is hard to formally represent.  This also applies to the me
 
 ## Linked Open Data (LOD) and SPARQL Queries
 
-The semantic information contained in this repository is available in human-readable way as well as formally as Linked Open Data.  While being a website, the pages contains a number of triples, consisting of a subject, a predicate, and an object.  These triples are used to represent the data in a machine-readable way.  These triples, being represented as [RDFa](http://www.w3.org/TR/rdfa-primer/), refer to entities on other pages of this repository, and they refer to known vocabularies.  Among these are the [Data Quality Vocabulary](http://purl.org/data-quality) and the [OpenStreetMap Data Quality Vocabulary](http://purl.org/osm-data-quality).  The data can be queried using the query language [SPARQL](http://www.w3.org/TR/sparql11-query/).
+The semantic information contained in this repository is available in human-readable way as well as formally as Linked Open Data.  While being a website, the pages contains a number of triples, each consisting of a subject, a predicate, and an object.  These triples are used to represent the data in a machine-readable way.  The data, being represented as [RDFa](http://www.w3.org/TR/rdfa-primer/), refer to entities on other pages of this repository, and they refer to known vocabularies.  Among these are the [Data Quality Vocabulary](http://purl.org/data-quality) and the [OpenStreetMap Data Quality Vocabulary](http://purl.org/osm-data-quality).  The data can be queried using the query language [SPARQL](http://www.w3.org/TR/sparql11-query/).

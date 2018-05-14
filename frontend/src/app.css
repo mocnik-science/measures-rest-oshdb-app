@@ -195,3 +195,42 @@ input.grommetux-check-box__input:checked ~ .grommetux-check-box__control:after {
 .help div > * {
   max-width: 800px;
 }
+.help div > ul {
+  margin-left: 14px;
+  list-style-type: square;
+}
+.help div > ul > li {
+  padding-left: 4px;
+}
+.help div > ul > li,
+.help div > ul > li > p {
+  max-width: 780px!important;
+}
+.help div > ul > li > p {
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+.help h1 {
+  font-size: 2.25rem!important;
+}
+.help h2 {
+  font-size: 1.75rem!important;
+}
+.help code {
+  font-weight: 700;
+  color: #555;
+}
+.help th {
+  border: none;
+}
+.help thead {
+  border-top: 3px solid #ddd;
+  border-bottom: 2px solid #ddd;
+}
+.help tbody {
+  border-bottom: 3px solid #ddd;
+}
+.help th,
+.help tr td:first-child {
+  font-weight: 700!important;
+}

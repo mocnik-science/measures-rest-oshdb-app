@@ -1,6 +1,20 @@
-## Advanced
+# Advanced
 
 **Further information will come soon.**
+
+The repository internally uses the [OpenStreetMap History Database]().
+
+### REST API
+
+When the server has started, you can examine the measure by clicking on the <i class="fas fa-cloud-download"/>-symbol.  Enjoy!
+
+
+### ISEA 3H Discrete Global Grid System
+
+the data is aggregated by a grid, advantages
+
+**Further information will come soon.**
+
 
 ### Develop visualizations
 

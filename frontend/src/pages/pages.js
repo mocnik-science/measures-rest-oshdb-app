@@ -25,11 +25,9 @@ const pages = [
   {path: '/person/:level/:id/description', label: null, component: PageItemPersonDescription, exact: false, menu: false},
   {path: '/help', label: 'Help', component: PageHelp, exact: true, menu: true},
   {path: '/help/gettingStarted', label: 'Getting started', component: PageHelp, exact: true, menu: '/help'},
-  {path: '/help/measureCode', label: 'Measures (Code)', component: PageHelp, exact: true, menu: '/help'},
-  {path: '/help/measureDescription', label: 'Measures (Description)', component: PageHelp, exact: true, menu: '/help'},
-  {path: '/help/context', label: 'Contexts', component: PageHelp, exact: true, menu: '/help'},
-  {path: '/help/result', label: 'Results', component: PageHelp, exact: true, menu: '/help'},
-  {path: '/help/publicRepository', label: 'Public Repository', component: PageHelp, exact: true, menu: '/help'},
+  {path: '/help/measureCode', label: 'Measures (code)', component: PageHelp, exact: true, menu: '/help'},
+  {path: '/help/measureDescription', label: 'Measures (description)', component: PageHelp, exact: true, menu: '/help'},
+  {path: '/help/publicRepository', label: 'Public repository', component: PageHelp, exact: true, menu: '/help'},
   {path: '/help/advanced', label: 'Advanced', component: PageHelp, exact: true, menu: '/help'},
 ]
 
