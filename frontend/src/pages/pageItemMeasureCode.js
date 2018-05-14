@@ -56,6 +56,7 @@ const SOAP_METHODS = [
 const SOAP_AGGREGATION_METHODS = [
   'min',
   'max',
+  'sum',
   'average',
   'saturation',
 ]
