@@ -10,7 +10,7 @@ import PageItemDescription from './pageItemDescription'
 
 const styles = {
   groundingLeft: {
-    width: 326,
+    width: 320,
     padding: '7px 24px',
     float: 'left',
     clear: 'both',
