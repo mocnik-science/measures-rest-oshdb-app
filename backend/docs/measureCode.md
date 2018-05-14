@@ -1,4 +1,4 @@
-## Measures (code)
+# Measures (code)
 
 In the context of this repository, a measure is a mapping from the OpenStreetMap (OSM) dataset to a number.  To be more precise, such a number is computed for each cell of the *Discrete Global Grid System ISEA 3H*, which seems to be a good compromise between the local evaluation of data quality for a certain set of OSM elements and the areal nature of other measures.
 
