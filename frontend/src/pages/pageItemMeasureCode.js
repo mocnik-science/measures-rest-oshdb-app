@@ -209,9 +209,9 @@ class PageMeasureCode extends React.Component {
         />
         {
           (this.state.parsingErrors && this.state.parsingErrors.length) ?
-          <Footer pad='medium'>
-            <FontAwesomeIcon icon={faExclamationTriangle} style={{fontSize: 24, marginRight: 14, marginBottom: 3, color: '#b81623'}}/>
-            {this.state.parsingErrors.map(e => e[1]).join('\n')}
+          <Footer pad='medium' style={{flexWrap: 'wrap', height: HEIGHT_HEADER, paddingTop: 4, paddingBottom: 4, overflowY: 'scroll'}}>
+            <FontAwesomeIcon icon={faExclamationTriangle} style={{fontSize: 24, marginRight: 14, marginBottom: 3, position: 'absolute', color: '#b81623'}}/>
+            {this.state.parsingErrors.map(e => <div style={{marginLeft: 41}}>{e[1]}</div>)}
           </Footer> : []
         }
       </Box>
