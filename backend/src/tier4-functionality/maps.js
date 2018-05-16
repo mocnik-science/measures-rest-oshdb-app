@@ -1,5 +1,6 @@
 const C = require('./../constants')
 const {itemForUser} = require('./items')
+const {urlPrefixParameter} = require('./java')
 const settingsApp = require('./../settings')
 const {template} = require('./templates')
 const {isLevelPublic} = require('./../tier4-functionality/common')
@@ -18,6 +19,7 @@ module.exports.getMap = (user, level) => (req, res) => {
       name: json.name,
       id: json.id,
       url: isLevelPublic(level) ? settingsApp.apiPublic.prefix + settingsApp.apiPublic.main(json.id, C.PORT_PUBLIC_SERVICE) : settingsApp.apiUser.prefix + settingsApp.apiUser.main(json.id, settings(user).port),
+      urlPrefixParameter: urlPrefixParameter(json),
     }))
   }
 }

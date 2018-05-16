@@ -3,6 +3,7 @@ const url = require('url')
 const C = require('./../constants')
 const settingsApp = require('./../settings')
 const {itemForUser, allItemsShort} = require('./items')
+const {urlPrefixParameter} = require('./java')
 
 // ROUTES //
 
@@ -25,7 +26,7 @@ module.exports.getMeasure = user => (req, res) => {
       api: {
         prefix: settingsApp.apiPublic.prefix,
         main: settingsApp.apiPublic.main(item.id, C.PORT_PUBLIC_SERVICE),
-        suffix: '?resolution={resolution}&bbox={bounding box}',
+        suffix: '?resolution={resolution}&bbox={bounding box}' + urlPrefixParameter(item),
       },
       usesGrounding: groundingsFromMeasure(item),
       assessesTag: tagsFromMeasure(item),

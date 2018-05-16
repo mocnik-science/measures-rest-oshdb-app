@@ -8,6 +8,10 @@ const {className, isLevelPublic, itemNameToItem, idToPathUserFilename, pathUser}
 const {itemForUser, resolveDependenciesItem, allItems} = require('./items')
 const {template} = require('./templates')
 
+// SOAP //
+
+module.exports.urlPrefixParameter = measure => Object.values(soap.soapToMeasureWithWarnings(measure.code).parameters).map(p => `&${p.name}=${p.defaultValue}`).join('')
+
 // JAVA //
 
 const recreateJavaDir = user => {
