@@ -135,7 +135,7 @@ class PageMeasureCode extends React.Component {
   onChangeCursorPosition(e) {
     if (this._editorDecorations === undefined || this._editorDecorations === null) this._editorDecorations = []
     if (e === null || (this.state.parsingErrors && this.state.parsingErrors.length) || this._lastSelectedLine !== e.position.lineNumber) {
-      let parsedSoap = soap.soapToMeasureWithWarnings(this.state.code)
+      const parsedSoap = soap.soapToMeasureWithWarnings(this.state.code)
       parsedSoap.errors = parsedSoap.errors.concat(parsedSoap.warnings)
       this.setState({parsingErrors: parsedSoap.errors}, () => this._editor.layout())
       const decorationList = parsedSoap.errors.filter(err => err[0] !== null).map(err => ({
