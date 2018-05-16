@@ -71,6 +71,9 @@ public class {{className}} extends MeasureOSHDB<Number, {{mapReducibleType}}> {
     @Override
     public SortedMap<GridCell, Number> compute(MapAggregator<GridCell, {{mapReducibleType}}> ___mapReducer, RequestParameter ___p) throws Exception {
         //** MEASURE BEGIN **//
+{{#each parameter}}
+        ___p.setDefault("{{name}}", "{{defaultValue}}");
+{{/each}}
 
 {{code}}
 
