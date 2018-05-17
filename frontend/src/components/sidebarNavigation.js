@@ -11,7 +11,7 @@ import Title from 'grommet/components/Title'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faArrowLeft from '@fortawesome/fontawesome-free-solid/faArrowLeft'
 
-import SidebarState from './sidebarState'
+import SidebarService from './sidebarService'
 import SidebarUser from './sidebarUser'
 import pages from './../pages/pages'
 
@@ -20,11 +20,17 @@ import {logout} from './../other/backend'
 class SidebarNavigation extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      lastLocations: ['/'],
+    }
     this.logout = this.logout.bind(this)
   }
   logout(e) {
     e.preventDefault()
     logout(() => window.location.href = '/')
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props && this.state.lastLocations[0] !== prevProps.location.pathname) this.setState({lastLocations: [prevProps.location.pathname, ...this.state.lastLocations.slice(0, 3)]})
   }
   render() {
     return (
@@ -32,7 +38,7 @@ class SidebarNavigation extends React.Component {
         {
           (this.props.collapsed) ?
           [
-            <Button key="back" icon={<FontAwesomeIcon icon={faArrowLeft}/>} onClick={this.props.history.goBack}/>
+            <Button key="back" icon={<FontAwesomeIcon icon={faArrowLeft}/>} onClick={() => this.props.history.push(this.state.lastLocations.filter(x => x !== this.props.location.pathname)[0])}/>
           ] :
           [
             <Header key='header' pad='medium' justify='between' style={{paddingRight: 0}}>
@@ -45,7 +51,7 @@ class SidebarNavigation extends React.Component {
               </Menu>
             </Box>,
             <SidebarUser key='user'/>,
-            <SidebarState key='footer'/>,
+            <SidebarService key='service'/>,
           ]
         }
       </Sidebar>

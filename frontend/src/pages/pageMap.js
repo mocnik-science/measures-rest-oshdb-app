@@ -48,7 +48,7 @@ class PageMap extends React.Component {
               <Box key='sidebar' pad='small' style={{width: 300}}>
                 <Title style={{marginBottom: 20}}>{this.state.measure.name}</Title>
                 {
-                  (!this.state.measure) ? [] :
+                  (!this.state.measure || !parsedSoap.parameters) ? [] :
                   Object.values(parsedSoap.parameters).map(p => (
                   <FormField
                     key={p.name}

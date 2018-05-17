@@ -10,7 +10,7 @@ const {template} = require('./templates')
 
 // SOAP //
 
-module.exports.urlPrefixParameter = measure => Object.values(soap.soapToMeasureWithWarnings(measure.code).parameters).map(p => `&${p.name}=${p.defaultValue}`).join('')
+module.exports.urlPrefixParameter = measure => (!soap.soapToMeasure(measure.code).parameters) ? '' : Object.values(soap.soapToMeasure(measure.code).parameters).map(p => `&${p.name}=${p.defaultValue}`).join('')
 
 // JAVA //
 

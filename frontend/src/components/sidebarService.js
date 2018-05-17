@@ -21,6 +21,7 @@ class SidebarService extends React.Component {
       serviceLogs: null,
       showLogsLayer: false,
       waitingForResponse: false,
+      isMounted: false,
     }
     this.checkService = this.checkService.bind(this)
     this.renderService = this.renderService.bind(this)
@@ -31,13 +32,17 @@ class SidebarService extends React.Component {
   }
   componentWillMount() {
     this._checkService = setInterval(this.checkService, this.props.checkServiceInterval)
+    this.setState({isMounted: true})
   }
   componentWillUnmount() {
+    this.setState({isMounted: false})
     clearInterval(this._checkService)
     clearInterval(this._waitForResponse)
   }
   checkService() {
-    serviceState(response => this.setState(response))
+    serviceState(response => {
+      if (this.state.isMounted) this.setState(response)
+    })
   }
   startService() {
     this.waitForResponse()
