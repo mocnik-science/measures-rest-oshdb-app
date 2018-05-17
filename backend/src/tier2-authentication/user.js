@@ -15,7 +15,7 @@ module.exports.User = User = class {
 
   static fromLocal(x) {
     const u = new this;
-    u._userinfo = {username: x, admin: settingsApp.admins.includes(x)}
+    u._userinfo = {username: x, admin: Object.values(settingsApp.admins).includes(x)}
     return u
   }
 
@@ -26,7 +26,7 @@ module.exports.User = User = class {
       fullname: x.displayName,
       surname: x.sn,
       forename: x.givenName,
-      admin: settingsApp.admins.includes(x.cn),
+      admin: Object.values(settingsApp.admins).includes(x.cn),
     }
     return u
   }

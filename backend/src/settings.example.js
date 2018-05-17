@@ -2,9 +2,9 @@ module.exports = {
   localUsers: {
     // 'user': 'password',
   },
-  admins: [
-    // 'user',
-  ],
+  admins: {
+    // user: true,
+  },
   ldapOptions: {
     server: {
       url: 'ldap://***:389',

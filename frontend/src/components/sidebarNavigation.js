@@ -12,6 +12,7 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faArrowLeft from '@fortawesome/fontawesome-free-solid/faArrowLeft'
 
 import SidebarState from './sidebarState'
+import SidebarUser from './sidebarUser'
 import pages from './../pages/pages'
 
 import {logout} from './../other/backend'
@@ -43,7 +44,8 @@ class SidebarNavigation extends React.Component {
                 <Anchor key="logout" path="/logout" onClick={e => this.logout(e)}>Logout</Anchor>
               </Menu>
             </Box>,
-            <SidebarState key='footer'/>
+            <SidebarUser key='user'/>,
+            <SidebarState key='footer'/>,
           ]
         }
       </Sidebar>
