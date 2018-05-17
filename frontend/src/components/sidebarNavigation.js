@@ -11,7 +11,7 @@ import Title from 'grommet/components/Title'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faArrowLeft from '@fortawesome/fontawesome-free-solid/faArrowLeft'
 
-import SidebarState from './sidebarState'
+import SidebarService from './sidebarService'
 import pages from './../pages/pages'
 
 import {logout} from './../other/backend'
@@ -49,7 +49,7 @@ class SidebarNavigation extends React.Component {
                 <Anchor key="logout" path="/logout" onClick={e => this.logout(e)}>Logout</Anchor>
               </Menu>
             </Box>,
-            <SidebarState key='footer'/>
+            <SidebarService key='footer'/>
           ]
         }
       </Sidebar>
