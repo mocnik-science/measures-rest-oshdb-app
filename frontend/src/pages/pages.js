@@ -10,6 +10,7 @@ import PageItemPersonDescription from './pageItemPersonDescription'
 import PageItemResult from './pageItemResult'
 import PageItemResultDescription from './pageItemResultDescription'
 import PageMap from './pageMap'
+import PagePublicRepository from './pagePublicRepository'
 
 const pages = [
   {path: '/dashboard', label: 'Dashboard', component: PageDashboard, exact: true, menu: true},
@@ -23,6 +24,7 @@ const pages = [
   {path: '/context/:level/:id/description', label: null, component: PageItemContextDescription, exact: false, menu: false},
   {path: '/person', label: 'People', component: PageItemPerson, exact: true, menu: true},
   {path: '/person/:level/:id/description', label: null, component: PageItemPersonDescription, exact: false, menu: false},
+  {path: '/publicRepository', label:'Public Repository', component: PagePublicRepository, exact: true, menu: true, navigationCollapsed: true},
   {path: '/help', label: 'Help', component: PageHelp, exact: true, menu: true},
   {path: '/help/gettingStarted', label: 'Getting started', component: PageHelp, exact: true, menu: '/help'},
   {path: '/help/measureCode', label: 'Measures (code)', component: PageHelp, exact: true, menu: '/help'},
