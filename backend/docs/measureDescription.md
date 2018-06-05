@@ -12,7 +12,7 @@ As a consequence, the repository contains measures that do not measure quality. 
 
 ## Description of contexts
 
-Some measures are only **valid in a certain context** of use.  As an example, a measure might only have a meaningful interpretation in the context of disaster management or in the context of routing.  Such a restriction is of global nature (independent of the location) and refers to the use of the data.  Restrictions to the interpretation can formally be represented as a **context**.  One usually aims at finding measures that are independet of a context.
+Some measures are only **valid in a certain context** of use.  As an example, a measure might only have a meaningful interpretation in the context of disaster management or in the context of routing.  Such a restriction is of global nature (independent of the location) and refers to the use of the data.  Restrictions to the interpretation can formally be represented as a **context**.  One usually aims at finding measures that are independent of a context.
 
 ## Further properties
 
