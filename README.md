@@ -135,9 +135,6 @@ sudo service nginx restart
 
 ```bash
 cd ~
-git mkdir measures-rest-oshdb-users
-
-cd ~
 git clone https://gitlab.gistools.geog.uni-heidelberg.de/giscience/dfg-intrinsic-data-quality/measures-rest-oshdb-docker
 
 cd ~
