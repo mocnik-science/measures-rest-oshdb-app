@@ -26,6 +26,10 @@ pre {
   border-left: 5px solid #b81623;
   padding-left: 16px!important;
 }
+/* popup menu */
+.grommetux-menu__control {
+  display: none;
+}
 /* toast */
 .grommetux-status-icon-warning g {
   fill: #c61826!important;

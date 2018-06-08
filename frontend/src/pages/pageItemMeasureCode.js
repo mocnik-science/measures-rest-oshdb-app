@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import {connect} from 'react-redux'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button'
 import Footer from 'grommet/components/Footer'
@@ -161,7 +162,7 @@ class PageMeasureCode extends React.Component {
   }
   render() {
     return (
-      <Box className={'noScroll' + ((isLevelPublic(this.state.level) && !this.context.user.admin) ? ' disabled' : '')} full={true}>
+      <Box className={'noScroll' + ((isLevelPublic(this.state.level) && !this.props.user.admin) ? ' disabled' : '')} full={true}>
         <Header>
           <Box pad='medium' style={{paddingTop: 0, paddingBottom: 0}}>
             <Heading style={{marginBottom: 0}}>
@@ -181,7 +182,7 @@ class PageMeasureCode extends React.Component {
             </Heading>
           </Box>
           {
-            (isLevelPublic(this.state.level) && !this.context.user.admin) ?
+            (isLevelPublic(this.state.level) && !this.props.user.admin) ?
             [] : 
             <Box flex={true} justify='end' direction='row' responsive={false} pad='medium' style={{paddingTop: 0, paddingBottom: 0}}>
               <Button label={this.state.buttonLabel} primary={!this.state.saved} onClick={() => this.save(true)}/>
@@ -219,6 +220,7 @@ class PageMeasureCode extends React.Component {
   }
 }
 PageMeasureCode.propTypes = {
+  user: PropTypes.object.isRequired,
   itemSave: PropTypes.func,
   autoSaveInterval: PropTypes.number,
   autoSaveTimeout:  PropTypes.number,
@@ -228,8 +230,10 @@ PageMeasureCode.defaultProps = {
   autoSaveInterval: 15000,
   autoSaveTimeout: 5000,
 }
-PageMeasureCode.contextTypes = {
-  user: PropTypes.object.isRequired,
-}
 
-export default PageMeasureCode
+const mapStateToProps = state => ({
+  user: state.user.user,
+})
+const mapDispatchToProps = dispatch => ({})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PageMeasureCode)

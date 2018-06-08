@@ -49,8 +49,9 @@ const parseText = response => response.text()
 // IMPLEMENTATION
 
 export const login = (username, password, callback) => fetchWithCallback(`/backend/login?username=${username}&password=${password}`)(callback)
-export const logout = fetchWithCallback('/backend/logout')
 export const user = fetchWithCallback('/backend/user')
+export const asUser = (username, callback) => fetchWithCallback(`/backend/asUser/${username}`)(callback)
+export const logout = fetchWithCallback('/backend/logout')
 
 export const itemAll = (itemName, callback) => fetchWithCallback(`/backend/${itemName}/all`)(callback)
 export const item = (itemName, level, id, callback) => fetchWithCallback(`/backend/${itemName}/id/${level}/${id}`)(callback)

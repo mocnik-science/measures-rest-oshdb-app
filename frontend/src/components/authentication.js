@@ -1,26 +1,13 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import {connect} from 'react-redux'
 import LoginForm from 'grommet/components/LoginForm'
 
-import {login, user} from './../other/backend'
+import actions from './../actions'
 
 class Authentication extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      user: null,
-      loginError: false,
-    }
-  }
-  getChildContext() {
-    return {
-      user: this.state.user,
-    }
-  }
-  componentWillMount() {
-    user(response => this.setState({user: response}))
-  }
   render() {
+    this.props.initUser()
     const loginMask = (
       <div style={{
           top: 0,
@@ -35,22 +22,31 @@ class Authentication extends React.Component {
         <LoginForm
           title='OSM Measure Repository'
           usernameType='text'
-          errors={(this.state.loginError) ? ['Your login credentials are wrong.  Please try again.'] : []}
-          onSubmit={e => login(e.username, e.password, response => this.setState({
-            loginError: (response === undefined || response.username === null),
-            user: response,
-          }))}
+          errors={(this.props.loginError) ? ['Your login credentials are wrong.  Please try again.'] : []}
+          onSubmit={e => this.props.login(e.username, e.password)}
         />
       </div>)
     return (
       <div>
-        {this.state.user && this.state.user.username ? this.props.children : loginMask}
+        {this.props.user && this.props.user.username ? this.props.children : loginMask}
       </div>
     )
   }
 }
-Authentication.childContextTypes = {
+Authentication.propTypes = {
   user: PropTypes.object,
+  loginError: PropTypes.bool.isRequired,
+  initUser: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
 }
 
-export default Authentication
+const mapStateToProps = state => ({
+  user: state.user.user,
+  loginError: state.user.loginError,
+})
+const mapDispatchToProps = dispatch => ({
+  initUser: () => dispatch(actions.initUser()),
+  login: (username, password) => dispatch(actions.login(username, password)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Authentication)

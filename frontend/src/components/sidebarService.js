@@ -80,13 +80,13 @@ class SidebarService extends React.Component {
     return (
       <Footer pad='small' justify='between'>
         {this.renderService()}
-        <div>
+        <span>
           {this.state.showLogsLayer ? <Layer closer={true} overlayClose={true} onClose={() => this.setState({showLogsLayer: false})}>
             <code style={{fontSize: 12, fontFamily: 'monospace', whiteSpace: 'pre'}}>{this.state.serviceLogs}</code>
           </Layer> : []}
           {this.state.serviceLogs ? <Button icon={<FontAwesomeIcon icon={faExclamationTriangle}/>} onClick={() => this.setState({showLogsLayer: true})}/> : []}
           {this.state.serviceRunning ? <Button icon={<FontAwesomeIcon icon={faRedo}/>} style={{marginLeft: -10}} onClick={(this.state.waitingForResponse) ? null : this.startService}/> : []}
-        </div>
+        </span>
       </Footer>
     )
   }

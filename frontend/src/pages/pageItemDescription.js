@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import {connect} from 'react-redux'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button'
 import Footer from 'grommet/components/Footer'
@@ -47,11 +48,11 @@ class PageItemDescription extends React.Component {
             {Object.values(this.state.messages)}
           </Toast> : []
         }
-        <Form style={{width: 600}} className={(isLevelPublic(this.props.data.level) && !this.context.user.admin) ? 'disabled' : ''}>
+        <Form style={{width: 600}} className={(isLevelPublic(this.props.data.level) && !this.props.user.admin) ? 'disabled' : ''}>
           <Header>
             <Heading style={{width: '100%'}}>
               {
-                (isLevelPublic(this.props.data.level) && !this.context.user.admin) ?
+                (isLevelPublic(this.props.data.level) && !this.props.user.admin) ?
                 [] : 
                 <Button label='save' type='submit' primary={true} onClick={this.save} style={{float: 'right'}}/>
               }
@@ -76,7 +77,7 @@ class PageItemDescription extends React.Component {
             {this.props.fields}
           </FormFields>
           {
-            (!this.props.longForm || (isLevelPublic(this.props.data.level) && !this.context.user.admin)) ?
+            (!this.props.longForm || (isLevelPublic(this.props.data.level) && !this.props.user.admin)) ?
             [] : 
             <Footer flex={true} justify="center" pad={{vertical: 'medium'}}>
               <Button label='save' type='submit' primary={true} onClick={this.save}/>
@@ -88,6 +89,7 @@ class PageItemDescription extends React.Component {
   }
 }
 PageItemDescription.propTypes = {
+  user: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   setState: PropTypes.func.isRequired,
@@ -102,8 +104,10 @@ PageItemDescription.defaultProps = {
   fields: [],
   longForm: false,
 }
-PageItemDescription.contextTypes = {
-  user: PropTypes.object.isRequired,
-}
 
-export default PageItemDescription
+const mapStateToProps = state => ({
+  user: state.user.user,
+})
+const mapDispatchToProps = dispatch => ({})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PageItemDescription)

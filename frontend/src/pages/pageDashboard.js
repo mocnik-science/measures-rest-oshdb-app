@@ -1,46 +1,36 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import {connect} from 'react-redux'
 import Box from 'grommet/components/Box'
 // import WorldMap from 'grommet/components/WorldMap'
 
-import {items} from './../other/backend'
+import actions from './../actions'
 import MeterItems from './../components/meterItems'
 
 class PageDashboard extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      contexts: [],
-      measures: [],
-      persons: [],
-      results: [],
-    }
-  }
-  componentDidMount() {
-    items(response => this.setState(response))
-  }
   render() {
+    this.props.initItems()
     return (
       <Box pad='large' align='center'>
-        <h2 style={{marginBottom: 80}}>Welcome{(this.context.user.forename) ? ' ' + this.context.user.forename : (this.context.user.username) ? ' ' + this.context.user.username : ''}!</h2>
+        <h2 style={{marginBottom: 80}}>Welcome{(this.props.user.forename) ? ' ' + this.props.user.forename : (this.props.user.username) ? ' ' + this.props.user.username : ''}!</h2>
         {/*
         <h2>Measures</h2>
         */}
         <div style={{display: 'flex', flexFlow: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
           <MeterItems
-            items={this.state.measures}
+            items={(this.props.items) ? this.props.items.measures : []}
             itemName='measure'
           />
           <MeterItems
-            items={this.state.results}
+            items={(this.props.items) ? this.props.items.results : []}
             itemName='result'
           />
           <MeterItems
-            items={this.state.contexts}
+            items={(this.props.items) ? this.props.items.contexts : []}
             itemName='context'
           />
           <MeterItems
-            items={this.state.persons}
+            items={(this.props.items) ? this.props.items.persons : []}
             itemName='person'
           />
         </div>
@@ -61,8 +51,18 @@ class PageDashboard extends React.Component {
     )
   }
 }
-PageDashboard.contextTypes = {
+PageDashboard.propTypes = {
   user: PropTypes.object.isRequired,
+  items: PropTypes.object,
 }
 
-export default PageDashboard
+const mapStateToProps = state => ({
+  user: state.user.user,
+  items: state.item.items,
+})
+
+const mapDispatchToProps = dispatch => ({
+  initItems: () => dispatch(actions.initItems()),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PageDashboard)

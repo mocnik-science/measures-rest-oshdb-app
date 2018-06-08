@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import {connect} from 'react-redux'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button'
 import CheckBox from 'grommet/components/CheckBox'
@@ -14,29 +15,31 @@ import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 import faEdit from '@fortawesome/fontawesome-free-solid/faEdit'
 import faPlusSquare from '@fortawesome/fontawesome-free-regular/faPlusSquare'
 
-import {itemAll, itemSave, itemPublic, itemNew} from './../other/backend'
+import actions from './../actions'
+import {itemSave, itemPublic, itemNew} from './../other/backend'
 import {isLevelPublic} from './../other/tools'
 
 class PageItem extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      items: {},
       search: '',
       messages: {},
     }
+    this.items = this.items.bind(this)
     this.saveEnabled = this.saveEnabled.bind(this)
   }
+  items() {
+    return (this.props.itemAll[this.props.itemName]) ? this.props.itemAll[this.props.itemName] : []
+  }
   saveEnabled(level, id, value) {
-    const items = this.state.items
+    const items = this.items()
     items[`user-${id}`].enabled = value
     this.setState({items: items})
     itemSave(this.props.itemName, level, id, {enabled: value}, () => {})
   }
-  componentDidMount() {
-    itemAll(this.props.itemName, response => this.setState(response))
-  }
   render() {
+    this.props.initItemAll(this.props.itemName)
     const label = (item, className) =>
       <Label className='pageItemLabel'>
         {item.name.trim()}
@@ -70,7 +73,7 @@ class PageItem extends React.Component {
           </Box>
         </Header>
         <List>
-          {Object.values(this.state.items).map(item => (this.state.search !== '' && (!~item.name.toLowerCase().indexOf(this.state.search.toLowerCase()))) ? [] :
+          {Object.values(this.items()).map(item => (this.state.search !== '' && (!~item.name.toLowerCase().indexOf(this.state.search.toLowerCase()))) ? [] :
             <ListItem key={item.id} justify='between'>
               <span className='primary'>
                 {(!isLevelPublic(item.level) && this.props.itemsCanBeEnabled) ?
@@ -81,7 +84,7 @@ class PageItem extends React.Component {
               <span className='secondary'>
                 {this.props.buttonsOwnItem(item)}
                 {
-                  (!isLevelPublic(item.level) && this.context.user.admin) ?
+                  (!isLevelPublic(item.level) && this.props.user.admin) ?
                   <Button key='button-public' icon={<FontAwesomeIcon icon={faCertificate}/>} onClick={e => {
                     e.preventDefault()
                     itemPublic(this.props.itemName, item.level, item.id, response => {
@@ -128,6 +131,7 @@ class PageItem extends React.Component {
   }
 }
 PageItem.propTypes = {
+  user: PropTypes.object.isRequired,
   itemName: PropTypes.string.isRequired,
   itemsCanBeEnabled: PropTypes.bool,
   buttonsHeader: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
@@ -144,8 +148,13 @@ PageItem.defaultProps = {
   website: item => {},
   websiteIcon: null,
 }
-PageItem.contextTypes = {
-  user: PropTypes.object.isRequired,
-}
 
-export default PageItem
+const mapStateToProps = state => ({
+  user: state.user.user,
+  itemAll: state.item.itemAll,
+})
+const mapDispatchToProps = dispatch => ({
+  initItemAll: itemName => dispatch(actions.initItemAll(itemName)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(PageItem)

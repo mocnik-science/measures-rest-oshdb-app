@@ -1,9 +1,14 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import {connect} from 'react-redux'
+import Anchor from 'grommet/components/Anchor'
 import Footer from 'grommet/components/Footer'
+import Menu from 'grommet/components/Menu'
 import Select from 'grommet/components/Select'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import faBars from '@fortawesome/fontawesome-free-solid/faBars'
 
-// import {serviceState, serviceStart, serviceStop} from './../other/backend'
+import actions from './../actions'
 
 class SidebarUser extends React.Component {
   constructor(props) {
@@ -12,23 +17,36 @@ class SidebarUser extends React.Component {
       asUser: null,
     }
   }
-  componentWillMount() {
-  }
   render() {
+    if (!this.props.user.admin || this.props.user.asUserList === null || this.props.user.asUserList === {}) return []
     return (
-      <Footer pad='small' justify='between'>
-        <Select options={['Amin', 'Yajie']}/>
-      </Footer>
+      <Menu
+        responsive={true}
+        icon={<FontAwesomeIcon icon={faBars}/>}
+      >
+        {
+          [[this.props.user.realUsername, 'me']].concat(Object.entries(this.props.user.asUserList)).map(([username, name]) => <Anchor
+            href='#'
+            label={name}
+            onClick={() => this.props.asUser(username)}
+            key={username}
+          />)
+        }
+      </Menu>
     )
   }
 }
-// SidebarService.propTypes = {
-//   checkServiceInterval: PropTypes.number,
-//   waitForResponseTimeout: PropTypes.number,
-// }
-// SidebarService.defaultProps = {
-//   checkServiceInterval: 1000,
-//   waitForResponseTimeout: 5000,
-// }
 
-export default SidebarUser
+SidebarUser.propTypes = {
+  user: PropTypes.object.isRequired,
+  asUser: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = state => ({
+  user: state.user.user,
+})
+const mapDispatchToProps = dispatch => ({
+  asUser: user => dispatch(actions.asUser(user)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SidebarUser)
