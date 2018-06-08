@@ -157,6 +157,9 @@ input.grommetux-check-box__input:checked ~ .grommetux-check-box__control:after {
   padding-top: 5px!important;
   padding-left: 40px!important;
 }
+.grommetux-anchor--primary, .grommetux-anchor--icon-label {
+  font-weight: 500!important;
+}
 /* login */
 .grommetux-login-form .grommetux-heading {
   font-size: 35px;

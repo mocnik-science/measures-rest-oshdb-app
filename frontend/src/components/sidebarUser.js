@@ -2,9 +2,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import {connect} from 'react-redux'
 import Anchor from 'grommet/components/Anchor'
-import Footer from 'grommet/components/Footer'
 import Menu from 'grommet/components/Menu'
-import Select from 'grommet/components/Select'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faBars from '@fortawesome/fontawesome-free-solid/faBars'
 
@@ -30,6 +28,8 @@ class SidebarUser extends React.Component {
             label={name}
             onClick={() => this.props.asUser(username)}
             key={username}
+            icon={<span></span>}
+            primary={username === this.props.user.username}
           />)
         }
       </Menu>
