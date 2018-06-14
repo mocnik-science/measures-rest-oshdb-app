@@ -35,9 +35,7 @@ const useAuthenticationRoutes = app => {
   })(req, res, next))
   app.get('/backend/user', (req, res) => res.status(200).json((req.user) ? User.getUserinfo(req.user) : {username: null}))
   app.get('/backend/asUser/:username', (req, res) => {
-    console.log(req.params)
     req.user.asUser(req.params.username)
-    console.log(req.user)
     res.status(200).json(User.getUserinfo(req.user))
   })
   app.get('/backend/logout', (req, res) => {
