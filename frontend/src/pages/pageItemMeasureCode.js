@@ -131,7 +131,7 @@ class PageMeasureCode extends React.Component {
     if (this._editor) this._editor.layout()
   }
   onChange(newValue, e) {
-    this.setState({saved: false, code: newValue, lastSaved: null, lastSavedTry: null, buttonLabel: 'save'})
+    this.setState({saved: false, code: newValue.replace(/\r\n/g, '\n'), lastSaved: null, lastSavedTry: null, buttonLabel: 'save'})
   }
   onChangeCursorPosition(e) {
     if (this._editorDecorations === undefined || this._editorDecorations === null) this._editorDecorations = []
