@@ -36,7 +36,7 @@ const AUTOCOMPLETE_DIRECTIVES = [
   'import # //',
 ]
 const SOAP_METHODS = [
-  'osmTypes(',
+  'osmType(',
   'osmEntityFilter(',
   'osmTag(',
   'map(',
