@@ -117,7 +117,7 @@ As can be seen in the example, a SOAP directive starts with a double slash and e
 
 ## Example 3a: The history of OSM
 
-Many measues do not refer to only one point in time but to many ones.  They make sense of the lineage of the data and provide more information by comparing data at different points in time.  There exist several SOAP directives to determine which points of time.  As an example, one can assess the data from the last 4 years (4 $\cdot$ 12 $\cdot$ 30 days) in intervals of 3 months (3 $\cdot$ 30 days):
+Many measures do not refer to only one point in time but to many ones.  They make sense of the lineage of the data and provide more information by comparing data at different points in time.  There exist several SOAP directives to determine which points of time.  As an example, one can assess the data from the last 4 years (4 $\cdot$ 12 $\cdot$ 30 days) in intervals of 3 months (3 $\cdot$ 30 days):
 
 ```java
 // last 4 years //
@@ -137,7 +137,7 @@ The time span and the interval can be provided in days, months, or years.  Furth
 // last year, every month //
 ```
 
-When such a SOAP directive is used, the data is processed for several points in time.  Such time series allow for examining the lineage of the data.  As an example, the lengths of the roads can be computed for every month of the last year.  These different lengths can be merged in some meaningful way in order to reflect the lineage.  Stragies for such merging include the minimum and maximum of the data, the sum, the average, and the saturation principle:
+When such a SOAP directive is used, the data is processed for several points in time.  Such time series allow for examining the lineage of the data.  As an example, the lengths of the roads can be computed for every month of the last year.  These different lengths can be merged in some meaningful way in order to reflect the lineage.  Strategies for such merging include the minimum and maximum of the data, the sum, the average, and the saturation principle:
 
 ```java
 lineageBy(minimum)
@@ -175,7 +175,7 @@ While this function seems to be complicated, it is, in fact, not.  It consumes a
 
 ## Example 4: Mapping activity
 
-By default, the OSM elements at a given point in time, called snapshots, are examined.  This can even explicitely be achieved by using the following SOAP directive:
+By default, the OSM elements at a given point in time, called snapshots, are examined.  This can even explicitly be achieved by using the following SOAP directive:
 
 ```java
 // snapshots //
