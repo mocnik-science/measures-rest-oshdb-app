@@ -188,7 +188,44 @@ In contrast to examining OSM elements at given points in time, one can examine t
 count()
 ```
 
-## Imports
+## Example 5a: Parameters
+
+In some cases, one wants to include parameters in the code, which can be provided in the URL when accessing the REST server.  As an example, one might want to count the number of elements with tag `highway=value`, where the value of the tag is provided in the URL:
+
+```java
+osmTag("highway", @typeOfHighway)
+count()
+```
+
+In the URL, the parameter needs to be provided, e.g., `...&typeOfHighway=tertiary`.  A default value can be set as follows:
+
+```java
+// @typeOfHighway: tertiary //
+osmTag("highway", @typeOfHighway)
+count()
+```
+
+Please keep in mind, that the type of the parameter is guessed by the name.  If the parameter name starts with `number`, it is regarded to be an `Integer`; if it starts with `weight` or `factor`, to be a `Double`; and if it starts with `is`, `has`, or `needs`, to be a `Boolean`.  Otherwise, the parameter is regarded to be a `String`.  If you would like to force the interpretation of a parameter as a certain type, you can enforce this as `para_int`, `para_double`, `para_str`, etc.
+
+## Example 5b: Import of other measures
+
+If a measure uses a parameter, it can be reused by another measure.  As an example, one might count different types of highways in a measure called `Count Highways`:
+
+```java
+osmTag("highway", @typeOfHighway)
+count()
+```
+
+In further measures, the previous one can be imported and the parameter default value be set:
+
+```java
+// import Count Highways //
+// @typeOfHighway: secondary //
+```
+
+Such imports allow to implement measures which share the code but have independent meanings.  Technically, the number of POIs and of trees can, e.g., be derived in a very similar way, but the meaning can semantically be described in very different ways.
+
+## Java imports
 
 In some cases, imports are needed.  The SOAP syntax is internally converted to JAVA code, which is why you can use usual JAVA import commands.  They are filtered from the SOAP code and inserted at the beginning of the resulting JAVA code.
 
