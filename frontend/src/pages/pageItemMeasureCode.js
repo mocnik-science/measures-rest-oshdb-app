@@ -33,6 +33,7 @@ const AUTOCOMPLETE_DIRECTIVES = [
   'every # days //',
   'every # months //',
   'every # years //',
+  'import # //',
 ]
 const SOAP_METHODS = [
   'osmTypes(',

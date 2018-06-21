@@ -4,7 +4,7 @@ const JSZip = require('jszip')
 const soap = require('simplified-oshdb-api-programming/dist/soap-to-measure')
 
 const C = require('./../constants')
-const {className, isLevelPublic, itemNameToItem, idToPathUserFilename, pathUser} = require('./common')
+const {name2id, className, isLevelPublic, itemNameToItem, idToPathUserFilename, pathUser} = require('./common')
 const {itemForUser, resolveDependenciesItem, allItems} = require('./items')
 const {template} = require('./templates')
 
@@ -25,8 +25,26 @@ const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilenam
 const javaMeasureTemplate = template(C.FILE_JAVA_MEASURE_TEMPLATE)
 const javaRunTemplate = template(C.FILE_JAVA_RUN_TEMPLATE)
 
-const measureJsonToJavaMeasure = json => {
-  const parsedSoap = soap.soapToMeasure(json.code)
+const measureJsonToJavaMeasure = (user, json) => {
+  const resolveSoapImports = parsedSoap => {
+    const soapImports = parsedSoap.soapImports
+    parsedSoap.soapImports = []
+    for (const soapImport of soapImports) {
+      let jsonImported = itemForUser(C.MEASURE, user, name2id(soapImport))
+      if (jsonImported === null) jsonImported = itemForUser(C.MEASURE, null, name2id(soapImport))
+      if (jsonImported === null) continue
+      const parsedSoapImported = soap.soapToMeasure(jsonImported.code)
+      parsedSoap.soapImports = parsedSoapImported.soapImports
+      parsedSoap.code = parsedSoapImported.code
+      parsedSoap.parameters = parsedSoapImported.parameters
+      for (const p in parsedSoap.parametersOverwriteForImport) if (parsedSoap.parameters[p] !== undefined) parsedSoap.parameters[p].defaultValue = parsedSoap.parametersOverwriteForImport[p].defaultValue
+      parsedSoap.mapReducibleType = parsedSoapImported.mapReducibleType
+      for (const key of ['date', 'daysBefore', 'intervalInDays', 'refersToTimespan']) if (parsedSoap[key] === null) parsedSoap[key] = parsedSoapImported[key]
+      parsedSoap = resolveSoapImports(parsedSoap)
+    }
+    return parsedSoap
+  }
+  const parsedSoap = resolveSoapImports(soap.soapToMeasure(json.code))
   if (parsedSoap.errors.length > 0) throw parsedSoap.errors.join('\n')
   return javaMeasureTemplate(Object.assign({
     id: json.id,
@@ -43,7 +61,7 @@ const measureJsonToJavaRun = (user, jsons, options={}) => javaRunTemplate(Object
 module.exports.writeJava = user => {
   const jsons = allItems(C.MEASURE.path, user)
   recreateJavaDir(user)
-  jsons.filter(json => (user === null || json.enabled)).map(json => saveJavaMeasure(user, json.id, measureJsonToJavaMeasure(json)))
+  jsons.filter(json => (user === null || json.enabled)).map(json => saveJavaMeasure(user, json.id, measureJsonToJavaMeasure(user, json)))
   saveJava(user, 'Run.java', measureJsonToJavaRun(user, jsons))
 }
 
@@ -71,7 +89,7 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   }))
   
   try {
-    const javaMeasure = measureJsonToJavaMeasure(json)
+    const javaMeasure = measureJsonToJavaMeasure(u, json)
     const javaRun = measureJsonToJavaRun(u, [json], {
       databaseFile: '{{insert-name-of-database-here}}',
       serverOnlyLocal: true,
