@@ -64,15 +64,17 @@ const SOAP_AGGREGATION_METHODS = [
 ]
 const AUTOCOMPLETE_OBJECT = [
   // types
-  'OSMType.Node',
-  'OSMType.Way',
-  'OSMType.Relation',
+  'OSMType.NODE',
+  'OSMType.WAY',
+  'OSMType.RELATION',
   // common
   'Geo.lengthOf(',
+  'Geo.areaOf(',
 ].concat(SOAP_METHODS)
 const AUTOCOMPLETE_METHOD = [
   // other
-  'getGeometry(',
+  'getGeometry()',
+  'getContributorUserId()',
 ].concat(SOAP_METHODS)
 
 const HEIGHT_HEADER = 72
