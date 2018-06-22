@@ -16,7 +16,6 @@ import org.heigit.bigspatialdata.oshdb.osm.OSMType;
 import org.heigit.bigspatialdata.oshdb.util.OSHDBTimestamp;
 import org.heigit.bigspatialdata.oshdb.util.geometry.Geo;
 
-import javax.ws.rs.Path;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.SortedMap;
@@ -25,9 +24,7 @@ import java.util.SortedMap;
 import {{this}};
 {{/each}}
 
-@Path("api/" + {{className}}.name)
 public class {{className}} extends MeasureOSHDB<Number, {{mapReducibleType}}> {
-    public static final String name = "{{id}}";
 
     public {{className}}(OSHDBJdbc oshdb) {
         super(oshdb);
