@@ -13,7 +13,7 @@ public class Run {
         OSHDBH2 oshdb = new OSHDBH2(databaseFile).multithreading(true);
         RestServer restServer = new RestServer({{#if serverOnlyLocal}}{{else}}UriBuilder.fromPath("/").scheme("http").host("0.0.0.0").port(8080).build(){{/if}});
         {{#each measures}}
-          restServer.register(new {{className}}(oshdb));
+          restServer.register(new {{className}}().setOSHDB(oshdb));
         {{/each}}
         restServer.run();
     }
