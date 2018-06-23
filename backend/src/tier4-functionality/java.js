@@ -24,27 +24,33 @@ const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilenam
 
 const javaMeasureTemplate = template(C.FILE_JAVA_MEASURE_TEMPLATE)
 const javaRunTemplate = template(C.FILE_JAVA_RUN_TEMPLATE)
+const pomTemplate = template(C.FILE_JAVA_POM_TEMPLATE)
 
 const measureJsonToJavaMeasure = (user, json) => {
   const resolveSoapImports = parsedSoap => {
-    const soapImports = parsedSoap.soapImports
-    parsedSoap.soapImports = []
-    for (const soapImport of soapImports) {
-      let jsonImported = itemForUser(C.MEASURE, user, name2id(soapImport))
-      if (jsonImported === null) jsonImported = itemForUser(C.MEASURE, null, name2id(soapImport))
-      if (jsonImported === null) continue
-      const parsedSoapImported = soap.soapToMeasure(jsonImported.code)
-      parsedSoap.soapImports = parsedSoapImported.soapImports
-      parsedSoap.code = parsedSoapImported.code
-      parsedSoap.parameters = parsedSoapImported.parameters
-      for (const p in parsedSoap.parametersOverwriteForImport) if (parsedSoap.parameters[p] !== undefined) parsedSoap.parameters[p].defaultValue = parsedSoap.parametersOverwriteForImport[p].defaultValue
-      parsedSoap.mapReducibleType = parsedSoapImported.mapReducibleType
-      for (const key of ['date', 'daysBefore', 'intervalInDays', 'refersToTimespan']) if (parsedSoap[key] === null) parsedSoap[key] = parsedSoapImported[key]
-      parsedSoap = resolveSoapImports(parsedSoap)
+    if (parsedSoap.importGithub) {
+      return null
+    } else {
+      const soapImports = parsedSoap.soapImports
+      parsedSoap.soapImports = []
+      for (const soapImport of soapImports) {
+        let jsonImported = itemForUser(C.MEASURE, user, name2id(soapImport))
+        if (jsonImported === null) jsonImported = itemForUser(C.MEASURE, null, name2id(soapImport))
+        if (jsonImported === null) continue
+        const parsedSoapImported = soap.soapToMeasure(jsonImported.code)
+        parsedSoap.soapImports = parsedSoapImported.soapImports
+        parsedSoap.code = parsedSoapImported.code
+        parsedSoap.parameters = parsedSoapImported.parameters
+        for (const p in parsedSoap.parametersOverwriteForImport) if (parsedSoap.parameters[p] !== undefined) parsedSoap.parameters[p].defaultValue = parsedSoap.parametersOverwriteForImport[p].defaultValue
+        parsedSoap.mapReducibleType = parsedSoapImported.mapReducibleType
+        for (const key of ['date', 'daysBefore', 'intervalInDays', 'refersToTimespan']) if (parsedSoap[key] === null) parsedSoap[key] = parsedSoapImported[key]
+        parsedSoap = resolveSoapImports(parsedSoap)
+      }
+      return parsedSoap
     }
-    return parsedSoap
   }
   const parsedSoap = resolveSoapImports(soap.soapToMeasure(json.code))
+  if (parsedSoap === null) return null
   if (parsedSoap.errors.length > 0) throw parsedSoap.errors.join('\n')
   return javaMeasureTemplate(Object.assign({
     id: json.id,
@@ -54,15 +60,35 @@ const measureJsonToJavaMeasure = (user, json) => {
 
 const measureJsonToJavaRun = (user, jsons, options={}) => javaRunTemplate(Object.assign({
   measures: jsons.filter(json => (user === null || json.enabled)).map(json => ({className: className(C.MEASURE, json.id)})),
+  importGithubClasses: jsons.filter(json => (user === null || json.enabled)).filter(json => soap.soapToMeasure(json.code).importGithub).map(json => className(C.MEASURE, json.id)),
   databaseFile: `/data/dbs/sweden_20180112_z12_keytable.oshdb`,
   serverOnlyLocal: false,
 }, options))
 
+const measureJsonToPom = jsons => {
+  const importGithub = jsons.map(json => {
+    const ig = soap.soapToMeasure(json.code).importGithub
+    if (ig && ig.length > 0) {
+      return {
+        groupId: `com.${ig[0].repository.replace(/\//g, '.')}`,
+        artifactId: className(C.MEASURE, json.id),
+        version: ig[0].version,
+      }
+    }
+    return null
+  }).filter(ig => ig !== null)
+  return pomTemplate({importGithub: [...new Set(importGithub)]})
+}
+
 module.exports.writeJava = user => {
   const jsons = allItems(C.MEASURE.path, user)
   recreateJavaDir(user)
-  jsons.filter(json => (user === null || json.enabled)).map(json => saveJavaMeasure(user, json.id, measureJsonToJavaMeasure(user, json)))
+  jsons.filter(json => (user === null || json.enabled)).map(json => {
+    const javaMeasure = measureJsonToJavaMeasure(user, json)
+    if (javaMeasure) saveJavaMeasure(user, json.id, javaMeasure)
+  })
   saveJava(user, 'Run.java', measureJsonToJavaRun(user, jsons))
+  saveJava(user, 'pom.xml', measureJsonToPom(jsons.filter(json => (user === null || json.enabled))))
 }
 
 const downloadReadmeTemplate = template(C.FILE_DOWNLOAD_README_TEMPLATE)
@@ -89,15 +115,15 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   }))
   
   try {
-    const javaMeasure = measureJsonToJavaMeasure(u, json)
     const javaRun = measureJsonToJavaRun(u, [json], {
       databaseFile: '{{insert-name-of-database-here}}',
       serverOnlyLocal: true,
     })
-    zip.folder(join(cn, 'src', 'main', 'java', 'org', 'giscience', 'measures', 'repository'))
-      .file(`${cn}.java`, javaMeasure)
-      .file('Run.java', javaRun)
-    zip.file(join(cn, 'pom.xml'), fs.readFileSync(C.PATH_POM_XML))
+    const javaFolder = zip.folder(join(cn, 'src', 'main', 'java', 'org', 'giscience', 'measures', 'repository')).file('Run.java', javaRun)
+    const javaMeasure = measureJsonToJavaMeasure(u, json)
+    if (javaMeasure) javaFolder.file(`${cn}.java`, javaMeasure)
+    const javaPom = measureJsonToPom([json])
+    zip.file(join(cn, 'pom.xml'), javaPom)
   } catch (error) {
     zip.file(join(cn, 'ERROR.md'), downloadErrorTemplate({}))
   }

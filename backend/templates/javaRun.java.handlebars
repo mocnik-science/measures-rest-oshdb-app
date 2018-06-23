@@ -5,6 +5,10 @@ import org.heigit.bigspatialdata.oshdb.api.db.OSHDBH2;
 
 import javax.ws.rs.core.UriBuilder;
 
+{{#each importGithubClasses}}
+import org.giscience.osmMeasures.repository.{{this}};
+{{/each}}
+
 public class Run {
 
     public static final String databaseFile = "{{databaseFile}}";
