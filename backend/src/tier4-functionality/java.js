@@ -111,7 +111,7 @@ module.exports.createZipMeasure = (user, level, id) => (req, res) => {
   
   zip.file(join(cn, 'README.md'), downloadReadmeTemplate({
     id: json.id,
-    description: (json.description.trim() !== '') ? json.description : null,
+    description: (json.description !== null && json.description !== '') ? json.description.trim() : null,
   }))
   
   try {
