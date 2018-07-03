@@ -1,4 +1,4 @@
-# Measures (code)
+# Measures (SOAP code)
 
 In the context of this repository, a measure is a mapping from the OpenStreetMap (OSM) dataset to a number.  To be more precise, such a number is computed for each cell of the *Discrete Global Grid System ISEA 3H*, which seems to be a good compromise between the local evaluation of data quality for a certain set of OSM elements and the areal nature of other measures.
 
@@ -84,7 +84,7 @@ map(h -> Geo.lengthOf(h.getGeometry()))
 average()
 ```
 
-If one wants to manually perform computations on all lenghts of highways, this can be done as follows:
+If one wants to manually perform computations on all lengths of highways, this can be done as follows:
 
 ```java
 osmTag("highway")
@@ -225,10 +225,10 @@ In further measures, the previous one can be imported and the parameter default 
 
 Such imports allow to implement measures which share the code but have independent meanings.  Technically, the number of POIs and of trees can, e.g., be derived in a very similar way, but the meaning can semantically be described in very different ways.
 
-## Java imports
+## JAVA imports
 
 In some cases, imports are needed.  The SOAP syntax is internally converted to JAVA code, which is why you can use usual JAVA import commands.  They are filtered from the SOAP code and inserted at the beginning of the resulting JAVA code.
 
-## Using a IDE
+## Using an IDE and run the measure locally.
 
 In some examples, it may be hard to write the code without a proper IDE with a more sophisticated auto completion.  You can use the JAVA IDE of your choice.  If you click on the <i class="fas fa-cloud-download"/>-symbol of a measure, a Maven project will be downloaded.  You can open this project with your IDE and write the code (in JAVA syntax) in the IDE of your choice.  For more information, please read *Help > Advanced*.

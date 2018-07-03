@@ -16,9 +16,9 @@ Some measures are only **valid in a certain context** of use.  As an example, a 
 
 ## Further properties
 
-OpenStreetMap data conists of nodes, ways and areas, and relations, each of them potentially being tagged by a number of key–value pairs.  As the measures refer to OSM data, the description of a measure contains information about which **elements** it **assesses**, and which **tags** it **assesses**.
+OpenStreetMap data consists of nodes, ways and areas, and relations, each of them potentially being tagged by a number of key–value pairs.  As the measures refer to OSM data, the description of a measure contains information about which **elements** it **assesses**, and which **tags** it **assesses**.
 
-A data quality measure compares the actual data to other information for assessing data quality.  Hereby, two ways of how to **ground** the data are compared, the one of the actual data and an alternative one.  This can be expressed by the *grounding based ontology of data quality measures*.  The classes of the ontology, characterise the alternative grounding, include:
+A data quality measure compares the actual data to other information for assessing data quality.  Hereby, two ways of how to **ground** the data are compared, the one of the actual data and an alternative one.  This can be expressed by the *grounding based ontology of data quality measures*.  The classes of the ontology, characterize the alternative grounding, include:
 
 * **Perception-based grounding.**  We observe the environment anew, giving rise to the similar data.
 * **Data-based grounding.**  The data are compared to other yet very similar parts of the same dataset (intrinsic grounding), or to a reference dataset that has other characteristics (extrinsic grounding).

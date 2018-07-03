@@ -14,7 +14,7 @@ import MonacoEditor from 'react-monaco-editor'
 import soap from 'simplified-oshdb-api-programming'
 
 import {item, itemSave} from './../other/backend'
-import {isLevelPublic} from './../other/tools'
+import {className, isLevelPublic} from './../other/tools'
 
 const AUTOCOMPLETE_DIRECTIVES = [
   'snapshots //',
@@ -34,6 +34,7 @@ const AUTOCOMPLETE_DIRECTIVES = [
   'every # months //',
   'every # years //',
   'import # //',
+  'import from # //',
 ]
 const SOAP_METHODS = [
   'osmType(',
@@ -92,6 +93,7 @@ class PageMeasureCode extends React.Component {
       buttonLabel: 'saved',
       windowHeight: window.innerHeight,
       parsingErrors: [],
+      importMessage: false,
     }
     this.editorWillMount = this.editorWillMount.bind(this)
     this.editorDidMount = this.editorDidMount.bind(this)
@@ -141,7 +143,10 @@ class PageMeasureCode extends React.Component {
     if (e === null || (this.state.parsingErrors && this.state.parsingErrors.length) || this._lastSelectedLine !== e.position.lineNumber) {
       const parsedSoap = soap.soapToMeasureWithWarnings(this.state.code)
       parsedSoap.errors = parsedSoap.errors.concat(parsedSoap.warnings)
-      this.setState({parsingErrors: parsedSoap.errors}, () => this._editor.layout())
+      this.setState({
+        parsingErrors: parsedSoap.errors,
+        importMessage: parsedSoap.importGithub && parsedSoap.importGithub.length > 0,
+      }, () => this._editor.layout())
       const decorationList = parsedSoap.errors.filter(err => err[0] !== null).map(err => ({
         range: new this._monaco.Range(Math.max(0, err[0] - 1), 1, err[0], 1),
         options: {isWholeLine: true, linesDecorationsClassName: 'decorationError'},
@@ -193,7 +198,7 @@ class PageMeasureCode extends React.Component {
           }
         </Header>
         <MonacoEditor
-          height={this.state.windowHeight - ((this.state.parsingErrors && this.state.parsingErrors.length) ? 2 : 1) * HEIGHT_HEADER}
+          height={this.state.windowHeight - ((this.state.parsingErrors && this.state.parsingErrors.length) ? 2 : 1) * HEIGHT_HEADER - ((this.state.importMessage) ? 1 : 0) * HEIGHT_HEADER}
           language='java'
           theme='vs-dark'
           value={this.state.code}
@@ -216,6 +221,12 @@ class PageMeasureCode extends React.Component {
           <Footer pad='medium' style={{flexWrap: 'wrap', height: HEIGHT_HEADER, paddingTop: 4, paddingBottom: 4, overflowY: 'scroll'}}>
             <FontAwesomeIcon icon={faExclamationTriangle} style={{fontSize: 24, marginRight: 14, marginBottom: 3, position: 'absolute', color: '#b81623'}}/>
             {this.state.parsingErrors.map(e => <div style={{marginLeft: 41}}>{e[1]}</div>)}
+          </Footer> : []
+        }
+        {
+          (this.state.importMessage) ?
+          <Footer pad='medium' style={{flexWrap: 'wrap', height: HEIGHT_HEADER, paddingTop: 4, paddingBottom: 4, overflowY: 'scroll'}}>
+            Please name the project directory as well as the class "<b>{className(this.state.id)}</b>".
           </Footer> : []
         }
       </Box>
