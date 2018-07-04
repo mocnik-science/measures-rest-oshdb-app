@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+{{#each importGithub}}
+rm -rf ~/.m2/repository/{{this}}
+{{/each}}

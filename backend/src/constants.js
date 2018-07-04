@@ -24,6 +24,7 @@ C.CMD_SERVICE_PUBLIC_START = './public-start'
 C.PATH_TEMPLATES = './templates'
 C.FILE_JAVA_MEASURE_TEMPLATE = `${C.PATH_TEMPLATES}/javaMeasure.java.handlebars`
 C.FILE_JAVA_RUN_TEMPLATE = `${C.PATH_TEMPLATES}/javaRun.java.handlebars`
+C.FILE_JAVA_CLEANUP_TEMPLATE = `${C.PATH_TEMPLATES}/cleanup.sh.handlebars`
 C.FILE_JAVA_POM_TEMPLATE = `${C.PATH_TEMPLATES}/pom.xml.handlebars`
 C.FILE_MAP_INDEX_TEMPLATE = `${C.PATH_TEMPLATES}/map.html.handlebars`
 C.FILE_DOWNLOAD_README_TEMPLATE = `${C.PATH_TEMPLATES}/README.md.handlebars`

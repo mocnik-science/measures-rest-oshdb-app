@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const {join} = require('path')
 const JSZip = require('jszip')
+const path = require('path')
 const soap = require('simplified-oshdb-api-programming/dist/soap-to-measure')
 
 const C = require('./../constants')
@@ -25,6 +26,7 @@ const saveJavaMeasure = (user, id, code) => fs.writeFileSync(idToPathUserFilenam
 const javaMeasureTemplate = template(C.FILE_JAVA_MEASURE_TEMPLATE)
 const javaRunTemplate = template(C.FILE_JAVA_RUN_TEMPLATE)
 const pomTemplate = template(C.FILE_JAVA_POM_TEMPLATE)
+const cleanupTemplate = template(C.FILE_JAVA_CLEANUP_TEMPLATE)
 
 const measureJsonToJavaMeasure = (user, json) => {
   const resolveSoapImports = parsedSoap => {
@@ -80,6 +82,14 @@ const measureJsonToPom = jsons => {
   return pomTemplate({importGithub: [...new Set(importGithub)]})
 }
 
+const measureJsonToCleanup = jsons => {
+  const importGithub = jsons.map(json => {
+    const ig = soap.soapToMeasure(json.code).importGithub
+    return (ig && ig.length > 0) ? `com/${ig[0].repository}` : null
+  }).filter(ig => ig !== null)
+  return cleanupTemplate({importGithub: [...new Set(importGithub)]})
+}
+
 module.exports.writeJava = user => {
   const jsons = allItems(C.MEASURE.path, user)
   recreateJavaDir(user)
@@ -89,6 +99,7 @@ module.exports.writeJava = user => {
   })
   saveJava(user, 'Run.java', measureJsonToJavaRun(user, jsons))
   saveJava(user, 'pom.xml', measureJsonToPom(jsons.filter(json => (user === null || json.enabled))))
+  saveJava(user, 'cleanup.sh', measureJsonToCleanup(jsons.filter(json => (user === null || json.enabled)), true))
 }
 
 const downloadReadmeTemplate = template(C.FILE_DOWNLOAD_README_TEMPLATE)
