@@ -147,10 +147,12 @@ class PageMeasureDescription extends React.Component {
     return (
       <PageItemDescription
         setState={response => {
-          response.minimumResult = this.floatFromSave(response.minimumResult)
-          response.maximumResult = this.floatFromSave(response.maximumResult)
-          response.presumes = this.objectAddEmptyValue(response.presumes)
-          this.setState(response)
+          if (response !== undefined) {
+            response.minimumResult = this.floatFromSave(response.minimumResult)
+            response.maximumResult = this.floatFromSave(response.maximumResult)
+            response.presumes = this.objectAddEmptyValue(response.presumes)
+            this.setState(response)
+          }
         }}
         itemName='measure'
         name={this.state.name}
