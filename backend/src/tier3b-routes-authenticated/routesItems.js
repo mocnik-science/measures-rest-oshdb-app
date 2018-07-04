@@ -2,7 +2,7 @@ const C = require('./../constants')
 const {name2id, isLevelPublic, isLevelUser} = require('./../tier4-functionality/common')
 const {itemForUser, resolveDependenciesItem, resolveInverseDependenciesItem, saveItem, moveItem, moveItemToPublic, allItems, allItemsShort} = require('./../tier4-functionality/items')
 const {writeJava, createZipMeasure} = require('./../tier4-functionality/java')
-const {servicePublicStart} = require('./../tier4-functionality/services')
+const {servicePublicStartAsync} = require('./../tier4-functionality/services')
 const {restartEndpoint} = require('./../tier4-functionality/sparql')
 
 module.exports.runRoutesAuthenticatedItems = (use, get, post) => {
@@ -60,7 +60,7 @@ const postItem = (itemClass, data) => (req, res) => {
       saveItem(itemClass, u, json.id, jsonNew)
       if (u === null) {
         writeJava(null)
-        servicePublicStart()
+        servicePublicStartAsync()
         restartEndpoint()
       }
       res.status(200).json({success: true})
@@ -88,7 +88,7 @@ const getItemPublic = itemClass => (req, res) => {
       if (!moveItemToPublic(itemClass, req.user, req.params.id, jsonNew)) return res.status(200).json({success: false, messages: {nameError: `A ${itemClass.itemName} with a very similar (or same) name has already been published.`}})
       saveItem(itemClass, null, json.id, jsonNew)
       writeJava(null)
-      servicePublicStart()
+      servicePublicStartAsync()
       restartEndpoint()
       getItems(itemClass)(req, res)
     }
