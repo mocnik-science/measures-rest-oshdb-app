@@ -68,7 +68,10 @@ class PageItem extends React.Component {
         <Header className='header' fixed={true} size='small' style={{paddingRight: 22}}>
           <Box flex={true} justify='end' direction='row'>
             <TextInput value={this.state.search} onDOMChange={e => this.setState({search: e.target.value})} style={{flexGrow: 1}} placeHolder='Search...' size='medium'/>
-            <Button icon={<FontAwesomeIcon icon={faPlusSquare}/>} onClick={() => itemNew(this.props.itemName, response => this.setState(response))}/>
+            <Button icon={<FontAwesomeIcon icon={faPlusSquare}/>} onClick={() => itemNew(this.props.itemName, response => {
+              this.setState(response)
+              this.props.setItemAll(this.props.itemName, response.items)
+            })}/>
             {this.props.buttonsHeader}
           </Box>
         </Header>
@@ -155,6 +158,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   initItemAll: itemName => dispatch(actions.initItemAll(itemName)),
+  setItemAll: items => dispatch(actions.setItemAll(items)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PageItem)
