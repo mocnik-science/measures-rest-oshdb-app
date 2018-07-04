@@ -4,6 +4,13 @@ export const SET_ITEMS = 'SET_ITEMS'
 export const SET_ITEM_ALL = 'SET_ITEM_ALL'
 
 const actions = {
+  forceItemAll: itemName => (dispatch, getState) => {
+    itemAll(itemName, itemAll => dispatch(actions._setItemAll(itemName, itemAll.items)))
+    actions.forceItems()
+  },
+  forceItems: () => (dispatch, getState) => {
+    items(items => dispatch(actions._setItems(items)))
+  },
   initItemAll: itemName => (dispatch, getState) => {
     if (getState().item.itemAll[itemName] === undefined) itemAll(itemName, itemAll => dispatch(actions._setItemAll(itemName, itemAll.items)))
   },

@@ -12,6 +12,7 @@ import Toast from 'grommet/components/Toast'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import faCertificate from '@fortawesome/fontawesome-free-solid/faCertificate'
 
+import actions from './../actions'
 import {item, itemSave} from './../other/backend'
 import {isLevelPublic} from './../other/tools'
 
@@ -30,8 +31,10 @@ class PageItemDescription extends React.Component {
   save(e) {
     e.preventDefault()
     itemSave(this.props.itemName, this.props.match.params.level, this.props.match.params.id, this.props.data, response => {
-      if (response && response.success) this.props.history.push(`/${this.props.itemName}`)
-      else this.setState({messages: response.messages})
+      if (response && response.success) {
+        this.props.forceItemAll(this.props.itemName)
+        this.props.history.push(`/${this.props.itemName}`)
+      } else this.setState({messages: response.messages})
     })
   }
   componentDidMount() {
@@ -108,6 +111,8 @@ PageItemDescription.defaultProps = {
 const mapStateToProps = state => ({
   user: state.user.user,
 })
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  forceItemAll: itemName => dispatch(actions.forceItemAll(itemName)),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(PageItemDescription)
