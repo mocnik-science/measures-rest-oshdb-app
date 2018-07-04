@@ -226,7 +226,7 @@ class PageMeasureCode extends React.Component {
         {
           (this.state.importMessage) ?
           <Footer pad='medium' style={{flexWrap: 'wrap', height: HEIGHT_HEADER, paddingTop: 4, paddingBottom: 4, overflowY: 'scroll'}}>
-            Please name the project directory as well as the class "<b>{className(this.state.id)}</b>".
+            Please name the project directory as well as the class "<b class="exception">{className(this.state.id)}</b>".
           </Footer> : []
         }
       </Box>
