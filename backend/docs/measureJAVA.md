@@ -6,11 +6,11 @@ If the code of a measure is more complex, it might be easier to implement the me
 * You can use your favourite IDE.
 * You have to handle some casting and aggregation issues on your own.
 
-Follow the steps listed below to implement your measure using JAVA.
+For implementing your measure using JAVA, follow the instructions listed below.  Please be aware that all measures included in the repository are licensed under the [MIT license](https://github.com/giscience/measures-rest/blob/master/LICENSE).
 
 ## Step 1: Fork the Github repository
 
-First, you have to fork the [https://github.com/giscience/osm-measure-repository](https://github.com/giscience/osm-measure-repository).  To do so, open the website and click on the button **Fork** at the top right side.  You are required to be logged in to create a fork.  As a result, you should have your own repository named *https://github.com/your-name/osm-measure-repository*.
+First, you have to fork the [https://github.com/giscience/osm-measure-repository](https://github.com/giscience/osm-measure-repository).  To do so, open the website and click on the button **Fork** at the top right side.  You are required to be logged in to create a fork.  As a result, you should have your own repository named *https://github.com/your-github-account/osm-measure-repository*.
 
 ## Step 2: Create the import in the OSM Measure Repository
 
@@ -27,16 +27,22 @@ Observe that you have to adapt the “your-name” part of the directive in orde
 For cloning the Github repository to your computer, you can either use a GUI or the command line.  If you choose the latter option, you have to type:
 
 ```bash
-git clone https://github.com/your-name/osm-measure-repository
+git clone https://github.com/your-github-account/osm-measure-repository
 ```
 
-Now, you have a local copy of the repository on your computer.  Now, you ...
+Now, you have a local copy of the Github repository on your computer.  For preparing a new measure, open a terminal/bash console and navigate to the path in which you have placed the cloned data.  In this path, execute:
 
-TODO
+```bash
+./do --add MeasureTopologicalCompleteness
+```
+
+Observe that you have to replace the name of the measure by the name that you have memorized in Step 2.  Voilà, a directory for the new measure appears.  The directory is named accordingly, and it contains a class for a measure.
 
 ## Step 4: Implement the measure
 
-TODO
+Now that you have prepared the measure, you can start with the actual implementation.  What you actually do is to overwrite the method `compute` in the JAVA class that you will find in the directory of you measure (`src/...`).
+
+You will find more detailed information about how to implement a measure in the documentation of the library [Measures REST OSHDB](https://gitlab.gistools.geog.uni-heidelberg.de/giscience/dfg-intrinsic-data-quality/measures-rest-oshdb).
 
 ## Step 5: Commit and push
 
@@ -55,4 +61,14 @@ git push
 
 ## Step 6: Run the measure
 
-Congrats, you are done!  Just enable the measure using the <i class="fas fa-toggle-on"/>-element and start the server by clicking on the <i class="fas fa-play"/>-symbol.
+Go back to the website of the [OSM Measure Repository](https://osm-measure-edit.geog.uni-heidelberg.de).  Just enable the measure using the <i class="fas fa-toggle-on"/>-element and (re-)start the server by clicking on the <i class="fas fa-play"/>-symbol.
+
+Congrats, you are done!  Your measure should start and be available within the next seconds.
+
+## Step 7 (optional): Publish the measure
+
+Do not forget to even add semantic information about the measure on the website of the [OSM Measure Repository](https://osm-measure-edit.geog.uni-heidelberg.de).  This is required when publishing the measure.
+
+Please test the measure in before you want to publish it.  Changes are much harder to be made after having published the measure.  If you are ready to publish, please go back to your Github repository.  There, you will find a button `New pull request`.  Use this button to indicate that you would like to publish your measure.  Also contact the administrators of the `OSM Measure Repository` in person to discuss the publishing process.
+
+Thank you for contributing!
