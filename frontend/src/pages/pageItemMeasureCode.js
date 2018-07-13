@@ -43,6 +43,8 @@ const SOAP_METHODS = [
   'map(',
   'flatMap(',
   'filter(',
+  'neighbouring(',
+  'neighbourhood(',
   'groupByEntity(',
   'aggregateBy(',
   'aggregateByGeometry(',
