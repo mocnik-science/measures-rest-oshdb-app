@@ -207,7 +207,23 @@ count()
 
 Please keep in mind, that the type of the parameter is guessed by the name.  If the parameter name starts with `number`, it is regarded to be an `Integer`; if it starts with `weight` or `factor`, to be a `Double`; and if it starts with `is`, `has`, or `needs`, to be a `Boolean`.  Otherwise, the parameter is regarded to be a `String`.  If you would like to force the interpretation of a parameter as a certain type, you can enforce this as `para_int`, `para_double`, `para_str`, etc.
 
-## Example 5b: Import of other measures
+## Example 5b: Parameters for filtering by tags
+
+To further simplify the filtering by a tag (key and value) in the OSHDB, one can filter like follows:
+
+```java
+mapReducer.osmTag(p.getOSMTag());
+```
+
+In this case, the `key` and `value` provided in the URL will be used for filtering.  If only a `key` is available, the data is only filtered by the key.  In some cases, one might want to provide the parameters using other keys in the URL.  In this case, the keys can manually be provided, e.g., as follows:
+
+```java
+mapReducer.osmTag(p.getOSMTag("newKey", "newValue"));
+```
+
+The URL should accordingly contain `...&newKey=highway&newValue=residential)`.
+
+## Example 5c: Import of other measures
 
 If a measure uses a parameter, it can be reused by another measure.  As an example, one might count different types of highways in a measure called `Count Highways`:
 
