@@ -2,7 +2,7 @@
 
 **Further information will come soon.**
 
-The repository internally uses the [OpenStreetMap History Database]().
+The repository internally uses the [OpenStreetMap History Database](https://github.com/giscience/oshdb).
 
 ### REST API
 

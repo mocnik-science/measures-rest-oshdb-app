@@ -135,16 +135,16 @@ sudo service nginx restart
 
 ```bash
 cd ~
-git clone https://gitlab.gistools.geog.uni-heidelberg.de/giscience/dfg-intrinsic-data-quality/measures-rest-oshdb-docker
+git clone https://github.com/mocnik-science/measures-rest-oshdb-docker
 
 cd ~
-git clone https://gitlab.gistools.geog.uni-heidelberg.de/giscience/dfg-intrinsic-data-quality/measures-rest-oshdb-app
+git clone https://github.com/mocnik-science/measures-rest-oshdb-app
 cd measures-rest-oshdb-app && npm install
 npm run build
 pm2 start pm2/osm-data-quality.geog.uni-heidelberg.de.yaml
 
 cd ~
-git clone https://gitlab.gistools.geog.uni-heidelberg.de/giscience/dfg-intrinsic-data-quality/measures-rest-oshdb-app measures-rest-oshdb-app-develop
+git clone https://github.com/mocnik-science/measures-rest-oshdb-app measures-rest-oshdb-app-develop
 cd measures-rest-oshdb-app-develop && git checkout develop && npm install
 pm2 start pm2/osm-data-quality.geog.uni-heidelberg.de.dev.yaml
 
