@@ -24,11 +24,13 @@ sudo apt install ssh
 sudo addgroup sftp
 sudo useradd -m sftp -g sftp
 sudo passwd sftp
-sudo mkdir -p /var/sftp/sftp
+sudo mkdir -p /var/sftp/sftp/upload
 sudo chown root:root /var/sftp
 sudo chmod 755 /var/sftp
 sudo chown root:root /var/sftp/sftp
 sudo chmod 755 /var/sftp/sftp
+sudo chown sftp:sftp /var/sftp/sftp/upload
+sudo chmod 755 /var/sftp/sftp/upload
 ```
 
 Then use `sudo nano /etc/ssh/sshd_config` to add at the end:
