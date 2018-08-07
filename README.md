@@ -27,7 +27,7 @@ sudo passwd sftp
 sudo mkdir -p /var/sftp/sftp
 sudo chown root:root /var/sftp
 sudo chmod 755 /var/sftp
-sudo chown root:root /var/sftp/sftp
+sudo chown sftp:sftp /var/sftp/sftp
 sudo chmod 755 /var/sftp/sftp
 ```
 
