@@ -119,8 +119,8 @@ server {
   
   server_name osm-measure-edit.geog.uni-heidelberg.de;
   
-  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
+#  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
+#  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
   
   location / {
     proxy_pass http://localhost:2999;
@@ -200,8 +200,8 @@ server {
 
   server_name osm-data-quality.geog.uni-heidelberg.de;
 
-  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
+#  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
+#  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
   
   root /home/f/fmocnik/www/osm-data-quality.geog.uni-heidelberg.de;
 }
@@ -241,8 +241,8 @@ server {
 
   server_name osm-measure.geog.uni-heidelberg.de;
 
-  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
+#  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
+#  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
   
   location ~ "^/user/([0-9]{5})/" {
     rewrite ^/user/([0-9]+)/(.*) /$2 break;
