@@ -121,8 +121,8 @@ Create a file `/etc/nginx/sites-available/osm-measure-edit` (via `sudo vi`) with
 
 ```
 server {
-  listen 443 ssl;
-  listen [::]:443 ssl;
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
 
   server_name osm-measure-edit.geog.uni-heidelberg.de;
 
@@ -202,8 +202,8 @@ Then, the data needs to be copy to this directory.  Thereafter, create a file `/
 server {
   listen 80 default_server;
   listen [::]:80 default_server;
-  listen 443 ssl default_server;
-  listen [::]:443 ssl default_server;
+  listen 443 ssl http2 default_server;
+  listen [::]:443 ssl http2 default_server;
 
   server_name osm-data-quality.geog.uni-heidelberg.de;
 
@@ -253,8 +253,8 @@ server {
   }
 }
 server {
-  listen 443 ssl;
-  listen [::]:443 ssl;
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
 
   server_name osm-measure.geog.uni-heidelberg.de;
 
