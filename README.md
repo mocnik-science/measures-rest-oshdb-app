@@ -76,8 +76,8 @@ sudo apt-get update
 sudo apt-get install -y certbot python-certbot-nginx
 
 sudo iptables -I INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-sudo certbot --nginx --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-data-quality.geog.uni-heidelberg.de -d osm-measure.geog.uni-heidelberg.de -d osm-measure-edit.geog.uni-heidelberg.de
-#sudo certbot certonly --standalone --preferred-challenges http --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-data-quality.geog.uni-heidelberg.de -d osm-measure.geog.uni-heidelberg.de -d osm-measure-edit.geog.uni-heidelberg.de
+sudo certbot --nginx --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-data-quality.geog.uni-heidelberg.de -d osm-measure.geog.uni-heidelberg.de -d osm-measure-edit.geog.uni-heidelberg.de -w /var/www/html
+#sudo certbot certonly --standalone --preferred-challenges http --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-data-quality.geog.uni-heidelberg.de -d osm-measure.geog.uni-heidelberg.de -d osm-measure-edit.geog.uni-heidelberg.de -w /var/www/html
 #  --staging
 sudo shutdown -r now
 ```
@@ -102,11 +102,18 @@ Create a file `/etc/nginx/sites-available/https-redirect` (via `sudo vi`) with t
 ```
 server {
   listen 80;
-  listen [::]:80 ssl;
-  
+  listen [::]:80;
+
   server_name osm-measure-edit.geog.uni-heidelberg.de;
-  
-  return 301 https://$host$request_uri;
+
+  location ^~ /.well-known/acme-challenge/ {
+    default_type "text/plain";
+    root /var/www/html/;
+  }
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
 }
 ```
 
@@ -116,12 +123,12 @@ Create a file `/etc/nginx/sites-available/osm-measure-edit` (via `sudo vi`) with
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
-  
+
   server_name osm-measure-edit.geog.uni-heidelberg.de;
-  
+
 #  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
 #  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
-  
+
   location / {
     proxy_pass http://localhost:2999;
   }
@@ -200,6 +207,11 @@ server {
 
   server_name osm-data-quality.geog.uni-heidelberg.de;
 
+  location ^~ /.well-known/acme-challenge/ {
+    default_type "text/plain";
+    root /var/www/html/;
+  }
+
 #  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
 #  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
   
@@ -224,6 +236,11 @@ server {
   listen [::]:80;
 
   server_name osm-measure.geog.uni-heidelberg.de;
+
+  location ^~ /.well-known/acme-challenge/ {
+    default_type "text/plain";
+    root /var/www/html/;
+  }
 
   location /api/ {
     proxy_pass http://127.0.0.1:31415;
