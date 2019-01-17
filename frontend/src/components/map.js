@@ -8,7 +8,7 @@ class Map extends React.Component {
     this.addIsea3h = this.addIsea3h.bind(this)
   }
   componentDidMount() {
-    this._map = this._L.map('map').setView([57.7, 12.0], 10)
+    this._map = this._L.map('map').setView([57.7, 12.0], 11)
     this._L.stamenTileLayer('toner-lite').addTo(this._map)
     this.addIsea3h()
   }
