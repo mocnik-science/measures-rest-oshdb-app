@@ -96,8 +96,8 @@ SidebarService.propTypes = {
   waitForResponseTimeout: PropTypes.number,
 }
 SidebarService.defaultProps = {
-  checkServiceInterval: 2000,
-  waitForResponseTimeout: 5000,
+  checkServiceInterval: 6000, //2000,
+  waitForResponseTimeout: 10000, //5000,
 }
 
 export default SidebarService
