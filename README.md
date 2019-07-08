@@ -188,9 +188,9 @@ pm2 start pm2/measures-rest-sparql.yaml
 pm2 save
 ```
 
-## Vocabulary
+## Default
 
-In addition, the needed vocabulary can be delivered using nginx:
+In addition, the static website (including the acme challenge) using nginx:
 
 ```bash
 mkdir -p ~/www/osm-data-quality.geog.uni-heidelberg.de
@@ -214,7 +214,7 @@ server {
 
 #  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
 #  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
-  
+
   root /home/f/fmocnik/www/osm-data-quality.geog.uni-heidelberg.de;
 }
 ```
