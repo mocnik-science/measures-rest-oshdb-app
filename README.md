@@ -6,28 +6,26 @@ In order to monitor and/or restart the services, please login via ssh and then e
 
 ## Installation
 
-In the following, you will find a description of how to install the software on an exemplary server.  You might have to adjuste the following commands in case of your own server.  The description includes the following software projects:
+In the following, you will find a description of how to install the software on an exemplary server.  You might have to adjust the following commands in case of your own server.  The description includes the following software projects:
 
 * measures-rest-oshdb-app
 * measures-rest-oshdb-docker
 * measures-rest-sparql
-* vocabulary-osm-data-quality
-* vocabulary-data-quality
 
-## Basic tools
+### Basic tools
 
 ```bash
 sudo apt-get install -y autojump htop unzip
 echo ". /usr/share/autojump/autojump.bash" >> ~/.bashrc
 ```
 
-## sftp
+### sftp
 
 ```bash
 sudo addgroup [your username] sftp-sshallowed
 ```
 
-## Docker
+### Docker
 
 ```bash
 sudo apt-get update
@@ -50,7 +48,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 newgrp docker
 ```
 
-## Create new user
+### Create new user
 
 ```bash
 sudo adduser --disabled-password measures
@@ -60,7 +58,7 @@ source ~/.profile
 measures
 ```
 
-## Nodejs and pm2
+### Nodejs and pm2
 
 ```bash
 curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
@@ -74,7 +72,7 @@ exit
 measures
 ```
 
-## Install nginx
+### Install nginx
 
 ```batch
 sudo apt-get install -y nginx
@@ -83,7 +81,7 @@ sudo rm /etc/nginx/sites-available/default
 sudo rm /etc/nginx/sites-enabled/default
 ```
 
-## Let's Encrypt
+### Let's Encrypt
 
 ```bash
 sudo apt-get update
@@ -105,14 +103,14 @@ Then use `crontab -e` to add:
 14 3 * * * certbot renew --post-hook "service nginx restart"
 ```
 
-## Firewall
+### Firewall
 
 ```batch
 sudo iptables-unblocktcp 80 global
 sudo iptables-unblocktcp 443 global
 ```
 
-## Configure nginx
+### Configure nginx
 
 Create a file `/etc/nginx/sites-available/https-redirect` (via `sudo vi`) with the following content:
 
@@ -161,7 +159,7 @@ sudo ln -s /etc/nginx/sites-available/osm-measure-edit /etc/nginx/sites-enabled/
 sudo service nginx restart
 ```
 
-## Measures-rest-oshdb
+### Measures-rest-oshdb
 
 ```bash
 cd ~
@@ -182,7 +180,7 @@ PM2_HOME="/home/m/measures/" && pm2 save
 
 copy the libs
 
-## Data
+### Data
 
 ```bash
 mkdir ~/measures-rest-oshdb-data
@@ -191,7 +189,7 @@ mkdir ~/measures-rest-oshdb-data/public
 mkdir ~/measures-rest-oshdb-data/users
 ```
 
-## Measures REST SPARQL
+### Measures REST SPARQL
 
 To install the SPARQL endpoint, execute the following commands:
 
@@ -204,7 +202,7 @@ pm2 start pm2/measures-rest-sparql.yaml
 PM2_HOME="/home/m/measures/" && pm2 save
 ```
 
-## Default
+### Default
 
 In addition, the static website (including the acme challenge) using nginx:
 
@@ -242,7 +240,7 @@ sudo ln -s /etc/nginx/sites-available/osm-data-quality /etc/nginx/sites-enabled/
 sudo service nginx restart
 ```
 
-## Publish the measures
+### Publish the measures
 
 Create a file `/etc/nginx/sites-available/osm-measure` (via `sudo vi`) with the following content:
 
