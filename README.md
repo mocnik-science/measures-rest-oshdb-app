@@ -20,7 +20,7 @@ echo ". /usr/share/autojump/autojump.bash" >> ~/.bashrc
 ## sftp
 
 ```bash
-sudo addgroup fmocnik sftp-sshallowed
+sudo addgroup [your username] sftp-sshallowed
 ```
 
 ## Docker
@@ -43,7 +43,7 @@ sudo apt-get install -y docker-ce
 sudo curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
-sudo usermod -aG docker fmocnik && newgrp docker
+newgrp docker
 ```
 
 ## Nodejs and pm2
@@ -64,6 +64,16 @@ sudo apt-get install -y nginx
 sudo service nginx status
 sudo rm /etc/nginx/sites-available/default
 sudo rm /etc/nginx/sites-enabled/default
+```
+
+## Create new user
+
+```bash
+sudo adduser --disabled-password measures
+sudo usermod -a -G sudo -G docker measures
+echo "alias measures=\"sudo su -l measures\"" >> ~/.profile
+source ~/.profile
+measures
 ```
 
 ## Let's Encrypt
@@ -180,10 +190,10 @@ mkdir ~/measures-rest-oshdb-data/users
 To install the SPARQL endpoint, execute the following commands:
 
 ```bash
+cd ~
 sudo apt install python3-pip
 git clone http://github.com/giscience/measures-rest-sparql
-cd measures-rest-sparql
-npm install
+cd measures-rest-sparql && npm install
 pm2 start pm2/measures-rest-sparql.yaml
 pm2 save
 ```
@@ -215,7 +225,7 @@ server {
 #  ssl_certificate /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/fullchain.pem;
 #  ssl_certificate_key /etc/letsencrypt/live/osm-data-quality.geog.uni-heidelberg.de/privkey.pem;
 
-  root /home/f/fmocnik/www/osm-data-quality.geog.uni-heidelberg.de;
+  root /home/m/measures/www/osm-data-quality.geog.uni-heidelberg.de;
 }
 ```
 
