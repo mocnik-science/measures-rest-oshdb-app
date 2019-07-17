@@ -7,5 +7,3 @@ Data quality is an important issue.  In many cases, it is unclear how well the d
 This repository is a collection of data quality measures – only very few at the moment but hopefully many more in the near future.  Many of these measures already exist and are discussed in the literature.  This holistic perspective of this collection of data quality measures related to OSM is novel and renders possible to examine, compare, and make sense of data quality measures as a whole.
 
 Feel welcome to use this repository for your own research purposes.
-
-*Franz-Benjamin Mocnik on behalf of the Team*
