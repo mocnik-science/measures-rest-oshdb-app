@@ -46,6 +46,16 @@ sudo chmod +x /usr/local/bin/docker-compose
 newgrp docker
 ```
 
+## Create new user
+
+```bash
+sudo adduser --disabled-password measures
+sudo usermod -a -G sudo -G docker measures
+echo "alias measures=\"sudo su -l measures\"" >> ~/.profile
+source ~/.profile
+measures
+```
+
 ## Nodejs and pm2
 
 ```bash
@@ -53,8 +63,11 @@ curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 sudo npm install pm2 -g
-sudo startup ubuntu
+sudo pm2 startup
+exit
 # execute the command given in the result
+# sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u measures --hp /home/m/measures
+measures
 ```
 
 ## Install nginx
@@ -64,16 +77,6 @@ sudo apt-get install -y nginx
 sudo service nginx status
 sudo rm /etc/nginx/sites-available/default
 sudo rm /etc/nginx/sites-enabled/default
-```
-
-## Create new user
-
-```bash
-sudo adduser --disabled-password measures
-sudo usermod -a -G sudo -G docker measures
-echo "alias measures=\"sudo su -l measures\"" >> ~/.profile
-source ~/.profile
-measures
 ```
 
 ## Let's Encrypt
@@ -170,8 +173,7 @@ cd ~
 git clone https://github.com/mocnik-science/measures-rest-oshdb-app measures-rest-oshdb-app-develop
 cd measures-rest-oshdb-app-develop && git checkout develop && npm install
 pm2 start pm2/osm-data-quality.geog.uni-heidelberg.de.dev.yaml
-
-pm2 save
+PM2_HOME="/home/m/measures/" && pm2 save
 ```
 
 copy the libs
@@ -195,7 +197,7 @@ sudo apt install python3-pip
 git clone http://github.com/giscience/measures-rest-sparql
 cd measures-rest-sparql && npm install
 pm2 start pm2/measures-rest-sparql.yaml
-pm2 save
+PM2_HOME="/home/m/measures/" && pm2 save
 ```
 
 ## Default
