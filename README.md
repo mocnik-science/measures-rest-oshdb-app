@@ -1,5 +1,9 @@
 # Measures REST OSHDB App
 
+## Monitoring and restarting
+
+In order to monitor and/or restart the services, please login via ssh and then execute the `measures` command, which will make you being logged in as the `measures`.  Then, you are able to monitor the services via `pm2 list` and restart services via `pm2 restart [id of the service]` or even `pm2 restart all`.
+
 ## Installation
 
 In the following, you will find a description of how to install the software on an exemplary server.  You might have to adjuste the following commands in case of your own server.  The description includes the following software projects:
