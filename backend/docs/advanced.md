@@ -18,7 +18,7 @@ the data is aggregated by a grid, advantages
 
 ### Develop visualizations
 
-[geogrid.js](https://github.com/giscience/geogrid.js)
+[geogrid.js](https://github.com/mocnik-science/geogrid.js)
 
 Data format is described in the readme of [Measures REST](https://github.com/giscience/measures-rest), the software that runs the REST server.
 
