@@ -34,11 +34,12 @@
       $(document).ready(function() {
         var map = L.map('map').setView([57.7, 12.0], 10);
         new L.StamenTileLayer('toner-lite').addTo(map);
-        L.isea3hLayer({
+        const isea3h = L.isea3hLayer({
           url: `{{url}}?bbox={bbox}&resolution={resolution}{{urlPrefixParameter}}`,
           urlLibs: '/static/libs',
           colorProgressBar: '#b81623',
         }).addTo(map);
+        isea3h.addPlugin(L.showDataPlugin());
       });
     </script>
   </head>

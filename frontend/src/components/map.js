@@ -27,6 +27,7 @@ class Map extends React.Component {
       colorProgressBar: '#b81623',
       parameters: this.props.parameters,
     }).addTo(this._map)
+    this._isea3h.addPlugin(L.showDataPlugin())
   }
   render() {
     return (<div id='map' style={{height: '100%'}}></div>)

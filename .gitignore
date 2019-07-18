@@ -1,7 +1,12 @@
 **/build
 **/coverage
 **/dist
-**/libs
+**/libs/geogrid.min.js
+**/libs/geogrid.min.js.map
+**/libs/geokdbush.min.js
+**/libs/kdbush.min.js
+**/libs/Leaflet.PixiOverlay
+**/libs/vptree.js
 **/node_modules
 backend/src/settings.js
 package-lock.json
