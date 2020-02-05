@@ -1,3 +1,5 @@
+[![status: hibernate](https://github.com/GIScience/badges/raw/master/status/hibernate.png)](
+
 # Measures REST OSHDB App
 
 ## Monitoring and restarting
