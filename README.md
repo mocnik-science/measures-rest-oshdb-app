@@ -1,4 +1,4 @@
-[![status: hibernate](https://github.com/GIScience/badges/raw/master/status/hibernate.png)](
+[![status: hibernate](https://github.com/GIScience/badges/raw/master/status/hibernate.png)](https://github.com/GIScience/badges)
 
 # Measures REST OSHDB App
 
